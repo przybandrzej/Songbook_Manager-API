@@ -29,6 +29,7 @@ It is an app that lets the users manage songs in a songbook (add, remove, update
 * [Spring]()
 * [Lombok]()
 * [Hibernate]()
+* [JUnit]()
 
 ## Author
 
