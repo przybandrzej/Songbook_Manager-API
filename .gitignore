@@ -25,6 +25,7 @@ hs_err_pid*
 ### DB Connection ###
 DatabaseConnectionData.java
 
+### Maven ###
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
