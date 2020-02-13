@@ -23,7 +23,7 @@
 hs_err_pid*
 
 ### DB Connection ###
-DatabaseConnectionData.java
+/src/main/java/com/lazydev/stksongbook/webapp/DatabaseConnectionData.java
 
 ### Maven ###
 HELP.md
