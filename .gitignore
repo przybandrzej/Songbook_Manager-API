@@ -23,8 +23,6 @@
 hs_err_pid*
 
 ### DB Connection ###
-DatabaseConnectionData.java
-DBConnectionPass.java
 
 ### Maven ###
 HELP.md
