@@ -1,13 +1,14 @@
 # Songbook_Manager
-A tomcat-based Java web application connected to a PostgreSQL database and deployed to Heroku.
+A Spring web application connected to a PostgreSQL database and deployed to Heroku.
 
-It is an app that lets the users manage songs in a songbook (add, remove, update and read). The database is also connected to an Android app that displays the songs.
+It is an app that lets the users manage songs in a songbook (add, remove, update and read). It has REST API that other applications can use. For example an Android app named "Songbook" is connected to the API and displays the songs to the mobile users. 
 
 ## Getting Started
- * The deployed Heroku app:  
+ * The deployed Heroku app: 
  * The Android app's repo: 
 
-### Prerequisites
+### To use the API:
+<no instructions yet>
 
 ## Features
 
@@ -21,15 +22,13 @@ It is an app that lets the users manage songs in a songbook (add, remove, update
 
 ## Built With
 
-* [Java]()
+* [Java 8]()
+  * [Spring Boot]()
+  * [Spring Data]()
+  * [Lombok]()
+  * [Hibernate]()
 * [PostgreSQL]()
 * [Heroku]()
-* [Maven]()
-* [Tomcat]()
-* [Spring]()
-* [Lombok]()
-* [Hibernate]()
-* [JUnit]()
 
 ## Author
 
