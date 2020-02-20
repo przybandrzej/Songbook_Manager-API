@@ -5,6 +5,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 
 @Entity
 @Table(name="songs")
-@EntityListeners(AuditingEntityListener.class)
+//@EntityListeners(AuditingEntityListener.class)
 public @Data class Song {
 
     /**
@@ -25,7 +26,7 @@ public @Data class Song {
      *           By definition, it must be unique.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
 
@@ -35,6 +36,7 @@ public @Data class Song {
      */
     @NotBlank
     @Column(name = "author_id")
+    @NotNull
     private long authorId;
 
     /**
@@ -42,6 +44,7 @@ public @Data class Song {
      */
     @NotBlank
     @Column(name = "title")
+    @NotNull
     private String title;
 
     /**
@@ -49,6 +52,7 @@ public @Data class Song {
      */
     @NotBlank
     @Column(name = "lyrics")
+    @NotNull
     private String lyrics;
 
     /**
@@ -56,11 +60,13 @@ public @Data class Song {
      */
     @NotBlank
     @Column(name = "guitar_tabs")
+    @NotNull
     private String guitarTabs;
 
     //TODO
     @NotBlank
     @Column(name = "tags")
+    @NotNull
     private ArrayList<Tag> tags;
 
     /**
@@ -73,6 +79,7 @@ public @Data class Song {
      * @param addition_time stores the date and time of the song's insertion to the database.
      */
     @NotBlank
+    @NotNull
     @Column(name = "addition_time")
     private LocalDateTime additionTime;
 
@@ -81,6 +88,7 @@ public @Data class Song {
      *                   It is used for determinig the category of the song.
      */
     @NotBlank
+    @NotNull
     @Column(name = "category_id")
     private long categoryId;
 }

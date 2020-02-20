@@ -5,6 +5,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * This is the model class of the Tag entity. The table stores all tags used for tagging songs.
@@ -15,7 +16,7 @@ import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name="tags")
-@EntityListeners(AuditingEntityListener.class)
+//@EntityListeners(AuditingEntityListener.class)
 public @Data class Tag {
 
     /**
@@ -24,7 +25,7 @@ public @Data class Tag {
      */
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     /**
@@ -32,6 +33,7 @@ public @Data class Tag {
      */
     @Column(name = "name")
     @NotBlank
+    @NotNull
     private String tagName;
 
     /**

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * This is the model class of the User entity. It represents real users of the application.
@@ -20,14 +21,14 @@ import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name="users")
-@EntityListeners(AuditingEntityListener.class)
+//@EntityListeners(AuditingEntityListener.class)
 public @Data class User {
 
     /**
      * @param id is the Primary Key in the table. By definition, it must be unique
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
 
@@ -36,6 +37,7 @@ public @Data class User {
      */
     @NotBlank
     @Column(name = "login")
+    @NotNull
     private String login;
 
     /**
@@ -43,6 +45,7 @@ public @Data class User {
      */
     @NotBlank
     @Column(name = "password")
+    @NotNull
     private String password;
 
     /**
@@ -50,6 +53,7 @@ public @Data class User {
      */
     @NotBlank
     @Column(name = "username")
+    @NotNull
     private String username;
 
     /**
@@ -58,19 +62,18 @@ public @Data class User {
      */
     @NotBlank
     @Column(name = "user_role")
+    @NotNull
     private long userRoleId;
 
     /**
      * @param firstName is user's real first name. It is optional and not displayed for other users.
      */
-    @NotBlank
     @Column(name = "first_name")
     private String firstName;
 
     /**
      * @param lastName is user's real last name. It is optional and not displayed for other users.
      */
-    @NotBlank
     @Column(name = "last_name")
     private String lastName;
 
@@ -78,6 +81,7 @@ public @Data class User {
      * @param addedSongsCount counts songs added to the database by the user. New users have it automatically set to 0
      */
     @NotBlank
+    @NotNull
     @Column(name = "added_songs_count")
     private int addedSongsCount;
 
@@ -85,6 +89,9 @@ public @Data class User {
      * @param addedSongsCount counts songs edited by the user. New users have automatically set to 0
      */
     @NotBlank
+    @NotNull
     @Column(name = "edited_songs_count")
     private int editedSongsCount;
+
+    // TODO add lists of added songs and edited songs instead
 }

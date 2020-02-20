@@ -1,10 +1,11 @@
 package com.lazydev.stksongbook.webapp.model;
 
-import lombok.Data;
+import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * This is the model class of the Author entity. The table stores all authors of the songs from the SONGS table.
@@ -15,15 +16,19 @@ import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name="authors")
-@EntityListeners(AuditingEntityListener.class)
-public @Data class Author {
+//@EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Author {
 
     /**
      * @param id is the Primary Key in the table.
      *           By definition, it must be unique.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
 
@@ -31,6 +36,7 @@ public @Data class Author {
      * @param name stores the name of the author. It can be a real person or a band name.
      *             It must be unique.
      */
+    @NotNull
     @NotBlank
     @Column(name = "name")
     private String name;

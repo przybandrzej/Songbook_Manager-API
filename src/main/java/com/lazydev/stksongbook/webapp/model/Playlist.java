@@ -5,6 +5,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 
 @Entity
 @Table(name="playlists")
-@EntityListeners(AuditingEntityListener.class)
+//@EntityListeners(AuditingEntityListener.class)
 public @Data class Playlist {
 
     /**
@@ -27,7 +28,7 @@ public @Data class Playlist {
      *           By definition, it must be unique.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
 
@@ -37,6 +38,7 @@ public @Data class Playlist {
      */
     @Column(name = "owner_id")
     @NotBlank
+    @NotNull
     private long ownerId;
 
     /**
@@ -44,6 +46,7 @@ public @Data class Playlist {
      */
     @Column(name = "name")
     @NotBlank
+    @NotNull
     private String name;
 
     /**
@@ -52,6 +55,7 @@ public @Data class Playlist {
      */
     @Column(name = "is_private")
     @NotBlank
+    @NotNull
     private boolean isPrivate;
 
     /**
@@ -59,10 +63,12 @@ public @Data class Playlist {
      */
     @Column(name = "creation_time")
     @NotBlank
+    @NotNull
     private LocalDateTime creationTime;
 
     //TODO
+    /*
     @Column(name = "songs")
     @NotBlank
-    private ArrayList<Song> songs;
+    private ArrayList<Song> songs;*/
 }

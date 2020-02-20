@@ -5,6 +5,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * This is the model class of the User Role entity. It is used for determining whether the User is an admin,
@@ -23,7 +24,7 @@ public @Data class UserRole {
      * @param id is the Primary Key in the table. By definition, it must be unique.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
 
@@ -31,6 +32,7 @@ public @Data class UserRole {
      * @param name represents the name of the role. It must be unique.
      */
     @NotBlank
+    @NotNull
     @Column(name = "name")
     private String name;
 }
