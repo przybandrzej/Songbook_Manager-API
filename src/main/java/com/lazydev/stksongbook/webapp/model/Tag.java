@@ -2,6 +2,7 @@ package com.lazydev.stksongbook.webapp.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -18,6 +19,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name="tags")
 @AllArgsConstructor
+@NoArgsConstructor
 //@EntityListeners(AuditingEntityListener.class)
 public @Data class Tag {
 
@@ -41,5 +43,5 @@ public @Data class Tag {
     /**
      * @param tagPrefix says what character to use to display tags in the application.
      */
-    private static char tagPrefix = '#';
+    private static final char tagPrefix = '#';
 }

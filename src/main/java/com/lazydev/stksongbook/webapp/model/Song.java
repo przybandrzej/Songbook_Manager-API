@@ -55,6 +55,7 @@ public @Data class Song {
     @NotBlank
     @Column(name = "lyrics")
     @NotNull
+    @Lob
     private String lyrics;
 
     /**
@@ -63,6 +64,7 @@ public @Data class Song {
     @NotBlank
     @Column(name = "guitar_tabs")
     @NotNull
+    @Lob
     private String guitarTabs;
 
     //TODO
@@ -75,6 +77,7 @@ public @Data class Song {
      * @param curio is the optional bonus info about the song.
      */
     @Column(name = "curio")
+    @Lob
     private String curio;
 
     /**
