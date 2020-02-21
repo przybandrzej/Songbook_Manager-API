@@ -1,5 +1,6 @@
 package com.lazydev.stksongbook.webapp.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 
 @Entity
 @Table(name="playlists")
+@AllArgsConstructor
 //@EntityListeners(AuditingEntityListener.class)
 public @Data class Playlist {
 

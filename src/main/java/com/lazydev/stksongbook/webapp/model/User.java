@@ -1,5 +1,6 @@
 package com.lazydev.stksongbook.webapp.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -21,6 +22,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name="users")
+@AllArgsConstructor
 //@EntityListeners(AuditingEntityListener.class)
 public @Data class User {
 

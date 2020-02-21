@@ -1,5 +1,6 @@
 package com.lazydev.stksongbook.webapp.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -16,6 +17,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name="tags")
+@AllArgsConstructor
 //@EntityListeners(AuditingEntityListener.class)
 public @Data class Tag {
 
@@ -34,7 +36,7 @@ public @Data class Tag {
     @Column(name = "name")
     @NotBlank
     @NotNull
-    private String tagName;
+    private String name;
 
     /**
      * @param tagPrefix says what character to use to display tags in the application.
