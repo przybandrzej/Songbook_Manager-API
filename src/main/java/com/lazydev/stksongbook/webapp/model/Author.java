@@ -1,6 +1,7 @@
 package com.lazydev.stksongbook.webapp.model;
 
 import lombok.*;
+import org.springframework.data.annotation.Reference;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -17,11 +18,8 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name="authors")
 //@EntityListeners(AuditingEntityListener.class)
-@Getter
-@Setter
 @AllArgsConstructor
-@NoArgsConstructor
-public class Author {
+public @Data class Author {
 
     /**
      * @param id is the Primary Key in the table.

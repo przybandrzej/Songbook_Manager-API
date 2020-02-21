@@ -1,7 +1,9 @@
 package com.lazydev.stksongbook.webapp.api;
 
 import com.lazydev.stksongbook.webapp.manager.AuthorManager;
+import com.lazydev.stksongbook.webapp.manager.CategoryManager;
 import com.lazydev.stksongbook.webapp.model.Author;
+import com.lazydev.stksongbook.webapp.model.Category;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -9,40 +11,41 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/authors")
+@RequestMapping("/api/categories")
 @AllArgsConstructor
-public class AuthorRestApi {
+public class CategoryRestApi {
 
     @Autowired
-    private AuthorManager manager;
+    private CategoryManager manager;
 
     @GetMapping("/get")
-    public Iterable<Author> getAll(){
+    public Iterable<Category> getAll(){
         return manager.findAll();
     }
 
     @GetMapping("/get/id/{id}")
-    public Optional<Author> getById(@PathVariable("id") Long id) {
+    public Optional<Category> getById(@PathVariable("id") Long id) {
         return manager.findById(id);
     }
 
     @GetMapping("/get/name/{name}")
-    public Iterable<Author> getByName(@PathVariable("name") String name){
+    public Iterable<Category> getByName(@PathVariable("name") String name){
         return manager.findByName(name);
     }
 
     @PostMapping   // Add mapping?
-    public Author addAuthor(@RequestBody Author author) {
-        return manager.save(author);
+    public Category addCategory(@RequestBody Category category) {
+        return manager.save(category);
     }
 
     @PutMapping   // Add mapping?
-    public Author updateAuthor(@RequestBody Author author) {
-        return manager.save(author);
+    public Category updateCategory(@RequestBody Category category) {
+        return manager.save(category);
     }
 
     @DeleteMapping   // Add mapping?
     public void deleteAuthor(@RequestParam Long id) {
         manager.deleteById(id);
     }
+
 }

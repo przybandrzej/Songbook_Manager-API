@@ -2,6 +2,7 @@ package com.lazydev.stksongbook.webapp.manager;
 
 import com.lazydev.stksongbook.webapp.dao.AuthorDAO;
 import com.lazydev.stksongbook.webapp.model.Author;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,14 +11,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class AuthorManager {
 
-    private AuthorDAO authorDao;
-
     @Autowired
-    public AuthorManager(AuthorDAO dao) {
-        this.authorDao = dao;
-    }
+    private AuthorDAO authorDao;
 
     public Optional<Author> findById(Long id) {
         return authorDao.findById(id);

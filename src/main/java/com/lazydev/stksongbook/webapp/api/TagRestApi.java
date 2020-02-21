@@ -1,7 +1,7 @@
 package com.lazydev.stksongbook.webapp.api;
 
-import com.lazydev.stksongbook.webapp.manager.AuthorManager;
-import com.lazydev.stksongbook.webapp.model.Author;
+import com.lazydev.stksongbook.webapp.manager.TagManager;
+import com.lazydev.stksongbook.webapp.model.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -9,36 +9,36 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/authors")
 @AllArgsConstructor
-public class AuthorRestApi {
+@RequestMapping("/api/tags")
+public class TagRestApi {
 
     @Autowired
-    private AuthorManager manager;
+    private TagManager manager;
 
     @GetMapping("/get")
-    public Iterable<Author> getAll(){
+    public Iterable<Tag> getAll(){
         return manager.findAll();
     }
 
     @GetMapping("/get/id/{id}")
-    public Optional<Author> getById(@PathVariable("id") Long id) {
+    public Optional<Tag> getById(@PathVariable("id") Long id) {
         return manager.findById(id);
     }
 
     @GetMapping("/get/name/{name}")
-    public Iterable<Author> getByName(@PathVariable("name") String name){
+    public Iterable<Tag> getByName(@PathVariable("name") String name){
         return manager.findByName(name);
     }
 
     @PostMapping   // Add mapping?
-    public Author addAuthor(@RequestBody Author author) {
-        return manager.save(author);
+    public Tag addTag(@RequestBody Tag obj) {
+        return manager.save(obj);
     }
 
     @PutMapping   // Add mapping?
-    public Author updateAuthor(@RequestBody Author author) {
-        return manager.save(author);
+    public Tag updateTag(@RequestBody Tag obj) {
+        return manager.save(obj);
     }
 
     @DeleteMapping   // Add mapping?
