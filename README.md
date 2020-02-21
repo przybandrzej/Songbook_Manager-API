@@ -15,7 +15,7 @@ For example my Android app named "Songbook" is connected to the API. It will dis
 
 ## Getting Started
  * The deployed Heroku app: https://stk-songbook.herokuapp.com/ (currently only the API works)
- * The Android app's repo: https://github.com/BrieflyClear/Song_Book
+ * The Android app's repo: https://github.com/BrieflyClear/Songbook-Android
 
 ### How to use the API
 Refer to the following endpoints:
