@@ -31,6 +31,16 @@ public class SongRestApi {
         return manager.findByTitle(title);
     }
 
+    @GetMapping("/get/author/{authorId}")
+    public Iterable<Song> getByTitle(@PathVariable("authorId") Long authorId){
+        return manager.findByAuthorId(authorId);
+    }
+
+    @GetMapping("/get/category/{categoryId}")
+    public Iterable<Song> getByCategory(@PathVariable("categoryId") Long categoryId){
+        return manager.findByCategoryId(categoryId);
+    }
+
     @PostMapping   // Add mapping?
     public Song addSong(@RequestBody Song obj) {
         return manager.save(obj);

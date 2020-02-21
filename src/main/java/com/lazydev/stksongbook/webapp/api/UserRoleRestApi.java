@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/userroles")
+@RequestMapping("/api/user_roles")
 public class UserRoleRestApi {
 
     @Autowired

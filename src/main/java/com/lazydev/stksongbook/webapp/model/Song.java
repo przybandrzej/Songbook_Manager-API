@@ -2,6 +2,7 @@ package com.lazydev.stksongbook.webapp.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 @Entity
 @Table(name="songs")
 @AllArgsConstructor
+@NoArgsConstructor
 //@EntityListeners(AuditingEntityListener.class)
 public @Data class Song {
 

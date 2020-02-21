@@ -19,6 +19,7 @@ import javax.validation.constraints.NotNull;
 @Table(name="authors")
 //@EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
+@NoArgsConstructor
 public @Data class Author {
 
     /**
