@@ -55,31 +55,28 @@ public @Data class Song {
      * @param lyrics stores the lyrics of the song.
      */
     @NotBlank
-    @Column(name = "lyrics")
+    @Column(name = "lyrics", columnDefinition = "TEXT")
     @NotNull
-    @Lob
     private String lyrics;
 
     /**
      * @param guitar_tabs stores the guitar tabs.
      */
     @NotBlank
-    @Column(name = "guitar_tabs")
+    @Column(name = "guitar_tabs", columnDefinition = "TEXT")
     @NotNull
-    @Lob
     private String guitarTabs;
 
-    //TODO
+   /* //TODO
     @NotBlank
     @Column(name = "tags")
     @NotNull
-    private ArrayList<Tag> tags;
+    private ArrayList<Tag> tags;*/
 
     /**
      * @param curio is the optional bonus info about the song.
      */
-    @Column(name = "curio")
-    @Lob
+    @Column(name = "curio", columnDefinition = "TEXT")
     private String curio;
 
     /**
