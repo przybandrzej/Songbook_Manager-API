@@ -5,6 +5,49 @@
     <title>Songbook STK</title>
 </head>
 <body>
-<h1>App</h1>
+<h3>How to use the API
+
+<h4>Refer to the following endpoints:
+<ul>
+    <li>Authors:
+        <ul>
+            <li>all : /api/authors/get
+            <li>one by ID: /api/authors/get/id/{id}
+            <li>all matching the name (usually one): /api/authors/get/name/{name}
+        </ul>
+    <li>Songs:
+    <ul>
+        <li>all : /api/songs/get
+        <li>one by ID: /api/songs/get/id/{id}
+        <li>all matching the title: /api/songs/get/title/{title}
+        <li>all matching the author: /api/songs/get/author/{authorId}
+        <li>all matching the category: /api/songs/get/category/{categoryId}
+    </ul>
+    <li>Tags:
+    <ul>
+        <li>all : /api/tags/get
+        <li>one by ID: /api/tags/get/id/{id}
+        <li>all matching the name (usually one): /api/tags/get/name/{name}
+    </ul>
+    <li>Categories:
+    <ul>
+        <li>all : /api/categories/get
+        <li>one by ID: /api/categories/get/id/{id}
+        <li>all matching the name (usually one): /api/categories/get/name/{name}
+    </ul>
+    <li>Playlists (only the ones with 'public' marker):
+    <ul>
+        <li>all : /api/playlists/get
+        <li>one by ID: /api/playlists/get/id/{id}
+        <li>all matching the name: /api/playlists/get/name/{name}
+        <li>all matching the owner: /api/playlists/get/owner/{ownerId}
+    </ul>
+    <li>UserRoles:
+    <ul>
+        <li>all : /api/user_roles/get
+        <li>one by ID: /api/user_roles/get/id/{id}
+        <li>all matching the name: /api/user_roles/get/name/{name}
+    </ul>
+</ul>
 </body>
 </html>
