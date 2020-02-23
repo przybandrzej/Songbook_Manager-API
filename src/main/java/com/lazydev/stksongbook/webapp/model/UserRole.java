@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * This is the model class of the User Role entity. It is used for determining whether the User is an admin,
@@ -35,6 +36,9 @@ public @Data class UserRole {
      */
     @Column(name = "name", nullable = false, unique = true)
     private String name;
+
+    @OneToMany(mappedBy = "userRole")
+    private Set<User> users;
 
     //TODO add some kind of permissions
 }

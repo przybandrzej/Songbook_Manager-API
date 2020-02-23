@@ -38,7 +38,7 @@ public @Data class Song {
      *                By definition, it must be unique.
      */
     @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SongsAuthors> authors;
+    private Set<SongsAuthors> authors;
 
     /**
      * @param title stores the song's title.
@@ -74,12 +74,13 @@ public @Data class Song {
      * @param categoryId is the Foreign Key referencing the ID in the CATEGORIES table.
      *                   It is used for determinig the category of the song.
      */
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
     private Category category;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "songs_tags", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    private List<Tag> tags;
+    private Set<Tag> tags;
 
     @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UsersSongs> usersSongs;

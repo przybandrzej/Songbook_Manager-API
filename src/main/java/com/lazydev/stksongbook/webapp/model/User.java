@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This is the model class of the User entity. It represents real users of the application.
@@ -54,7 +55,8 @@ public @Data class User {
      * @param userRoleId is the Foreign Key from the user_roles table.
      *                   It is used for deteriminimg whether the user is an administrator, moderator or regular user.
      */
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "user_role_id", referencedColumnName = "id", nullable = false)
     private UserRole userRole;
 
     /**
@@ -70,10 +72,10 @@ public @Data class User {
     private String lastName;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UsersSongs> songs;
+    private Set<UsersSongs> songs;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Playlist> playlists;
+    private Set<Playlist> playlists;
 
     /**
      * @param addedSongsCount counts songs added to the database by the user. New users have it automatically set to 0

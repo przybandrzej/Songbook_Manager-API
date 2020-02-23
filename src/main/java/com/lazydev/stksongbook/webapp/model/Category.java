@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * This is the model class of the Category entity. The table stores all categories for the songs.
@@ -35,6 +36,9 @@ public @Data class Category {
      */
     @Column(name = "name", nullable = false, unique = true)
     private String name;
+
+    @OneToMany(mappedBy="category")
+    private Set<Song> songs;
 
     // TODO add a category-marker (or icon/color)
 }
