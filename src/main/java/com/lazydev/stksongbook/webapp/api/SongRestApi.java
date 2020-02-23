@@ -4,6 +4,7 @@ import com.lazydev.stksongbook.webapp.manager.SongManager;
 import com.lazydev.stksongbook.webapp.model.Song;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -42,11 +43,13 @@ public class SongRestApi {
     }
 
     @PostMapping   // Add mapping?
+    //@ResponseStatus(HttpStatus.CREATED)
     public Song addSong(@RequestBody Song obj) {
         return manager.save(obj);
     }
 
     @PutMapping   // Add mapping?
+    //@ResponseStatus(HttpStatus.OK)
     public Song updateSong(@RequestBody Song obj) {
         return manager.save(obj);
     }

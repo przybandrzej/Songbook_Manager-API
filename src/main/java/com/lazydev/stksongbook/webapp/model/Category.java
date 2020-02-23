@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * This is the model class of the Category entity. The table stores all categories for the songs.
@@ -28,15 +26,15 @@ public @Data class Category {
      *           By definition, it must be unique.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private long id;
 
     /**
      * @param name stores the name of the category. It must be unique.
      */
-    @NotBlank
-    @NotNull
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
+
+    // TODO add a category-marker (or icon/color)
 }

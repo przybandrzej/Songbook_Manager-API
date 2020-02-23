@@ -4,6 +4,7 @@ import com.lazydev.stksongbook.webapp.manager.PlaylistManager;
 import com.lazydev.stksongbook.webapp.model.Playlist;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -32,16 +33,18 @@ public class PlaylistRestApi {
     }
 
     @GetMapping("/get/owner/{id}")
-    public Iterable<Playlist> getByOwnerId(@PathVariable("id") Long ownerId){
+    public Iterable<Playlist> getByOwnerId(@PathVariable("id") Long ownerId) {
         return manager.findPublicByOwnerId(ownerId);
     }
 
     @PostMapping   // Add mapping?
+    //@ResponseStatus(HttpStatus.CREATED)
     public Playlist addPlaylist(@RequestBody Playlist playlist) {
         return manager.save(playlist);
     }
 
     @PutMapping   // Add mapping?
+    //@ResponseStatus(HttpStatus.OK)
     public Playlist updatePlaylist(@RequestBody Playlist playlist) {
         return manager.save(playlist);
     }

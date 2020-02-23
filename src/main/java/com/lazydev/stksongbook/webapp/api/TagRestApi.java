@@ -4,6 +4,7 @@ import com.lazydev.stksongbook.webapp.manager.TagManager;
 import com.lazydev.stksongbook.webapp.model.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -32,11 +33,13 @@ public class TagRestApi {
     }
 
     @PostMapping   // Add mapping?
+    //@ResponseStatus(HttpStatus.CREATED)
     public Tag addTag(@RequestBody Tag obj) {
         return manager.save(obj);
     }
 
     @PutMapping   // Add mapping?
+    //@ResponseStatus(HttpStatus.OK)
     public Tag updateTag(@RequestBody Tag obj) {
         return manager.save(obj);
     }

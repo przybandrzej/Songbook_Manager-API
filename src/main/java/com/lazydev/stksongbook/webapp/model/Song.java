@@ -6,10 +6,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This is the model class of the Song entity. It is the main table in the application that store all songs.
@@ -30,7 +29,7 @@ public @Data class Song {
      *           By definition, it must be unique.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private long id;
 
@@ -38,40 +37,26 @@ public @Data class Song {
      * @param authorId is the Foreign Key referencing the ID in the AUTHORS table.
      *                By definition, it must be unique.
      */
-    @NotBlank
-    @Column(name = "author_id")
-    @NotNull
-    private long authorId;
+    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SongsAuthors> authors;
 
     /**
      * @param title stores the song's title.
      */
-    @NotBlank
-    @Column(name = "title")
-    @NotNull
+    @Column(name = "title", nullable = false)
     private String title;
 
     /**
      * @param lyrics stores the lyrics of the song.
      */
-    @NotBlank
-    @Column(name = "lyrics", columnDefinition = "TEXT")
-    @NotNull
+    @Column(name = "lyrics", columnDefinition = "TEXT", nullable = false)
     private String lyrics;
 
     /**
      * @param guitar_tabs stores the guitar tabs.
      */
-    @NotBlank
-    @Column(name = "guitar_tabs", columnDefinition = "TEXT")
-    @NotNull
+    @Column(name = "guitar_tabs", columnDefinition = "TEXT", nullable = false)
     private String guitarTabs;
-
-   /* //TODO
-    @NotBlank
-    @Column(name = "tags")
-    @NotNull
-    private ArrayList<Tag> tags;*/
 
     /**
      * @param curio is the optional bonus info about the song.
@@ -82,17 +67,25 @@ public @Data class Song {
     /**
      * @param addition_time stores the date and time of the song's insertion to the database.
      */
-    @NotBlank
-    @NotNull
-    @Column(name = "addition_time")
+    @Column(name = "addition_time", nullable = false)
     private LocalDateTime additionTime;
 
     /**
      * @param categoryId is the Foreign Key referencing the ID in the CATEGORIES table.
      *                   It is used for determinig the category of the song.
      */
-    @NotBlank
-    @NotNull
-    @Column(name = "category_id")
-    private long categoryId;
+    @OneToOne
+    private Category category;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "songs_tags", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private List<Tag> tags;
+
+    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UsersSongs> usersSongs;
+
+    @ManyToMany(mappedBy = "songs")
+    private Set<Playlist> playlists;
+
+    // TODO add icon
 }

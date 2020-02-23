@@ -4,6 +4,7 @@ import com.lazydev.stksongbook.webapp.manager.AuthorManager;
 import com.lazydev.stksongbook.webapp.model.Author;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -32,11 +33,13 @@ public class AuthorRestApi {
     }
 
     @PostMapping   // Add mapping?
+    //@ResponseStatus(HttpStatus.CREATED)
     public Author addAuthor(@RequestBody Author author) {
         return manager.save(author);
     }
 
     @PutMapping   // Add mapping?
+    //@ResponseStatus(HttpStatus.OK)
     public Author updateAuthor(@RequestBody Author author) {
         return manager.save(author);
     }

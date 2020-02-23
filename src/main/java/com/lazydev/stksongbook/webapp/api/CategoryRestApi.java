@@ -6,6 +6,7 @@ import com.lazydev.stksongbook.webapp.model.Author;
 import com.lazydev.stksongbook.webapp.model.Category;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -34,11 +35,13 @@ public class CategoryRestApi {
     }
 
     @PostMapping   // Add mapping?
+    //@ResponseStatus(HttpStatus.CREATED)
     public Category addCategory(@RequestBody Category category) {
         return manager.save(category);
     }
 
     @PutMapping   // Add mapping?
+    //@ResponseStatus(HttpStatus.OK)
     public Category updateCategory(@RequestBody Category category) {
         return manager.save(category);
     }
