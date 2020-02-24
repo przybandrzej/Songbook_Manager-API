@@ -26,7 +26,7 @@ public @Data class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     /**
      * @param name stores the name of the author. It can be a real person or a band name.

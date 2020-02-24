@@ -67,7 +67,7 @@ public class UserRestController {
     }
 
     private UserDTO convertToDto(User user) {
-        PropertyMap<User, UserDTO> personMap = new PropertyMap<User, UserDTO>() {
+        /*PropertyMap<User, UserDTO> personMap = new PropertyMap<User, UserDTO>() {
             protected void configure() {
                 map().setUserRole(source.getUserRole().getName());
                 if (user.getFirstName() != null) { map().setFirstName(source.getFirstName()); }
@@ -76,7 +76,7 @@ public class UserRestController {
                 else { map().setLastName(""); }
             }
         };
-        modelMapper.addMappings(personMap);
+        modelMapper.addMappings(personMap);*/
         UserDTO userDto = modelMapper.map(user, UserDTO.class);
         return userDto;
     }
