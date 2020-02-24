@@ -33,7 +33,7 @@ public @Data class Playlist {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     /**
      * @param ownerId is the Foreign Key referencing ID in the USERS table.

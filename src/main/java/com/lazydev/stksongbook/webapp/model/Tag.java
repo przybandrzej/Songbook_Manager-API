@@ -29,7 +29,7 @@ public @Data class Tag {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
 
     /**
      * @param name stores the name of the tag. It must be unique.

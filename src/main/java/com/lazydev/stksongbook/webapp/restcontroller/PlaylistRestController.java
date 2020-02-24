@@ -1,12 +1,17 @@
 package com.lazydev.stksongbook.webapp.restcontroller;
 
-import com.lazydev.stksongbook.webapp.service.PlaylistService;
+import com.lazydev.stksongbook.webapp.dto.PlaylistDTO;
 import com.lazydev.stksongbook.webapp.model.Playlist;
+import com.lazydev.stksongbook.webapp.service.PlaylistService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -14,42 +19,80 @@ import java.util.Optional;
 public class PlaylistRestController {
 
     @Autowired
-    private PlaylistService manager;
+    private PlaylistService service;
 
-    @GetMapping("/get")
-    public Iterable<Playlist> getAll(){
-        return manager.findAllPublic();
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @GetMapping
+    public List<PlaylistDTO> getAll(){
+        List<Playlist> list = (List<Playlist>) service.findAll();;
+        return list.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    @GetMapping("/get/id/{id}")
-    public Optional<Playlist> getById(@PathVariable("id") Long id) {
-        return manager.findPublicById(id);
+    @GetMapping("/id/{id}")
+    public PlaylistDTO getById(@PathVariable("id") Long id) {
+        Optional<Playlist> playlist = service.findById(id);;
+        if(playlist.isPresent()) return convertToDto(playlist.get());
+        else return null;
     }
 
-    @GetMapping("/get/name/{name}")
-    public Iterable<Playlist> getByName(@PathVariable("name") String name){
-        return manager.findPublicByName(name);
+    @GetMapping("/name/{name}")
+    public List<PlaylistDTO> getByName(@PathVariable("name") String name){
+        List<Playlist> list = (List<Playlist>) service.findByName(name);
+        return list.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    @GetMapping("/get/owner/{id}")
+    /*@GetMapping("/ownerId/{id}")
     public Iterable<Playlist> getByOwnerId(@PathVariable("id") Long ownerId) {
-        return manager.findPublicByOwnerId(ownerId);
+        return service.findPublicByOwnerId(ownerId);
+    }*/
+
+    /*@PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public PlaylistDTO create(@RequestBody Playlist playlist) {
+        return service.save(playlist);
     }
 
-    @PostMapping   // Add mapping?
-    //@ResponseStatus(HttpStatus.CREATED)
-    public Playlist addPlaylist(@RequestBody Playlist playlist) {
-        return manager.save(playlist);
-    }
-
-    @PutMapping   // Add mapping?
-    //@ResponseStatus(HttpStatus.OK)
+    @PutMapping("/id/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public Playlist updatePlaylist(@RequestBody Playlist playlist) {
-        return manager.save(playlist);
+        return service.save(playlist);
+    }*/
+
+    @DeleteMapping("/id/{id}")
+    public void deletePlaylist(@PathVariable("id") Long id) {
+        service.deleteById(id);
     }
 
-    @DeleteMapping   // Add mapping?
-    public void deletePlaylist(@RequestParam Long id) {
-        manager.deleteById(id);
+    public PlaylistDTO convertToDto(Playlist playlist) {
+        /*PropertyMap<Playlist, PlaylistDTO> personMap = new PropertyMap<Playlist, PlaylistDTO>() {
+            protected void configure() {
+                map().setPlaylistRole(source.getPlaylistRole().getName());
+                if (playlist.getFirstName() != null) { map().setFirstName(source.getFirstName()); }
+                else { map().setFirstName(""); }
+                if (playlist.getLastName() != null) { map().setLastName(source.getLastName()); }
+                else { map().setLastName(""); }
+            }
+        };
+        modelMapper.addMappings(personMap);*/
+        PlaylistDTO playlistDto = modelMapper.map(playlist, PlaylistDTO.class);
+        return playlistDto;
+    }
+
+    //TODO
+    public Playlist convertToEntity(PlaylistDTO playlistDto) {
+        /*PropertyMap<PlaylistDTO, Playlist> personMap = new PropertyMap<PlaylistDTO, Playlist>() {
+            protected void configure() {
+                map().setPlaylistRole(source.getPlaylistRole());
+                if (playlist.getFirstName() != null) { map().setFirstName(source.getFirstName()); }
+                else { map().setFirstName(""); }
+                if (playlist.getLastName() != null) { map().setLastName(source.getLastName()); }
+                else { map().setLastName(""); }
+            }
+        };
+        modelMapper.addMappings(personMap);*/
+        Playlist playlist = modelMapper.map(playlistDto, Playlist.class);
+        return playlist;
     }
 }

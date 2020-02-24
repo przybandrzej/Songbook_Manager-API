@@ -1,24 +1,23 @@
-package com.lazydev.stksongbook.webapp.restcontroller.unittests;
+package com.lazydev.stksongbook.webapp.restcontroller;
 
 import com.lazydev.stksongbook.webapp.dto.AuthorDTO;
 import com.lazydev.stksongbook.webapp.model.Author;
 import org.junit.Test;
-import org.modelmapper.ModelMapper;
+import org.mockito.Mockito;
 
-import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.junit.Assert.assertEquals;
 
-public class AuthorDTOUnitTest {
-
-    private ModelMapper modelMapper = new ModelMapper();
+public class AuthorRestControllerTest {
 
     @Test
     public void whenConvertAuthorEntityToAuthorDTO_thenCorrect() {
         Author author = new Author();
         author.setId(1L);
-        author.setName(randomAlphabetic(6));
+        author.setName("test");
+        AuthorRestController restController = Mockito.mock(AuthorRestController.class);
 
-        AuthorDTO authorDto = modelMapper.map(author, AuthorDTO.class);
+        AuthorDTO authorDto = restController.convertToDto(author);
+
         assertEquals(author.getId(), authorDto.getId());
         assertEquals(author.getName(), authorDto.getName());
     }
@@ -27,9 +26,10 @@ public class AuthorDTOUnitTest {
     public void whenConvertAuthorDTOToAuthorEntity_thenCorrect() {
         AuthorDTO authorDto = new AuthorDTO();
         authorDto.setId(1L);
-        authorDto.setName(randomAlphabetic(6));
+        authorDto.setName("test");
+        AuthorRestController restController = Mockito.mock(AuthorRestController.class);
 
-        Author author = modelMapper.map(authorDto, Author.class);
+        Author author = restController.convertToEntity(authorDto);
         assertEquals(authorDto.getId(), author.getId());
         assertEquals(authorDto.getName(), author.getName());
     }

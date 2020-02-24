@@ -1,12 +1,16 @@
 package com.lazydev.stksongbook.webapp.restcontroller;
 
-import com.lazydev.stksongbook.webapp.service.SongService;
+import com.lazydev.stksongbook.webapp.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.model.Song;
+import com.lazydev.stksongbook.webapp.service.SongService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -14,47 +18,84 @@ import java.util.Optional;
 public class SongRestController {
 
     @Autowired
-    private SongService manager;
+    private SongService service;
 
-    @GetMapping("/get")
-    public Iterable<Song> getAll(){
-        return manager.findAll();
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @GetMapping
+    public List<SongDTO> getAll(){
+        List<Song> list = (List<Song>) service.findAll();;
+        return list.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    @GetMapping("/get/id/{id}")
-    public Optional<Song> getById(@PathVariable("id") Long id) {
-        return manager.findById(id);
+    @GetMapping("/id/{id}")
+    public SongDTO getById(@PathVariable("id") Long id) {
+        Optional<Song> song = service.findById(id);;
+        if(song.isPresent()) return convertToDto(song.get());
+        else return null;
     }
 
-    @GetMapping("/get/title/{title}")
+    /*@GetMapping("/title/{title}")
     public Iterable<Song> getByTitle(@PathVariable("title") String title){
-        return manager.findByTitle(title);
+        return service.findByTitle(title);
     }
 
-    @GetMapping("/get/author/{authorId}")
+    @GetMapping("/author/{authorId}")
     public Iterable<Song> getByTitle(@PathVariable("authorId") Long authorId){
-        return manager.findByAuthorId(authorId);
+        return service.findByAuthorId(authorId);
     }
 
-    @GetMapping("/get/category/{categoryId}")
+    @GetMapping("/category/{categoryId}")
     public Iterable<Song> getByCategory(@PathVariable("categoryId") Long categoryId){
-        return manager.findByCategoryId(categoryId);
-    }
+        return service.findByCategoryId(categoryId);
+    }*/
 
-    @PostMapping   // Add mapping?
-    //@ResponseStatus(HttpStatus.CREATED)
+    /*@PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Song addSong(@RequestBody Song obj) {
-        return manager.save(obj);
+        return service.save(obj);
     }
 
-    @PutMapping   // Add mapping?
-    //@ResponseStatus(HttpStatus.OK)
+    @PutMapping("/id/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public Song updateSong(@RequestBody Song obj) {
-        return manager.save(obj);
+        return service.save(obj);
+    }*/
+
+    @DeleteMapping("/id/{id}")
+    public void delete(@PathVariable("id") Long id) {
+        service.deleteById(id);
     }
 
-    @DeleteMapping   // Add mapping?
-    public void deleteSong(@RequestParam Long id) {
-        manager.deleteById(id);
+    public SongDTO convertToDto(Song song) {
+        /*PropertyMap<Song, SongDTO> personMap = new PropertyMap<Song, SongDTO>() {
+            protected void configure() {
+                map().setSongRole(source.getSongRole().getName());
+                if (song.getFirstName() != null) { map().setFirstName(source.getFirstName()); }
+                else { map().setFirstName(""); }
+                if (song.getLastName() != null) { map().setLastName(source.getLastName()); }
+                else { map().setLastName(""); }
+            }
+        };
+        modelMapper.addMappings(personMap);*/
+        SongDTO songDto = modelMapper.map(song, SongDTO.class);
+        return songDto;
+    }
+
+    //TODO
+    public Song convertToEntity(SongDTO songDto) {
+        /*PropertyMap<SongDTO, Song> personMap = new PropertyMap<SongDTO, Song>() {
+            protected void configure() {
+                map().setSongRole(source.getSongRole());
+                if (song.getFirstName() != null) { map().setFirstName(source.getFirstName()); }
+                else { map().setFirstName(""); }
+                if (song.getLastName() != null) { map().setLastName(source.getLastName()); }
+                else { map().setLastName(""); }
+            }
+        };
+        modelMapper.addMappings(personMap);*/
+        Song song = modelMapper.map(songDto, Song.class);
+        return song;
     }
 }

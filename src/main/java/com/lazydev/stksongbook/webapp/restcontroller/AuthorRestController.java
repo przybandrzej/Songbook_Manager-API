@@ -19,21 +19,21 @@ import java.util.stream.Collectors;
 public class AuthorRestController {
 
     @Autowired
-    private AuthorService manager;
+    private AuthorService service;
 
     @Autowired
     private ModelMapper modelMapper;
 
     @GetMapping
     public List<AuthorDTO> getAll(){
-        List<Author> list = (List<Author>) manager.findAll();
+        List<Author> list = (List<Author>) service.findAll();
         return list.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     @GetMapping("/id/{id}")
     @ResponseBody
     public AuthorDTO getById(@PathVariable("id") Long id) {
-        Optional<Author> optAuthor = manager.findById(id);
+        Optional<Author> optAuthor = service.findById(id);
         if(optAuthor.isPresent()) return convertToDto(optAuthor.get());
         else return null;
     }
@@ -41,37 +41,37 @@ public class AuthorRestController {
     @GetMapping("/name/{name}")
     @ResponseBody
     public List<AuthorDTO> getByName(@PathVariable("name") String name){
-        List<Author> list = (List<Author>) manager.findByName(name);
+        List<Author> list = (List<Author>) service.findByName(name);
         return list.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    @PostMapping
+    /*@PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public AuthorDTO create(@RequestBody AuthorDTO authorDto) {
         Author author = convertToEntity(authorDto);
-        Author created = manager.save(author);
+        Author created = service.save(author);
         return convertToDto(created);
     }
 
     @PutMapping("/id/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void update(@RequestBody AuthorDTO authorDto) {
-        /*Author author = convertToEntity(authorDto);
-        manager.update(author);*/
-    }
+        Author author = convertToEntity(authorDto);
+        service.update(author);
+    }*/
 
     @DeleteMapping("/id/{id}")
     public void delete(@PathVariable("id") Long id) {
-        manager.deleteById(id);
+        service.deleteById(id);
     }
 
-    private AuthorDTO convertToDto(Author author) {
+    public AuthorDTO convertToDto(Author author) {
         AuthorDTO authorDto = modelMapper.map(author, AuthorDTO.class);
         return authorDto;
     }
 
-    private Author convertToEntity(AuthorDTO authorDto){
+    public Author convertToEntity(AuthorDTO authorDto){
         Author author = modelMapper.map(authorDto, Author.class);
         return author;
     }

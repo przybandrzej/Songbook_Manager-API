@@ -29,7 +29,7 @@ public @Data class UserRole {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     /**
      * @param name represents the name of the role. It must be unique.

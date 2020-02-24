@@ -1,19 +1,14 @@
 package com.lazydev.stksongbook.webapp.restcontroller;
 
-import com.lazydev.stksongbook.webapp.dao.UserDAO;
 import com.lazydev.stksongbook.webapp.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.model.User;
 import com.lazydev.stksongbook.webapp.service.UserService;
 import lombok.AllArgsConstructor;
-import org.modelmapper.Condition;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.attribute.standard.Destination;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,7 +40,7 @@ public class UserRestController {
         else return null;
     }
 
-    @PostMapping
+    /*@PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public UserDTO create(@RequestBody UserDTO userDto) {
@@ -59,14 +54,14 @@ public class UserRestController {
     public void update(@RequestBody UserDTO userDto) {
         User user = convertToEntity(userDto);
         userService.save(user);
-    }
+    }*/
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") Long id) {
         userService.deleteById(id);
     }
 
-    private UserDTO convertToDto(User user) {
+    public UserDTO convertToDto(User user) {
         /*PropertyMap<User, UserDTO> personMap = new PropertyMap<User, UserDTO>() {
             protected void configure() {
                 map().setUserRole(source.getUserRole().getName());
@@ -82,7 +77,7 @@ public class UserRestController {
     }
 
     //TODO
-    private User convertToEntity(UserDTO userDto) {
+    public User convertToEntity(UserDTO userDto) {
         /*PropertyMap<UserDTO, User> personMap = new PropertyMap<UserDTO, User>() {
             protected void configure() {
                 map().setUserRole(source.getUserRole());

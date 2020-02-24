@@ -29,7 +29,7 @@ public @Data class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     /**
      * @param name stores the name of the category. It must be unique.

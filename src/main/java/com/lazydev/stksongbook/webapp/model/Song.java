@@ -29,7 +29,7 @@ public @Data class Song {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     /**
      * @param authorId is the Foreign Key referencing the ID in the AUTHORS table.
