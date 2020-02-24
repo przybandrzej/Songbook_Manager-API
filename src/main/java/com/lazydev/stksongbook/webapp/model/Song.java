@@ -3,11 +3,9 @@ package com.lazydev.stksongbook.webapp.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -38,7 +36,7 @@ public @Data class Song {
      *                By definition, it must be unique.
      */
     @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<SongsAuthors> authors;
+    private Set<SongsAuthorsEntity> authors;
 
     /**
      * @param title stores the song's title.
@@ -82,8 +80,11 @@ public @Data class Song {
     @JoinTable(name = "songs_tags", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags;
 
+    @ManyToMany(mappedBy = "songs")
+    private Set<User> usersSongs;
+
     @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<UsersSongs> usersSongs;
+    private Set<UsersSongsRatingsEntity> ratings;
 
     @ManyToMany(mappedBy = "songs")
     private Set<Playlist> playlists;

@@ -4,10 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -71,8 +69,12 @@ public @Data class User {
     @Column(name = "last_name")
     private String lastName;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "users_songs", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
+    private Set<Song> songs;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<UsersSongs> songs;
+    private Set<UsersSongsRatingsEntity> userRatings;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Playlist> playlists;

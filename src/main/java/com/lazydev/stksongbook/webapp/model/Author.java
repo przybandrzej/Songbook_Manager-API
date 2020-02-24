@@ -1,7 +1,6 @@
 package com.lazydev.stksongbook.webapp.model;
 
 import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -37,7 +36,7 @@ public @Data class Author {
     private String name;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<SongsAuthors> songs;
+    private Set<SongsAuthorsEntity> songs;
 
     // TODO add:
     //  a photo

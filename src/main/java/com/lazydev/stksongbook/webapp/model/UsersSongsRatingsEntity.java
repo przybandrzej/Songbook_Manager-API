@@ -8,15 +8,16 @@ import org.hibernate.annotations.Check;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "users_songs")
+@Table(name = "users_songs_ratings")
 @Check(constraints = "rating >= 0 AND rating <= 1")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UsersSongs {
+public class UsersSongsRatingsEntity {
+
 
     @EmbeddedId
-    private UsersSongsKey id;
+    private UsersSongsRatingsKey id;
 
     @ManyToOne
     @MapsId("user_id")
@@ -28,6 +29,6 @@ public class UsersSongs {
     @JoinColumn(name = "song_id")
     private Song song;
 
-    @Column(name = "rating")
+    @Column(name = "rating", nullable = false)
     private Double rating;
 }
