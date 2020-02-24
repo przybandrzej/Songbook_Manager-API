@@ -40,6 +40,8 @@ public @Data class Tag {
     @ManyToMany(mappedBy = "tags")
     private Set<Song> songs;
 
+
+    // TODO add the prefix to the DB
     /**
      * @param tagPrefix says what character to use to display tags in the application.
      */

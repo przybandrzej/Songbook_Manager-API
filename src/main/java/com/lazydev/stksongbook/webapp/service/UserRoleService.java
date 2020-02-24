@@ -1,4 +1,4 @@
-package com.lazydev.stksongbook.webapp.manager;
+package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.dao.UserRoleDAO;
 import com.lazydev.stksongbook.webapp.model.UserRole;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class UserRoleManager {
+public class UserRoleService {
 
     @Autowired
     private UserRoleDAO dao;

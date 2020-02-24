@@ -1,10 +1,9 @@
-package com.lazydev.stksongbook.webapp.api;
+package com.lazydev.stksongbook.webapp.restcontroller;
 
-import com.lazydev.stksongbook.webapp.manager.AuthorManager;
+import com.lazydev.stksongbook.webapp.service.AuthorService;
 import com.lazydev.stksongbook.webapp.model.Author;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -12,10 +11,10 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/authors")
 @AllArgsConstructor
-public class AuthorRestApi {
+public class AuthorRestController {
 
     @Autowired
-    private AuthorManager manager;
+    private AuthorService manager;
 
     @GetMapping("/get")
     public Iterable<Author> getAll(){

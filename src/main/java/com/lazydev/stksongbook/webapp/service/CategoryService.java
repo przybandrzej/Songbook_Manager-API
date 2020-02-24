@@ -1,4 +1,4 @@
-package com.lazydev.stksongbook.webapp.manager;
+package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.dao.CategoryDAO;
 import com.lazydev.stksongbook.webapp.model.Category;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class CategoryManager {
+public class CategoryService {
 
     @Autowired
     private CategoryDAO dao;

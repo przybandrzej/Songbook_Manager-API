@@ -1,51 +1,50 @@
-package com.lazydev.stksongbook.webapp.api;
+package com.lazydev.stksongbook.webapp.restcontroller;
 
-import com.lazydev.stksongbook.webapp.manager.TagManager;
-import com.lazydev.stksongbook.webapp.model.Tag;
+import com.lazydev.stksongbook.webapp.service.UserRoleService;
+import com.lazydev.stksongbook.webapp.model.UserRole;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/tags")
-public class TagRestApi {
+@RequestMapping("/api/user_roles")
+public class UserRoleRestController {
 
     @Autowired
-    private TagManager manager;
+    private UserRoleService manager;
 
     @GetMapping("/get")
-    public Iterable<Tag> getAll(){
+    public Iterable<UserRole> getAll(){
         return manager.findAll();
     }
 
     @GetMapping("/get/id/{id}")
-    public Optional<Tag> getById(@PathVariable("id") Long id) {
+    public Optional<UserRole> getById(@PathVariable("id") Long id) {
         return manager.findById(id);
     }
 
     @GetMapping("/get/name/{name}")
-    public Iterable<Tag> getByName(@PathVariable("name") String name){
+    public Iterable<UserRole> getByName(@PathVariable("name") String name){
         return manager.findByName(name);
     }
 
     @PostMapping   // Add mapping?
     //@ResponseStatus(HttpStatus.CREATED)
-    public Tag addTag(@RequestBody Tag obj) {
+    public UserRole addUserRole(@RequestBody UserRole obj) {
         return manager.save(obj);
     }
 
     @PutMapping   // Add mapping?
     //@ResponseStatus(HttpStatus.OK)
-    public Tag updateTag(@RequestBody Tag obj) {
+    public UserRole updateUserRole(@RequestBody UserRole obj) {
         return manager.save(obj);
     }
 
     @DeleteMapping   // Add mapping?
-    public void deleteAuthor(@RequestParam Long id) {
+    public void deleteUserRole(@RequestParam Long id) {
         manager.deleteById(id);
     }
 }

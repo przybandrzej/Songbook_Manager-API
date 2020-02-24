@@ -1,4 +1,4 @@
-package com.lazydev.stksongbook.webapp.manager;
+package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.dao.PlaylistDAO;
 import com.lazydev.stksongbook.webapp.model.Playlist;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class PlaylistManager {
+public class PlaylistService {
 
     @Autowired
     private PlaylistDAO dao;

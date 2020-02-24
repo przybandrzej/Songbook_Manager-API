@@ -1,4 +1,4 @@
-package com.lazydev.stksongbook.webapp.manager;
+package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.dao.TagDAO;
 import com.lazydev.stksongbook.webapp.model.Tag;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class TagManager {
+public class TagService {
 
     @Autowired
     private TagDAO dao;

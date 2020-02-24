@@ -1,7 +1,6 @@
-package com.lazydev.stksongbook.webapp.manager;
+package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.dao.SongDAO;
-import com.lazydev.stksongbook.webapp.model.Author;
 import com.lazydev.stksongbook.webapp.model.Song;
 import com.lazydev.stksongbook.webapp.model.SongsAuthors;
 import lombok.AllArgsConstructor;
@@ -14,7 +13,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class SongManager {
+public class SongService {
 
     @Autowired
     private SongDAO dao;
