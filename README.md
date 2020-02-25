@@ -20,7 +20,7 @@ For example my Android app named "Songbook" is connected to the API. It will dis
 ### How to use the API
 Refer to the following endpoints:
 * Authors:
-   * all : /api/authors/
+   * all : /api/authors
    * one by ID: /api/authors/id/{id}
    * all matching the name (usually one): /api/authors/name/{name}
  * Songs:
@@ -52,6 +52,9 @@ Refer to the following endpoints:
   * [Spring Boot]()
   * [Spring Data]()
   * [JUnit]()
+  * [Mockito]()
+  * [Lombok]()
+  * [MapStruct]()
 * [PostgreSQL]()
 * [Heroku]()
 
