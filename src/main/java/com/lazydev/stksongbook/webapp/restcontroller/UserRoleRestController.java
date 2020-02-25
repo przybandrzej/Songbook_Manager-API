@@ -1,10 +1,10 @@
 package com.lazydev.stksongbook.webapp.restcontroller;
 
 import com.lazydev.stksongbook.webapp.dto.UserRoleDTO;
+import com.lazydev.stksongbook.webapp.dto.UserRoleMapper;
 import com.lazydev.stksongbook.webapp.model.UserRole;
 import com.lazydev.stksongbook.webapp.service.UserRoleService;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +22,7 @@ public class UserRoleRestController {
     private UserRoleService service;
     
     @Autowired
-    private ModelMapper modelMapper;
+    private UserRoleMapper modelMapper;
 
     @GetMapping
     public List<UserRoleDTO> getAll(){
@@ -33,8 +33,7 @@ public class UserRoleRestController {
     @GetMapping("/id/{id}")
     public UserRoleDTO getById(@PathVariable("id") Long id) {
         Optional<UserRole> userOpt = service.findById(id);
-        if(userOpt.isPresent()) return convertToDto(userOpt.get());
-        else return null;
+        return userOpt.map(this::convertToDto).orElse(null);
     }
 
     @GetMapping("/name/{name}")
@@ -43,51 +42,28 @@ public class UserRoleRestController {
         return list.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    /*@PostMapping
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserRole addUserRole(@RequestBody UserRole obj) {
-        return service.save(obj);
+    public UserRoleDTO create(@RequestBody UserRoleDTO obj) {
+        return convertToDto(service.save(convertToEntity(obj)));
     }
 
     @PutMapping("/id/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserRole updateUserRole(@RequestBody UserRole obj) {
-        return service.save(obj);
-    }*/
+    public void update(@RequestBody UserRoleDTO obj) {
+        service.save(convertToEntity(obj));
+    }
 
     @DeleteMapping("/id/{id}")
-    public void deleteUserRole(@PathVariable("id") Long id) {
+    public void delete(@PathVariable("id") Long id) {
         service.deleteById(id);
     }
 
     public UserRoleDTO convertToDto(UserRole userRole) {
-        /*PropertyMap<UserRole, UserRoleDTO> personMap = new PropertyMap<UserRole, UserRoleDTO>() {
-            protected void configure() {
-                map().setUserRoleRole(source.getUserRoleRole().getName());
-                if (userRole.getFirstName() != null) { map().setFirstName(source.getFirstName()); }
-                else { map().setFirstName(""); }
-                if (userRole.getLastName() != null) { map().setLastName(source.getLastName()); }
-                else { map().setLastName(""); }
-            }
-        };
-        modelMapper.addMappings(personMap);*/
-        UserRoleDTO userRoleDto = modelMapper.map(userRole, UserRoleDTO.class);
-        return userRoleDto;
+        return modelMapper.userRoleToUserRoleDTO(userRole);
     }
 
-    //TODO
     public UserRole convertToEntity(UserRoleDTO userRoleDto) {
-        /*PropertyMap<UserRoleDTO, UserRole> personMap = new PropertyMap<UserRoleDTO, UserRole>() {
-            protected void configure() {
-                map().setUserRoleRole(source.getUserRoleRole());
-                if (userRole.getFirstName() != null) { map().setFirstName(source.getFirstName()); }
-                else { map().setFirstName(""); }
-                if (userRole.getLastName() != null) { map().setLastName(source.getLastName()); }
-                else { map().setLastName(""); }
-            }
-        };
-        modelMapper.addMappings(personMap);*/
-        UserRole userRole = modelMapper.map(userRoleDto, UserRole.class);
-        return userRole;
+        return modelMapper.userRoleDTOToUserRole(userRoleDto);
     }
 }

@@ -29,7 +29,7 @@ public @Data class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     /**
      * @param login must be unique. It is used for logging in to the database and the application.

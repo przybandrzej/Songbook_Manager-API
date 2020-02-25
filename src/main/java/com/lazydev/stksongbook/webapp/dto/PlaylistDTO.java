@@ -17,7 +17,7 @@ public class PlaylistDTO {
     private boolean isPrivate;
     private String creationTime;
 
-    private List<SongDTO> playlistsSongs;
+    private List<SongDTO> songs;
 
     // link to self
     // link to songs within this playlist

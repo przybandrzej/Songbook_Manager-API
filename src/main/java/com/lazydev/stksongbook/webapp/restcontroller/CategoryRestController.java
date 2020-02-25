@@ -1,10 +1,10 @@
 package com.lazydev.stksongbook.webapp.restcontroller;
 
 import com.lazydev.stksongbook.webapp.dto.CategoryDTO;
+import com.lazydev.stksongbook.webapp.dto.CategoryMapper;
 import com.lazydev.stksongbook.webapp.service.CategoryService;
 import com.lazydev.stksongbook.webapp.model.Category;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +22,7 @@ public class CategoryRestController {
     private CategoryService service;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private CategoryMapper modelMapper;
 
     @GetMapping
     public List<CategoryDTO> getAll(){
@@ -33,8 +33,7 @@ public class CategoryRestController {
     @GetMapping("/id/{id}")
     public CategoryDTO getById(@PathVariable("id") Long id) {
         Optional<Category> object =  service.findById(id);
-        if(object.isPresent()) return convertToDto(object.get());
-        else return null;
+        return object.map(this::convertToDto).orElse(null);
     }
 
     @GetMapping("/name/{name}")
@@ -43,17 +42,17 @@ public class CategoryRestController {
         return list.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    /*@PostMapping
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDTO create(@RequestBody Category category) {
-        return service.save(category);
+    public CategoryDTO create(@RequestBody CategoryDTO categoryDto) {
+        return convertToDto(service.save(convertToEntity(categoryDto)));
     }
 
     @PutMapping("/id/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody Category category) {
-        return service.save(category);
-    }*/
+    public void update(@RequestBody CategoryDTO categoryDto) {
+        service.save(convertToEntity(categoryDto));
+    }
 
     @DeleteMapping("/id/{id}")
     public void delete(@PathVariable("id") Long id) {
@@ -61,33 +60,10 @@ public class CategoryRestController {
     }
 
     public CategoryDTO convertToDto(Category category) {
-        /*PropertyMap<User, UserDTO> personMap = new PropertyMap<User, UserDTO>() {
-            protected void configure() {
-                map().setUserRole(source.getUserRole().getName());
-                if (user.getFirstName() != null) { map().setFirstName(source.getFirstName()); }
-                else { map().setFirstName(""); }
-                if (user.getLastName() != null) { map().setLastName(source.getLastName()); }
-                else { map().setLastName(""); }
-            }
-        };
-        modelMapper.addMappings(personMap);*/
-        CategoryDTO categoryDto = modelMapper.map(category, CategoryDTO.class);
-        return categoryDto;
+        return modelMapper.categoryToCategoryDTO(category);
     }
 
-    //TODO
     public Category convertToEntity(CategoryDTO categoryDto) {
-        /*PropertyMap<UserDTO, User> personMap = new PropertyMap<UserDTO, User>() {
-            protected void configure() {
-                map().setUserRole(source.getUserRole());
-                if (user.getFirstName() != null) { map().setFirstName(source.getFirstName()); }
-                else { map().setFirstName(""); }
-                if (user.getLastName() != null) { map().setLastName(source.getLastName()); }
-                else { map().setLastName(""); }
-            }
-        };
-        modelMapper.addMappings(personMap);*/
-        Category category = modelMapper.map(categoryDto, Category.class);
-        return category;
+        return modelMapper.categoryDTOToCategory(categoryDto);
     }
 }

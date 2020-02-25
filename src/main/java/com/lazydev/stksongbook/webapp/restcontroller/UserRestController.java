@@ -1,10 +1,10 @@
 package com.lazydev.stksongbook.webapp.restcontroller;
 
 import com.lazydev.stksongbook.webapp.dto.UserDTO;
+import com.lazydev.stksongbook.webapp.dto.UserMapper;
 import com.lazydev.stksongbook.webapp.model.User;
 import com.lazydev.stksongbook.webapp.service.UserService;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class UserRestController {
 
     @Autowired
-    private ModelMapper modelMapper;
+    private UserMapper modelMapper;
 
     @Autowired
     private UserService userService;
@@ -31,16 +31,14 @@ public class UserRestController {
         return users.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    // TODO change null values to responses
     @GetMapping("/{id}")
     @ResponseBody
     public UserDTO getById(@PathVariable("id") Long id) {
         Optional<User> userOpt = userService.findById(id);
-        if(userOpt.isPresent()) return convertToDto(userOpt.get());
-        else return null;
+        return userOpt.map(this::convertToDto).orElse(null);
     }
 
-    /*@PostMapping
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public UserDTO create(@RequestBody UserDTO userDto) {
@@ -54,7 +52,7 @@ public class UserRestController {
     public void update(@RequestBody UserDTO userDto) {
         User user = convertToEntity(userDto);
         userService.save(user);
-    }*/
+    }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") Long id) {
@@ -62,33 +60,10 @@ public class UserRestController {
     }
 
     public UserDTO convertToDto(User user) {
-        /*PropertyMap<User, UserDTO> personMap = new PropertyMap<User, UserDTO>() {
-            protected void configure() {
-                map().setUserRole(source.getUserRole().getName());
-                if (user.getFirstName() != null) { map().setFirstName(source.getFirstName()); }
-                else { map().setFirstName(""); }
-                if (user.getLastName() != null) { map().setLastName(source.getLastName()); }
-                else { map().setLastName(""); }
-            }
-        };
-        modelMapper.addMappings(personMap);*/
-        UserDTO userDto = modelMapper.map(user, UserDTO.class);
-        return userDto;
+        return modelMapper.userToUserDTO(user);
     }
 
-    //TODO
     public User convertToEntity(UserDTO userDto) {
-        /*PropertyMap<UserDTO, User> personMap = new PropertyMap<UserDTO, User>() {
-            protected void configure() {
-                map().setUserRole(source.getUserRole());
-                if (user.getFirstName() != null) { map().setFirstName(source.getFirstName()); }
-                else { map().setFirstName(""); }
-                if (user.getLastName() != null) { map().setLastName(source.getLastName()); }
-                else { map().setLastName(""); }
-            }
-        };
-        modelMapper.addMappings(personMap);*/
-        User user = modelMapper.map(userDto, User.class);
-        return user;
+        return modelMapper.userDTOToUser(userDto);
     }
 }

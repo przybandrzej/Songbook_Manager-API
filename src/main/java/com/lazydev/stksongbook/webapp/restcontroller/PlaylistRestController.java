@@ -1,10 +1,10 @@
 package com.lazydev.stksongbook.webapp.restcontroller;
 
 import com.lazydev.stksongbook.webapp.dto.PlaylistDTO;
+import com.lazydev.stksongbook.webapp.dto.PlaylistMapper;
 import com.lazydev.stksongbook.webapp.model.Playlist;
 import com.lazydev.stksongbook.webapp.service.PlaylistService;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +22,7 @@ public class PlaylistRestController {
     private PlaylistService service;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private PlaylistMapper modelMapper;
 
     @GetMapping
     public List<PlaylistDTO> getAll(){
@@ -33,8 +33,7 @@ public class PlaylistRestController {
     @GetMapping("/id/{id}")
     public PlaylistDTO getById(@PathVariable("id") Long id) {
         Optional<Playlist> playlist = service.findById(id);;
-        if(playlist.isPresent()) return convertToDto(playlist.get());
-        else return null;
+        return playlist.map(this::convertToDto).orElse(null);
     }
 
     @GetMapping("/name/{name}")
@@ -48,51 +47,28 @@ public class PlaylistRestController {
         return service.findPublicByOwnerId(ownerId);
     }*/
 
-    /*@PostMapping
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PlaylistDTO create(@RequestBody Playlist playlist) {
-        return service.save(playlist);
+    public PlaylistDTO create(@RequestBody PlaylistDTO playlist) {
+        return convertToDto(service.save(convertToEntity(playlist)));
     }
 
     @PutMapping("/id/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Playlist updatePlaylist(@RequestBody Playlist playlist) {
-        return service.save(playlist);
-    }*/
+    public void update(@RequestBody PlaylistDTO playlist) {
+        service.save(convertToEntity(playlist));
+    }
 
     @DeleteMapping("/id/{id}")
-    public void deletePlaylist(@PathVariable("id") Long id) {
+    public void delete(@PathVariable("id") Long id) {
         service.deleteById(id);
     }
 
     public PlaylistDTO convertToDto(Playlist playlist) {
-        /*PropertyMap<Playlist, PlaylistDTO> personMap = new PropertyMap<Playlist, PlaylistDTO>() {
-            protected void configure() {
-                map().setPlaylistRole(source.getPlaylistRole().getName());
-                if (playlist.getFirstName() != null) { map().setFirstName(source.getFirstName()); }
-                else { map().setFirstName(""); }
-                if (playlist.getLastName() != null) { map().setLastName(source.getLastName()); }
-                else { map().setLastName(""); }
-            }
-        };
-        modelMapper.addMappings(personMap);*/
-        PlaylistDTO playlistDto = modelMapper.map(playlist, PlaylistDTO.class);
-        return playlistDto;
+        return modelMapper.playlistToPlaylistDTO(playlist);
     }
 
-    //TODO
     public Playlist convertToEntity(PlaylistDTO playlistDto) {
-        /*PropertyMap<PlaylistDTO, Playlist> personMap = new PropertyMap<PlaylistDTO, Playlist>() {
-            protected void configure() {
-                map().setPlaylistRole(source.getPlaylistRole());
-                if (playlist.getFirstName() != null) { map().setFirstName(source.getFirstName()); }
-                else { map().setFirstName(""); }
-                if (playlist.getLastName() != null) { map().setLastName(source.getLastName()); }
-                else { map().setLastName(""); }
-            }
-        };
-        modelMapper.addMappings(personMap);*/
-        Playlist playlist = modelMapper.map(playlistDto, Playlist.class);
-        return playlist;
+        return modelMapper.playlistDTOToPlaylist(playlistDto);
     }
 }

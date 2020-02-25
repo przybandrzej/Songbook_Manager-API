@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SongsAuthorsEntityDTO {
 
-    private Long authorId;
-    private String name;
+    private AuthorDTO author;
     private String function;
 
     // link to this author

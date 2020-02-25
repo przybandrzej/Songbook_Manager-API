@@ -1,11 +1,10 @@
 package com.lazydev.stksongbook.webapp.restcontroller;
 
 import com.lazydev.stksongbook.webapp.dto.TagDTO;
+import com.lazydev.stksongbook.webapp.dto.TagMapper;
 import com.lazydev.stksongbook.webapp.model.Tag;
 import com.lazydev.stksongbook.webapp.service.TagService;
-import com.lazydev.stksongbook.webapp.model.Tag;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +22,7 @@ public class TagRestController {
     private TagService service;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private TagMapper modelMapper;
 
     @GetMapping
     public List<TagDTO> getAll(){
@@ -34,8 +33,7 @@ public class TagRestController {
     @GetMapping("/id/{id}")
     public TagDTO getById(@PathVariable("id") Long id) {
         Optional<Tag> tag = service.findById(id);;
-        if(tag.isPresent()) return convertToDto(tag.get());
-        else return null;
+        return tag.map(this::convertToDto).orElse(null);
     }
 
     @GetMapping("/name/{name}")
@@ -44,17 +42,17 @@ public class TagRestController {
         return list.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    /*@PostMapping
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TagDTO create(@RequestBody Tag obj) {
-        return service.save(obj);
+    public TagDTO create(@RequestBody TagDTO obj) {
+        return convertToDto(service.save(convertToEntity(obj)));
     }
 
     @PutMapping("/id/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody Tag obj) {
-        return service.save(obj);
-    }*/
+    public void update(@RequestBody TagDTO obj) {
+        service.save(convertToEntity(obj));
+    }
 
     @DeleteMapping("/id/{id}")
     public void delete(@PathVariable("id") Long id) {
@@ -62,33 +60,10 @@ public class TagRestController {
     }
 
     public TagDTO convertToDto(Tag tag) {
-        /*PropertyMap<Tag, TagDTO> personMap = new PropertyMap<Tag, TagDTO>() {
-            protected void configure() {
-                map().setTagRole(source.getTagRole().getName());
-                if (tag.getFirstName() != null) { map().setFirstName(source.getFirstName()); }
-                else { map().setFirstName(""); }
-                if (tag.getLastName() != null) { map().setLastName(source.getLastName()); }
-                else { map().setLastName(""); }
-            }
-        };
-        modelMapper.addMappings(personMap);*/
-        TagDTO tagDto = modelMapper.map(tag, TagDTO.class);
-        return tagDto;
+        return modelMapper.tagToTagDTO(tag);
     }
 
-    //TODO
     public Tag convertToEntity(TagDTO tagDto) {
-        /*PropertyMap<TagDTO, Tag> personMap = new PropertyMap<TagDTO, Tag>() {
-            protected void configure() {
-                map().setTagRole(source.getTagRole());
-                if (tag.getFirstName() != null) { map().setFirstName(source.getFirstName()); }
-                else { map().setFirstName(""); }
-                if (tag.getLastName() != null) { map().setLastName(source.getLastName()); }
-                else { map().setLastName(""); }
-            }
-        };
-        modelMapper.addMappings(personMap);*/
-        Tag tag = modelMapper.map(tagDto, Tag.class);
-        return tag;
+        return modelMapper.tagDTOToTag(tagDto);
     }
 }

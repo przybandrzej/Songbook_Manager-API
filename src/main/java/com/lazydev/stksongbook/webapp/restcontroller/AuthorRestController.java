@@ -1,10 +1,10 @@
 package com.lazydev.stksongbook.webapp.restcontroller;
 
 import com.lazydev.stksongbook.webapp.dto.AuthorDTO;
+import com.lazydev.stksongbook.webapp.dto.AuthorMapper;
 import com.lazydev.stksongbook.webapp.service.AuthorService;
 import com.lazydev.stksongbook.webapp.model.Author;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +21,6 @@ public class AuthorRestController {
     @Autowired
     private AuthorService service;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
     @GetMapping
     public List<AuthorDTO> getAll(){
         List<Author> list = (List<Author>) service.findAll();
@@ -34,8 +31,7 @@ public class AuthorRestController {
     @ResponseBody
     public AuthorDTO getById(@PathVariable("id") Long id) {
         Optional<Author> optAuthor = service.findById(id);
-        if(optAuthor.isPresent()) return convertToDto(optAuthor.get());
-        else return null;
+        return optAuthor.map(this::convertToDto).orElse(null);
     }
 
     @GetMapping("/name/{name}")
@@ -45,7 +41,7 @@ public class AuthorRestController {
         return list.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    /*@PostMapping
+    @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public AuthorDTO create(@RequestBody AuthorDTO authorDto) {
@@ -58,8 +54,8 @@ public class AuthorRestController {
     @ResponseStatus(HttpStatus.OK)
     public void update(@RequestBody AuthorDTO authorDto) {
         Author author = convertToEntity(authorDto);
-        service.update(author);
-    }*/
+        service.save(author);
+    }
 
     @DeleteMapping("/id/{id}")
     public void delete(@PathVariable("id") Long id) {
@@ -67,12 +63,10 @@ public class AuthorRestController {
     }
 
     public AuthorDTO convertToDto(Author author) {
-        AuthorDTO authorDto = modelMapper.map(author, AuthorDTO.class);
-        return authorDto;
+        return AuthorMapper.INSTANCE.authorToAuthorDTO(author);
     }
 
     public Author convertToEntity(AuthorDTO authorDto){
-        Author author = modelMapper.map(authorDto, Author.class);
-        return author;
+        return AuthorMapper.INSTANCE.authorDTOToAuthor(authorDto);
     }
 }
