@@ -6,7 +6,7 @@ It is an app that lets the users manage songs in a songbook (add, remove, update
 For example my Android app named "Songbook" is connected to the API. It will display the songs on mobile devices and implement even more fetures that this web app (eg. connect with other Android devices near you and display the same song).
 
 ## Features
-* HATEOAS driven REST API
+* HATEOAS driven RESTfull API
 * Browse a huge database of guitar songs' lyrics and guitar tabs
 * Create your own library of your favorite songs
 * Create a playlist for each occassion
