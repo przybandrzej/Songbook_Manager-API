@@ -1,4 +1,4 @@
-package com.lazydev.stksongbook.webapp.manager;
+package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.dao.PlaylistDAO;
 import com.lazydev.stksongbook.webapp.model.Playlist;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class PlaylistManager {
+public class PlaylistService {
 
     @Autowired
     private PlaylistDAO dao;
@@ -46,7 +46,7 @@ public class PlaylistManager {
     public Iterable<Playlist> findByOwnerId(Long id) {
         List<Playlist> list = new ArrayList<>();
         for (Playlist element : dao.findAll()) {
-            if(element.getOwnerId() == id) list.add(element);
+            if(element.getOwner().getId() == id) list.add(element);
         }
         return list;
     }
@@ -54,7 +54,7 @@ public class PlaylistManager {
     public Iterable<Playlist> findPublicByOwnerId(Long id) {
         List<Playlist> list = new ArrayList<>();
         for (Playlist element : dao.findAll()) {
-            if(element.getOwnerId() == id && !element.isPrivate()) list.add(element);
+            if(element.getOwner().getId() == id && !element.isPrivate()) list.add(element);
         }
         return list;
     }

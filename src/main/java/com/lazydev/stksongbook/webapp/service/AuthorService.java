@@ -1,4 +1,4 @@
-package com.lazydev.stksongbook.webapp.manager;
+package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.dao.AuthorDAO;
 import com.lazydev.stksongbook.webapp.model.Author;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class AuthorManager {
+public class AuthorService {
 
     @Autowired
     private AuthorDAO authorDao;

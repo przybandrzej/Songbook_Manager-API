@@ -1,7 +1,8 @@
-package com.lazydev.stksongbook.webapp.manager;
+package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.dao.SongDAO;
 import com.lazydev.stksongbook.webapp.model.Song;
+import com.lazydev.stksongbook.webapp.model.SongsAuthorsEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class SongManager {
+public class SongService {
 
     @Autowired
     private SongDAO dao;
@@ -32,7 +33,8 @@ public class SongManager {
     public Iterable<Song> findByAuthorId(Long authorId) {
         List<Song> list = new ArrayList<>();
         for (Song element : dao.findAll()) {
-            if(element.getAuthorId() == authorId) list.add(element);
+            for(SongsAuthorsEntity author : element.getAuthors())
+                if(author.getAuthor().getId() == authorId) list.add(element);
         }
         return list;
     }
@@ -40,7 +42,7 @@ public class SongManager {
     public Iterable<Song> findByCategoryId(Long id) {
         List<Song> list = new ArrayList<>();
         for (Song element : dao.findAll()) {
-            if(element.getCategoryId() == id) list.add(element);
+            if(element.getCategory().getId() == id) list.add(element);
         }
         return list;
     }

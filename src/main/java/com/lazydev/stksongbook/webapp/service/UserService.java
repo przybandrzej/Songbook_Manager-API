@@ -1,4 +1,4 @@
-package com.lazydev.stksongbook.webapp.manager;
+package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.dao.UserDAO;
 import com.lazydev.stksongbook.webapp.model.User;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class UserManager {
+public class UserService {
 
     @Autowired
     private UserDAO dao;

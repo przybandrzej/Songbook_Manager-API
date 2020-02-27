@@ -6,8 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 /**
  * This is the model class of the Tag entity. The table stores all tags used for tagging songs.
@@ -29,17 +28,20 @@ public @Data class Tag {
      */
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     /**
      * @param name stores the name of the tag. It must be unique.
      */
-    @Column(name = "name")
-    @NotBlank
-    @NotNull
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
+    @ManyToMany(mappedBy = "tags")
+    private Set<Song> songs;
+
+
+    // TODO add the prefix to the DB
     /**
      * @param tagPrefix says what character to use to display tags in the application.
      */

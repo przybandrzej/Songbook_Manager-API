@@ -3,11 +3,10 @@ package com.lazydev.stksongbook.webapp.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.hibernate.annotations.Check;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 /**
  * This is the model class of the User entity. It represents real users of the application.
@@ -16,15 +15,11 @@ import javax.validation.constraints.NotNull;
  * @version 1.0
  */
 
-/* TODO
-    Add instances of user's library and playlists.
-    IDEA: add instances of added and edited songs by the user.
-*/
-
 @Entity
 @Table(name="users")
 @AllArgsConstructor
 @NoArgsConstructor
+@Check(constraints = "length(password) >= 6 AND length(username) >= 4 AND length(login) >= 5")
 //@EntityListeners(AuditingEntityListener.class)
 public @Data class User {
 
@@ -32,42 +27,35 @@ public @Data class User {
      * @param id is the Primary Key in the table. By definition, it must be unique
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     /**
      * @param login must be unique. It is used for logging in to the database and the application.
      */
-    @NotBlank
-    @Column(name = "login")
-    @NotNull
+    @Column(name = "login", nullable = false, unique = true)
     private String login;
 
     /**
      * @param password must be at least 5 characters. It is used for logging in to the database and the application.
      */
-    @NotBlank
-    @Column(name = "password")
-    @NotNull
+    @Column(name = "password", nullable = false)
     private String password;
 
     /**
      * @param username must be unique. It is the name displayed for other users.
      */
-    @NotBlank
-    @Column(name = "username")
-    @NotNull
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
     /**
      * @param userRoleId is the Foreign Key from the user_roles table.
      *                   It is used for deteriminimg whether the user is an administrator, moderator or regular user.
      */
-    @NotBlank
-    @Column(name = "user_role")
-    @NotNull
-    private long userRoleId;
+    @ManyToOne
+    @JoinColumn(name = "user_role_id", referencedColumnName = "id", nullable = false)
+    private UserRole userRole;
 
     /**
      * @param firstName is user's real first name. It is optional and not displayed for other users.
@@ -81,21 +69,27 @@ public @Data class User {
     @Column(name = "last_name")
     private String lastName;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "users_songs", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
+    private Set<Song> songs;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UsersSongsRatingsEntity> userRatings;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Playlist> playlists;
+
     /**
      * @param addedSongsCount counts songs added to the database by the user. New users have it automatically set to 0
      */
-    @NotBlank
-    @NotNull
-    @Column(name = "added_songs_count")
-    private int addedSongsCount;
+    /*@Column(name = "added_songs_count", nullable = false)
+    private int addedSongsCount;*/
 
     /**
      * @param addedSongsCount counts songs edited by the user. New users have automatically set to 0
      */
-    @NotBlank
-    @NotNull
-    @Column(name = "edited_songs_count")
-    private int editedSongsCount;
+    /*@Column(name = "edited_songs_count", nullable = false)
+    private int editedSongsCount;*/
 
     // TODO add lists of added songs and edited songs instead
 }

@@ -1,4 +1,4 @@
-# Songbook_Manager
+# Songbook_Service
 A Spring web application connected to a PostgreSQL database and deployed to Heroku.
 
 It is an app that lets the users manage songs in a songbook (add, remove, update and read, create playlists), manage accounts and singing events.
