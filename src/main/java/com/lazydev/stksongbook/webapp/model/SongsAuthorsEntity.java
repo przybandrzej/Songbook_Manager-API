@@ -10,9 +10,9 @@ import javax.persistence.*;
 @Entity
 @Table(name = "songs_authors")
 @Check(constraints = "function IN ('" + SongsAuthorsEntity._Function_Music_Polish + "', '" + SongsAuthorsEntity._Function_Text_Polish + "')")
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class SongsAuthorsEntity {
 
     //public final static String _Function_Author_Polish = "Autor";

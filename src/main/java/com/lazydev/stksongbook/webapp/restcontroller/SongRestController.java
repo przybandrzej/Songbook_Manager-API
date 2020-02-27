@@ -21,6 +21,9 @@ public class SongRestController {
     @Autowired
     private SongService service;
 
+    @Autowired
+    private SongMapper songMapper;
+
     @GetMapping
     public List<SongDTO> getAll(){
         List<Song> list = (List<Song>) service.findAll();;
@@ -66,10 +69,10 @@ public class SongRestController {
     }
 
     public SongDTO convertToDto(Song song) {
-        return SongMapper.INSTANCE.songToSongDTO(song);
+        return songMapper.songToSongDTO(song);
     }
 
     public Song convertToEntity(SongDTO songDto) {
-        return SongMapper.INSTANCE.songDTOToSong(songDto);
+        return songMapper.songDTOToSong(songDto);
     }
 }

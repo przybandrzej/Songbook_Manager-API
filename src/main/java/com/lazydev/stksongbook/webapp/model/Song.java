@@ -19,8 +19,9 @@ import java.util.Set;
 @Table(name="songs")
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 //@EntityListeners(AuditingEntityListener.class)
-public @Data class Song {
+public class Song {
 
     /**
      * @param id is the Primary Key in the table.

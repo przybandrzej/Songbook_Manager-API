@@ -18,7 +18,6 @@ public class SongDTO {
     private String lyrics;
     private String guitarTabs;
     private String curio;
-    private Double averageRating;
     private String additionTime;
     private List<TagDTO> tags;
 

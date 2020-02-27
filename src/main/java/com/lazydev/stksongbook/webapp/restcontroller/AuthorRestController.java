@@ -21,6 +21,9 @@ public class AuthorRestController {
     @Autowired
     private AuthorService service;
 
+    @Autowired
+    private AuthorMapper authorMapper;
+
     @GetMapping
     public List<AuthorDTO> getAll(){
         List<Author> list = (List<Author>) service.findAll();
@@ -63,10 +66,10 @@ public class AuthorRestController {
     }
 
     public AuthorDTO convertToDto(Author author) {
-        return AuthorMapper.INSTANCE.authorToAuthorDTO(author);
+        return authorMapper.authorToAuthorDTO(author);
     }
 
     public Author convertToEntity(AuthorDTO authorDto){
-        return AuthorMapper.INSTANCE.authorDTOToAuthor(authorDto);
+        return authorMapper.authorDTOToAuthor(authorDto);
     }
 }

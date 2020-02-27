@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SongsAuthorsEntityDTO {
 
+    private SongDTO song;
     private AuthorDTO author;
     private String function;
 
