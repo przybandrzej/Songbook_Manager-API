@@ -2,6 +2,7 @@ package com.lazydev.stksongbook.webapp.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -23,8 +24,9 @@ import java.util.Set;
 @Table(name="playlists")
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 //@EntityListeners(AuditingEntityListener.class)
-public @Data class Playlist {
+public class Playlist {
 
     /**
      * @param id is the Primary Key in the table.
