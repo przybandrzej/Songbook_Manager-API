@@ -2,6 +2,7 @@ package com.lazydev.stksongbook.webapp.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -20,8 +21,10 @@ import java.util.Set;
 @Table(name="user_roles")
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
+@EqualsAndHashCode(exclude = "users")
 //@EntityListeners(AuditingEntityListener.class)
-public @Data class UserRole {
+public class UserRole {
 
     /**
      * @param id is the Primary Key in the table. By definition, it must be unique.

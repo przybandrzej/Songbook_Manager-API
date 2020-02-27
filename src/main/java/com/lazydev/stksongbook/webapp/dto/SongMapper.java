@@ -13,10 +13,10 @@ public interface SongMapper {
     //SongMapper INSTANCE = Mappers.getMapper(SongMapper.class);
 
     @Mappings({
-            @Mapping(target="additionTime", source = "additionTime", dateFormat = "dd-MM-yyyy HH:mm:ss"),
+            @Mapping(target="additionTime", source = "additionTime", dateFormat = "dd-MM-yyyy HH:mm:ss")/*,
             @Mapping(target="authors", ignore = true),
             @Mapping(target="category", ignore = true),
-            @Mapping(target="tags", ignore = true)})
+            @Mapping(target="tags", ignore = true)*/})
     SongDTO songToSongDTO(Song entity);
 
     @Mappings({

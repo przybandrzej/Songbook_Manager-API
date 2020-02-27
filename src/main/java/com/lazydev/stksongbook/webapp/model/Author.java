@@ -17,7 +17,9 @@ import java.util.Set;
 //@EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
 @NoArgsConstructor
-public @Data class Author {
+@Data
+@EqualsAndHashCode(exclude = "songs")
+public class Author {
 
     /**
      * @param id is the Primary Key in the table.

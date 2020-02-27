@@ -2,6 +2,7 @@ package com.lazydev.stksongbook.webapp.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -19,8 +20,10 @@ import java.util.Set;
 @Table(name="categories")
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
+@EqualsAndHashCode(exclude = "songs")
 //@EntityListeners(AuditingEntityListener.class)
-public @Data class Category {
+public class Category {
 
     /**
      * @param id is the Primary Key in the table.

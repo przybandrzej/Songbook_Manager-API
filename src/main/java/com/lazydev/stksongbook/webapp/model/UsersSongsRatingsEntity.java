@@ -2,6 +2,7 @@ package com.lazydev.stksongbook.webapp.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
 
@@ -13,8 +14,8 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = "user")
 public class UsersSongsRatingsEntity {
-
 
     @EmbeddedId
     private UsersSongsRatingsKey id;
