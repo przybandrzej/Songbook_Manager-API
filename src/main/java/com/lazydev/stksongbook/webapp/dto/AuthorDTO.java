@@ -14,5 +14,6 @@ public class AuthorDTO {
 
     // link to self
     // link to all authors
-    // link to songs of this author
+
+    /// link to songs of this author
 }

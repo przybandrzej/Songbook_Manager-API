@@ -10,9 +10,6 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface SongsAuthorsEntityMapper {
 
-    //SongsAuthorsEntityMapper INSTANCE = Mappers.getMapper(SongsAuthorsEntityMapper.class);
-    
     SongsAuthorsEntityDTO songsAuthorsEntityToSongsAuthorsEntityDTO(SongsAuthorsEntity entity);
-
     SongsAuthorsEntity songsAuthorsEntityDTOToSongsAuthorsEntity(SongsAuthorsEntityDTO dto);
 }

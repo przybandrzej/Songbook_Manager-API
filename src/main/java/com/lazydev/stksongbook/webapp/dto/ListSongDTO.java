@@ -7,13 +7,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TagDTO {
+public class ListSongDTO {
 
     private Long id;
-    private String name;
+    private String title;
 
     // link to self
-    // link to all tags
-
-    /// link to all songs with this tag
+    // link to the real song
+    // link to all songs
 }

@@ -2,6 +2,7 @@ package com.lazydev.stksongbook.webapp.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
 
@@ -20,6 +21,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Check(constraints = "length(password) >= 6 AND length(username) >= 4 AND length(login) >= 5")
+@EqualsAndHashCode(exclude = "playlists")
 //@EntityListeners(AuditingEntityListener.class)
 public @Data class User {
 

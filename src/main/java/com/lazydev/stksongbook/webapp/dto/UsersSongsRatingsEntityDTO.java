@@ -9,10 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UsersSongsRatingsEntityDTO {
 
-    private SongDTO song;
+    private Long songId;
     private Double userRating;
 
     // link to self
+    // link to the real song
     // link to all user's songs ratings
     // link to user
 }

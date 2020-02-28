@@ -10,9 +10,8 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface UsersSongsRatingsEntityMapper {
 
-    //UsersSongsRatingsEntityMapper INSTANCE = Mappers.getMapper(UsersSongsRatingsEntityMapper.class);
-    
-    @Mappings({ @Mapping(target="userRating", source = "rating") })
+    @Mappings({ @Mapping(target="userRating", source = "rating"),
+    @Mapping(target = "songId", source = "entity.song.id") })
     UsersSongsRatingsEntityDTO usersSongsRatingsEntityToUsersSongsRatingsEntityDTO(UsersSongsRatingsEntity entity);
 
     @Mappings({ @Mapping(target="rating", source = "userRating") })
