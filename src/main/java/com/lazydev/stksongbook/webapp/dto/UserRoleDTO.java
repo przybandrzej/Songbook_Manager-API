@@ -14,5 +14,7 @@ public class UserRoleDTO {
 
     // link to self
     // link to all userRoles
-    // link to all users with this role
+
+
+    /// link to all users with this role
 }

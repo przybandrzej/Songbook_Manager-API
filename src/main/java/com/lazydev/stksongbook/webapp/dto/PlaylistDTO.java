@@ -13,11 +13,11 @@ public class PlaylistDTO {
 
     private Long id;
     private String name;
-    private UserDTO owner;
+    private Long ownerId;
     private boolean isPrivate;
     private String creationTime;
 
-    private List<SongDTO> songs;
+    private List<ListSongDTO> songs;
 
     // link to self
     // link to songs within this playlist
