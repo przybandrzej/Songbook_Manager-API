@@ -8,6 +8,7 @@ For example my Android app named "Songbook" is connected to the API. It will dis
 ## Features
 * HATEOAS driven RESTful API
 * Browse a huge database of guitar songs' lyrics and guitar tabs
+* Add new songs even from a file
 * Create your own library of your favorite songs
 * Create a playlist for each occassion
 * Create a printable song book out of any playlist
