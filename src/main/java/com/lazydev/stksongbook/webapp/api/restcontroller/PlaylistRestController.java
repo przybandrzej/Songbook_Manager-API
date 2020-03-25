@@ -1,28 +1,30 @@
 package com.lazydev.stksongbook.webapp.api.restcontroller;
 
 import com.lazydev.stksongbook.webapp.api.dto.PlaylistDTO;
+import com.lazydev.stksongbook.webapp.api.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.api.mappers.PlaylistMapper;
 import com.lazydev.stksongbook.webapp.data.model.Playlist;
 import com.lazydev.stksongbook.webapp.data.service.PlaylistService;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@AllArgsConstructor
+@CrossOrigin
 @RequestMapping("/api/playlists")
 public class PlaylistRestController {
 
-    @Autowired
     private PlaylistService service;
-
-    @Autowired
     private PlaylistMapper modelMapper;
+
+    public PlaylistRestController(PlaylistService service, PlaylistMapper mapper) {
+        this.service = service;
+        this.modelMapper = mapper;
+    }
 
     @GetMapping
     public List<PlaylistDTO> getAll(){
@@ -42,10 +44,17 @@ public class PlaylistRestController {
         return list.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    /*@GetMapping("/ownerId/{id}")
-    public Iterable<Playlist> getByOwnerId(@PathVariable("id") Long ownerId) {
-        return service.findPublicByOwnerId(ownerId);
-    }*/
+    @GetMapping("/ownerId/{id}")
+    public List<PlaylistDTO> getByOwnerId(@PathVariable("id") Long ownerId) {
+        //Todo
+        return Collections.emptyList();
+    }
+
+    @GetMapping("/id/{id}/songs")
+    public List<SongDTO> getPlaylistSongs(@PathVariable("id") Long id) {
+        //Todo
+        return Collections.emptyList();
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

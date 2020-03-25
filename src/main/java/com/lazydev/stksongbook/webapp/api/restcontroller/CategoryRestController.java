@@ -2,27 +2,28 @@ package com.lazydev.stksongbook.webapp.api.restcontroller;
 
 import com.lazydev.stksongbook.webapp.api.dto.CategoryDTO;
 import com.lazydev.stksongbook.webapp.api.mappers.CategoryMapper;
-import com.lazydev.stksongbook.webapp.data.service.CategoryService;
 import com.lazydev.stksongbook.webapp.data.model.Category;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.lazydev.stksongbook.webapp.data.service.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/categories")
-@AllArgsConstructor
 public class CategoryRestController {
 
-    @Autowired
     private CategoryService service;
-
-    @Autowired
     private CategoryMapper modelMapper;
+
+    public CategoryRestController(CategoryService service, CategoryMapper mapper) {
+        this.service = service;
+        this.modelMapper = mapper;
+    }
 
     @GetMapping
     public List<CategoryDTO> getAll(){
@@ -40,6 +41,12 @@ public class CategoryRestController {
     public List<CategoryDTO> getByName(@PathVariable("name") String name){
         List<Category> list = (List<Category>) service.findByName(name);
         return list.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    @GetMapping("/id/{id}/songs")
+    public List<CategoryDTO> getCategorySongs(@PathVariable("id") Long id){
+        //Todo
+        return Collections.emptyList();
     }
 
     @PostMapping

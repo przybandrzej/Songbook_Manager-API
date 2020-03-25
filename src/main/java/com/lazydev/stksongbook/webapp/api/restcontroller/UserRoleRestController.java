@@ -2,27 +2,29 @@ package com.lazydev.stksongbook.webapp.api.restcontroller;
 
 import com.lazydev.stksongbook.webapp.api.dto.UserRoleDTO;
 import com.lazydev.stksongbook.webapp.api.mappers.UserRoleMapper;
+import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.data.model.UserRole;
 import com.lazydev.stksongbook.webapp.data.service.UserRoleService;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@AllArgsConstructor
+@CrossOrigin
 @RequestMapping("/api/user_roles")
 public class UserRoleRestController {
 
-    @Autowired
     private UserRoleService service;
-    
-    @Autowired
     private UserRoleMapper modelMapper;
+
+    public UserRoleRestController(UserRoleService service, UserRoleMapper mapper) {
+        this.service = service;
+        this.modelMapper = mapper;
+    }
 
     @GetMapping
     public List<UserRoleDTO> getAll(){
@@ -40,6 +42,12 @@ public class UserRoleRestController {
     public List<UserRoleDTO> getByName(@PathVariable("name") String name){
         List<UserRole> list = (List<UserRole>) service.findByName(name);
         return list.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    @GetMapping("/id/{id}/users")
+    public List<User> getRoleUsers(@PathVariable("id") Long id) {
+        //Todo
+        return Collections.emptyList();
     }
 
     @PostMapping

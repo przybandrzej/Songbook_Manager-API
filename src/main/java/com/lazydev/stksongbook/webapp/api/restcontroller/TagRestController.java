@@ -1,28 +1,30 @@
 package com.lazydev.stksongbook.webapp.api.restcontroller;
 
+import com.lazydev.stksongbook.webapp.api.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.api.dto.TagDTO;
 import com.lazydev.stksongbook.webapp.api.mappers.TagMapper;
 import com.lazydev.stksongbook.webapp.data.model.Tag;
 import com.lazydev.stksongbook.webapp.data.service.TagService;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@AllArgsConstructor
+@CrossOrigin
 @RequestMapping("/api/tags")
 public class TagRestController {
 
-    @Autowired
     private TagService service;
-
-    @Autowired
     private TagMapper modelMapper;
+
+    public TagRestController(TagService service, TagMapper mapper) {
+        this.service = service;
+        this.modelMapper = mapper;
+    }
 
     @GetMapping
     public List<TagDTO> getAll(){
@@ -40,6 +42,12 @@ public class TagRestController {
     public List<TagDTO> getByName(@PathVariable("name") String name){
         List<Tag> list = (List<Tag>) service.findByName(name);
         return list.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    @GetMapping("/id/{id}/songs")
+    public List<SongDTO> getTagSongs(@PathVariable("id") Long id) {
+        //Todo
+        return Collections.emptyList();
     }
 
     @PostMapping

@@ -1,20 +1,42 @@
 package com.lazydev.stksongbook.webapp.api.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@EqualsAndHashCode
 public class UserRoleDTO {
-
-    private Long id;
-    private String name;
 
     // link to self
     // link to all userRoles
+    // link to all users with this role
 
+    private final Long id;
+    private final String name;
 
-    /// link to all users with this role
+    private UserRoleDTO(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public static UserRoleDTO.Builder builder() {
+        return new UserRoleDTO.Builder();
+    }
+
+    public static final class Builder {
+        private Long id;
+        private String name;
+
+        public UserRoleDTO create() {
+            return new UserRoleDTO(id, name);
+        }
+        public UserRoleDTO.Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+        public UserRoleDTO.Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+    }
 }

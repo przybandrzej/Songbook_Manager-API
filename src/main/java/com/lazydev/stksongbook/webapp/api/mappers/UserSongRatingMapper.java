@@ -10,8 +10,8 @@ import org.mapstruct.Mappings;
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface UserSongRatingMapper {
 
-    @Mappings({ @Mapping(target="userRating", source = "rating"),
-    @Mapping(target = "songId", source = "entity.song.id") })
+    @Mapping(target="userRating", source = "rating")
+    @Mapping(target = "songId", source = "entity.song.id")
     UserSongRatingDTO usersSongsRatingsEntityToUserSongRatingDTO(UserSongRating entity);
 
     @Mappings({ @Mapping(target="rating", source = "userRating") })

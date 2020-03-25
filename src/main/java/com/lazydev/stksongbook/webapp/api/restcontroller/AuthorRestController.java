@@ -1,35 +1,36 @@
 package com.lazydev.stksongbook.webapp.api.restcontroller;
 
 import com.lazydev.stksongbook.webapp.api.dto.AuthorDTO;
+import com.lazydev.stksongbook.webapp.api.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.api.mappers.AuthorMapper;
 import com.lazydev.stksongbook.webapp.api.restcontroller.events.ResourceCreated;
 import com.lazydev.stksongbook.webapp.api.restcontroller.events.SingleResourceRetrieved;
-import com.lazydev.stksongbook.webapp.data.service.AuthorService;
 import com.lazydev.stksongbook.webapp.data.model.Author;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.lazydev.stksongbook.webapp.data.service.AuthorService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/authors")
-@AllArgsConstructor
 public class AuthorRestController {
 
-    @Autowired
     private AuthorService service;
-
-    @Autowired
     private AuthorMapper authorMapper;
-
-    @Autowired
     private ApplicationEventPublisher eventPublisher;
+
+    public AuthorRestController(AuthorService service, AuthorMapper mapper, ApplicationEventPublisher publisher) {
+        this.service = service;
+        this.authorMapper = mapper;
+        this.eventPublisher = publisher;
+    }
 
     @GetMapping
     public List<AuthorDTO> getAll(HttpServletResponse response){
@@ -39,7 +40,6 @@ public class AuthorRestController {
     }
 
     @GetMapping("/id/{id}")
-    @ResponseBody
     public AuthorDTO getById(@PathVariable("id") Long id, HttpServletResponse response) {
         Optional<Author> optAuthor = service.findById(id);
 
@@ -47,17 +47,14 @@ public class AuthorRestController {
         return optAuthor.map(this::convertToDto).orElse(null);
     }
 
-    /*@GetMapping("/id/{id}/songs")
+    @GetMapping("/id/{id}/songs")
     @ResponseBody
-    public AuthorDTO getAuthorSongs(@PathVariable("id") Long id, HttpServletResponse response) {
-        Optional<Author> optAuthor = service.findById(id);
-
-        eventPublisher.publishEvent(new SingleResourceRetrieved(this, response));
-        return optAuthor.map(this::convertToDto).orElse(null);
-    }*/
+    public List<SongDTO> getAuthorSongs(@PathVariable("id") Long id, HttpServletResponse response) {
+        //Todo
+        return Collections.emptyList();
+    }
 
     @GetMapping("/name/{name}")
-    @ResponseBody
     public List<AuthorDTO> getByName(@PathVariable("name") String name, HttpServletResponse response) {
         List<Author> list = (List<Author>) service.findByName(name);
 
@@ -66,7 +63,6 @@ public class AuthorRestController {
     }
 
     @PostMapping
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public AuthorDTO create(@RequestBody AuthorDTO authorDto, HttpServletResponse response) {
         //Preconditions.checkNotNull(authorDto);

@@ -1,28 +1,32 @@
 package com.lazydev.stksongbook.webapp.api.restcontroller;
 
+import com.lazydev.stksongbook.webapp.api.dto.PlaylistDTO;
 import com.lazydev.stksongbook.webapp.api.dto.SongDTO;
+import com.lazydev.stksongbook.webapp.api.dto.UserSongRatingDTO;
 import com.lazydev.stksongbook.webapp.api.mappers.SongMapper;
 import com.lazydev.stksongbook.webapp.data.model.Song;
+import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.data.service.SongService;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@AllArgsConstructor
+@CrossOrigin
 @RequestMapping("/api/songs")
 public class SongRestController {
 
-    @Autowired
     private SongService service;
-
-    @Autowired
     private SongMapper songMapper;
+
+    public SongRestController(SongService service, SongMapper mapper) {
+        this.service = service;
+        this.songMapper = mapper;
+    }
 
     @GetMapping
     public List<SongDTO> getAll(){
@@ -36,20 +40,41 @@ public class SongRestController {
         return song.map(this::convertToDto).orElse(null);
     }
 
-    /*@GetMapping("/title/{title}")
-    public Iterable<Song> getByTitle(@PathVariable("title") String title){
-        return service.findByTitle(title);
+    @GetMapping("/title/{title}")
+    public List<SongDTO> getByTitle(@PathVariable("title") String title) {
+        //Todo
+        return Collections.emptyList();
     }
 
     @GetMapping("/author/{authorId}")
-    public Iterable<Song> getByTitle(@PathVariable("authorId") Long authorId){
-        return service.findByAuthorId(authorId);
+    public List<SongDTO> getByAuthor(@PathVariable("authorId") Long id) {
+        //Todo
+        return Collections.emptyList();
     }
 
     @GetMapping("/category/{categoryId}")
-    public Iterable<Song> getByCategory(@PathVariable("categoryId") Long categoryId){
-        return service.findByCategoryId(categoryId);
-    }*/
+    public List<SongDTO> getByTitle(@PathVariable("categoryId") Long id) {
+        //Todo
+        return Collections.emptyList();
+    }
+
+    @GetMapping("/id/{id}/ratings")
+    public List<UserSongRatingDTO> getSongRatings(@PathVariable("id") Long id) {
+        //Todo
+        return Collections.emptyList();
+    }
+
+    @GetMapping("/id/{id}/user_libs")
+    public List<User> getSongLibraries(@PathVariable("id") Long id) {
+        //Todo
+        return Collections.emptyList();
+    }
+
+    @GetMapping("/id/{id}/playlists")
+    public List<PlaylistDTO> getSongPlaylists(@PathVariable("id") Long id) {
+        //Todo
+        return Collections.emptyList();
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

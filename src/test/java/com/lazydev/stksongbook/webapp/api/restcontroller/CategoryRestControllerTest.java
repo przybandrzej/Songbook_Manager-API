@@ -8,7 +8,7 @@ import org.mockito.Mockito;
 import static org.junit.Assert.assertEquals;
 
 public class CategoryRestControllerTest {
-
+/*
     @Test
     public void whenConvertCategoryEntityToCategoryDTO_thenCorrect() {
         Category category = new Category();
@@ -32,5 +32,5 @@ public class CategoryRestControllerTest {
         Category category = restController.convertToEntity(categoryDto);
         assertEquals(categoryDto.getId(), category.getId());
         assertEquals(categoryDto.getName(), category.getName());
-    }
+    }*/
 }

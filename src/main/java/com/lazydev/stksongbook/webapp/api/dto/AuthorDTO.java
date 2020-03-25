@@ -1,19 +1,43 @@
 package com.lazydev.stksongbook.webapp.api.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@EqualsAndHashCode
 public class AuthorDTO {
-
-    private Long id;
-    private String name;
 
     // link to self
     // link to all authors
 
-    /// link to songs of this author
+    // link to songs of this author
+
+    private final Long id;
+    private final String name;
+
+    private AuthorDTO(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+        private Long id;
+        private String name;
+
+        public AuthorDTO create() {
+            return new AuthorDTO(id, name);
+        }
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+    }
 }

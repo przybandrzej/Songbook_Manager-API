@@ -8,7 +8,7 @@ import org.mockito.Mockito;
 import static org.junit.Assert.assertEquals;
 
 public class PlaylistRestControllerTest {
-
+/*
     @Test
     public void whenConvertPlaylistEntityToPlaylistDTO_thenCorrect() {
         Playlist playlist = new Playlist();
@@ -32,5 +32,5 @@ public class PlaylistRestControllerTest {
         Playlist playlist = restController.convertToEntity(playlistDto);
         assertEquals(playlistDto.getId(), playlist.getId());
         assertEquals(playlistDto.getName(), playlist.getName());
-    }
+    }*/
 }
