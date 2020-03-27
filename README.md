@@ -6,7 +6,7 @@ It is an app that lets the users manage songs in a songbook (add, remove, update
 For example my Android app named "Songbook" is connected to the API. It will display the songs on mobile devices and implement even more fetures that this web app (eg. connect with other Android devices near you and display the same song).
 
 ## Features
-* HATEOAS driven RESTful API
+* REST API
 * Browse a huge database of guitar songs' lyrics and guitar tabs
 * Add new songs even from a file
 * Create your own library of your favorite songs
@@ -18,7 +18,7 @@ For example my Android app named "Songbook" is connected to the API. It will dis
  * The deployed Heroku app: https://stk-songbook.herokuapp.com/ (currently only the API works)
  * The Android app's repo: https://github.com/BrieflyClear/Songbook-Android
 
-### How to use the API
+### How to use the API (outdated)
 Refer to the following endpoints:
 * Authors:
    * all : /api/authors
@@ -49,20 +49,20 @@ Refer to the following endpoints:
    * all matching the name: /api/user_roles/name/{name}
 
 ## Built With
-* [Java 8]()
+* [Java 13]()
   * [Spring Boot]()
-  * [Spring Data]()
-  * [Spring MVC]()
+  * [Spring Data JPA]()
   * [Spring Security]()
   * [JUnit]()
   * [Mockito]()
   * [Lombok]()
   * [MapStruct]()
   * [Log4J]()
-* [Angular 8]()
+* [Angular 9]()
   * [Bootstrap]()
 * [PostgreSQL]()
 * [Heroku]()
+* [Swagger]()
 
 ## Author
 
