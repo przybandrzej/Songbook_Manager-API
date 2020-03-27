@@ -9,45 +9,53 @@
 
 <h4>Refer to the following endpoints:</h4>
 <ul>
-    <li>Authors:
-        <ul>
-            <li>all : /api/authors
-            <li>one by ID: /api/authors/id/{id}
-            <li>all matching the name (usually one): /api/authors/name/{name}
-        </ul>
-    <li>Songs:
-        <ul>
-            <li>all : /api/songs
-            <li>one by ID: /api/songs/id/{id}
-            <li>all matching the title: /api/songs/title/{title}
-            <li>all matching the author: /api/songs/author/{authorId}
-            <li>all matching the category: /api/songs/category/{categoryId}
-        </ul>
-    <li>Tags:
-        <ul>
-            <li>all : /api/tags
-            <li>one by ID: /api/tags/id/{id}
-            <li>all matching the name (usually one): /api/tags/name/{name}
-        </ul>
-    <li>Categories:
-        <ul>
-            <li>all : /api/categories
-            <li>one by ID: /api/categories/id/{id}
-            <li>all matching the name (usually one): /api/categories/name/{name}
-        </ul>
-    <li>Playlists (only the ones with 'public' marker):
-        <ul>
-            <li>all : /api/playlists
-            <li>one by ID: /api/playlists/id/{id}
-            <li>all matching the name: /api/playlists/name/{name}
-            <li>all matching the owner: /api/playlists/owner/{ownerId}
-        </ul>
-    <li>UserRoles:
-        <ul>
-            <li>all : /api/user_roles
-            <li>one by ID: /api/user_roles/id/{id}
-            <li>all matching the name: /api/user_roles/name/{name}
-        </ul>
+    <li>Authors:</li>
+    <ul>
+        <li>all : /api/authors</li>
+        <li>one by ID: /api/authors/id/{id}</li>
+        <li>all matching the name (usually one): /api/authors/name/{name}</li>
+        <li>all author's songs: /api/authors/id/{id}/songs</li>
+    </ul>
+    <li>Songs:</li>
+    <ul>
+        <li>all : /api/songs</li>
+        <li>one by ID: /api/songs/id/{id}</li>
+        <li>all matching the title: /api/songs/title/{title}</li>
+        <li>all matching the author: /api/songs/author/{authorId}</li>
+        <li>all matching the category: /api/songs/category/{categoryId}</li>
+        <li>all song's ratings: /api/songs/id/{id}/ratings</li>
+        <li>all users' libraries containing the song: /api/songs/id/{id}/user_libs</li>
+        <li>all public playlists containing the song: /api/songs/id/{id}/playlists</li>
+    </ul>
+    <li>Tags:</li>
+    <ul>
+        <li>all : /api/tags</li>
+        <li>one by ID: /api/tags/id/{id}</li>
+        <li>all matching the name (usually one): /api/tags/name/{name}</li>
+        <li>all songs from this tag: /api/tags/id/{id}/songs</li>
+    </ul>
+    <li>Categories:</li>
+    <ul>
+        <li>all : /api/categories</li>
+        <li>one by ID: /api/categories/id/{id}</li>
+        <li>all matching the name (usually one): /api/categories/name/{name}</li>
+        <li>all songs from this category: /api/categories/id/{id}/songs</li>
+    </ul>
+    <li>Playlists (only the ones with 'public' marker):</li>
+    <ul>
+        <li>all : /api/playlists</li>
+        <li>one by ID: /api/playlists/id/{id}</li>
+        <li>all matching the name: /api/playlists/name/{name}</li>
+        <li>all matching the owner: /api/playlists/owner/{ownerId}</li>
+        <li>all songs in this playlist: /api/playlists/id/{id}/song</li>
+    </ul>
+    <li>User Roles:</li>
+    <ul>
+        <li>all : /api/user_roles</li>
+        <li>one by ID: /api/user_roles/id/{id}</li>
+        <li>all matching the name: /api/user_roles/name/{name}</li>
+        <li>all users with this role: /api/user_roles/id/{id}/users</li>
+    </ul>
 </ul>
 </body>
 </html>
