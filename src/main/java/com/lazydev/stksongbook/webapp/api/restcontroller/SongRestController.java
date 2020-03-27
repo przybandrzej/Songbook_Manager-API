@@ -2,10 +2,10 @@ package com.lazydev.stksongbook.webapp.api.restcontroller;
 
 import com.lazydev.stksongbook.webapp.api.dto.PlaylistDTO;
 import com.lazydev.stksongbook.webapp.api.dto.SongDTO;
+import com.lazydev.stksongbook.webapp.api.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.api.dto.UserSongRatingDTO;
 import com.lazydev.stksongbook.webapp.api.mappers.SongMapper;
 import com.lazydev.stksongbook.webapp.data.model.Song;
-import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.data.service.SongService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -65,7 +65,7 @@ public class SongRestController {
     }
 
     @GetMapping("/id/{id}/user_libs")
-    public List<User> getSongLibraries(@PathVariable("id") Long id) {
+    public List<UserDTO> getSongLibraries(@PathVariable("id") Long id) {
         //Todo
         return Collections.emptyList();
     }
