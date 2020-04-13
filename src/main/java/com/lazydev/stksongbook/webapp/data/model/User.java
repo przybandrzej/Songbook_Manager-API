@@ -37,8 +37,8 @@ class User {
   /**
    * @param login must be unique. It is used for logging in to the database and the application.
    */
-  @Column(name = "login", nullable = false, unique = true)
-  private String login;
+  @Column(name = "e-mail", nullable = false, unique = true)
+  private String email;
 
   /**
    * @param password must be at least 5 characters. It is used for logging in to the database and the application.

@@ -22,7 +22,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(exclude = {"usersSongs", "playlists", "ratings"})
-//@EntityListeners(AuditingEntityListener.class)
 public class Song {
 
   /**
