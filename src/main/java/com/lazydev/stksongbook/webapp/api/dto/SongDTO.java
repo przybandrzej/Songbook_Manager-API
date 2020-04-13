@@ -3,7 +3,10 @@ package com.lazydev.stksongbook.webapp.api.dto;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @EqualsAndHashCode
@@ -12,7 +15,7 @@ public class SongDTO {
     private final Long id;
     private final Long categoryId;
     private final String title;
-    private final List<SongAuthorDTO> authors;
+    private final Set<SongAuthorDTO> authors;
     private final String lyrics;
     private final String guitarTabs;
     private final String curio;
@@ -24,7 +27,7 @@ public class SongDTO {
     // link to all users' libraries that have this song in the library
     // link to all public playlists that include this song
 
-    private SongDTO(Long id, Long categoryId, String title, List<SongAuthorDTO> authors, String lyrics,
+    private SongDTO(Long id, Long categoryId, String title, Set<SongAuthorDTO> authors, String lyrics,
                     String guitarTabs, String curio, String additionTime, List<Long> tagsId) {
         this.id = id;
         this.categoryId = categoryId;
@@ -34,7 +37,7 @@ public class SongDTO {
         this.guitarTabs = guitarTabs;
         this.curio = curio;
         this.additionTime = additionTime;
-        this.tagsId = tagsId;
+        this.tagsId = Objects.requireNonNullElseGet(tagsId, ArrayList::new);
     }
 
     public static SongDTO.Builder builder() {
@@ -45,7 +48,7 @@ public class SongDTO {
         private Long id;
         private Long categoryId;
         private String title;
-        private List<SongAuthorDTO> authors;
+        private Set<SongAuthorDTO> authors;
         private String lyrics;
         private String guitarTabs;
         private String curio;
@@ -67,7 +70,7 @@ public class SongDTO {
             this.title = title;
             return this;
         }
-        public SongDTO.Builder authors(List<SongAuthorDTO> authors) {
+        public SongDTO.Builder authors(Set<SongAuthorDTO> authors) {
             this.authors = authors;
             return this;
         }

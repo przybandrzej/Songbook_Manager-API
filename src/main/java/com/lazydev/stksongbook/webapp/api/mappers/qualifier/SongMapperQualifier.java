@@ -1,16 +1,15 @@
-package com.lazydev.stksongbook.webapp.api.mappers;
+package com.lazydev.stksongbook.webapp.api.mappers.qualifier;
 
+import com.lazydev.stksongbook.webapp.api.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.data.model.Category;
 import com.lazydev.stksongbook.webapp.data.model.Tag;
 import com.lazydev.stksongbook.webapp.data.service.CategoryService;
 import com.lazydev.stksongbook.webapp.data.service.TagService;
-import org.mapstruct.Named;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@SongQualifier
 public class SongMapperQualifier {
 
   private TagService tagService;
@@ -21,15 +20,15 @@ public class SongMapperQualifier {
     this.categoryService = categoryService;
   }
 
-  @Named("tagsIDsToTags")
-  public List<Tag> tagsIDsToTags(List<Long> list) {
+  @TagsIDsToTags
+  public List<Tag> tagsIDsToTags(SongDTO dto) {
     List<Tag> tags = new ArrayList<>();
-    list.forEach(id -> tagService.findById(id).ifPresent(tags::add));
+    dto.getTagsId().forEach(id -> tagService.findById(id).ifPresent(tags::add));
     return tags;
   }
 
-  @Named("categoryIdToCategory")
-  public Category categoryIdToCategory(Long id) {
-    return categoryService.findById(id).orElse(null);
+  @CategoryIdToCategory
+  public Category categoryIdToCategory(SongDTO dto) {
+    return categoryService.findById(dto.getCategoryId()).orElse(null);
   }
 }
