@@ -20,7 +20,7 @@ public interface SongMapper {
   SongDTO songToSongDTO(Song entity);
 
   @Mapping(target = "additionTime", source = "additionTime", dateFormat = "dd-MM-yyyy HH:mm:ss")
-  @Mapping(target = "category", source = "categoryIdToCategory")
+  @Mapping(target = "category", qualifiedByName = "categoryIdToCategory")
   @Mapping(target = "tags", qualifiedByName = "tagsIDsToTags")
   Song songDTOToSong(SongDTO dto);
 
