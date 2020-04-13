@@ -18,8 +18,8 @@ import javax.persistence.*;
 public class SongAuthor {
 
   //public final static String _Function_Author_Polish = "Autor";
-  public final static String _Function_Music_Polish = "Muzyka";
-  public final static String _Function_Text_Polish = "Tekst";
+  public static final String _Function_Music_Polish = "Muzyka";
+  public static final String _Function_Text_Polish = "Tekst";
 
   @EmbeddedId
   private SongsAuthorsKey id;

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", uses = Tag.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@Mapper(componentModel = "spring", uses = {Tag.class, SongMapperQualifier.class}, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface SongMapper {
 
   @Mapping(target = "additionTime", source = "additionTime", dateFormat = "dd-MM-yyyy HH:mm:ss")
@@ -20,15 +20,11 @@ public interface SongMapper {
   SongDTO songToSongDTO(Song entity);
 
   @Mapping(target = "additionTime", source = "additionTime", dateFormat = "dd-MM-yyyy HH:mm:ss")
-            /*@Mapping(target="category", source = "java(convertIDToCategory(dto.categoryId))")
-            @Mapping(target="tagsId", expression = "java(convertIDsToTags(dto.getTagsId()))")*/
+  @Mapping(target = "category", source = "categoryIdToCategory")
+  @Mapping(target = "tags", qualifiedByName = "tagsIDsToTags")
   Song songDTOToSong(SongDTO dto);
 
   default List<Long> convertTagsToIDs(Set<Tag> list) {
     return list.stream().mapToLong(Tag::getId).boxed().collect(Collectors.toList());
   }
-
-    /*default List<Tag> convertIDsToTags(List<Long> list) {
-        //return list.stream().mapToLong(Tag::getId).boxed().collect(Collectors.toList());
-    }*/
 }
