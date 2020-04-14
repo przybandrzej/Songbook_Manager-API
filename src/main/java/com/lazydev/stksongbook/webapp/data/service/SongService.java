@@ -31,31 +31,16 @@ public class SongService {
     }
 
     public Iterable<Song> findByAuthorId(Long authorId) {
-        List<Song> list = new ArrayList<>();
-        for (Song element : dao.findAll()) {
-            for(SongAuthor author : element.getAuthors())
-                if(author.getAuthor().getId().equals(authorId)) list.add(element);
-        }
-        return list;
+        return dao.findByAuthorId(authorId);
     }
 
     public Iterable<Song> findByCategoryId(Long id) {
-        List<Song> list = new ArrayList<>();
-        for (Song element : dao.findAll()) {
-            if(element.getCategory().getId().equals(id)) list.add(element);
-        }
-        return list;
+        return dao.findByCategoryId(id);
     }
 
-    // TODO addtags to songs
-    // TODO Add searching by multiple tags
-    /*public Iterable<Song> findByTag(String name) {
-        List<Song> list = new ArrayList<>();
-        for (Song element : dao.findAll()) {
-            if(element.getTitle().equals(name)) list.add(element);
-        }
-        return list;
-    }*/
+    public Iterable<Song> findByTagId(Long id) {
+        return dao.findByTagId(id);
+    }
 
     public Iterable<Song> findAll() {
         return dao.findAll();

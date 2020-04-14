@@ -48,14 +48,20 @@ public class SongRestController {
 
     @GetMapping("/author/{authorId}")
     public List<SongDTO> getByAuthor(@PathVariable("authorId") Long id) {
-        //Todo
-        return Collections.emptyList();
+        var list = (List<Song>) service.findByAuthorId(id);
+        return list.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     @GetMapping("/category/{categoryId}")
-    public List<SongDTO> getByTitle(@PathVariable("categoryId") Long id) {
-        //Todo
-        return Collections.emptyList();
+    public List<SongDTO> getByCategory(@PathVariable("categoryId") Long id) {
+        var list = (List<Song>) service.findByCategoryId(id);
+        return list.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    @GetMapping("/tag/{tagId}")
+    public List<SongDTO> getByTag(@PathVariable("tagId") Long id) {
+        var list = (List<Song>) service.findByTagId(id);
+        return list.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     @GetMapping("/id/{id}/ratings")

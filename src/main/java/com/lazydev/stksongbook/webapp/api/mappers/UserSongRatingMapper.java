@@ -12,6 +12,7 @@ public interface UserSongRatingMapper {
 
     @Mapping(target="userRating", source = "rating")
     @Mapping(target = "songId", source = "entity.song.id")
+    @Mapping(target = "userId", source = "entity.user.id")
     UserSongRatingDTO usersSongsRatingsEntityToUserSongRatingDTO(UserSongRating entity);
 
     @Mapping(target="rating", source = "userRating")
