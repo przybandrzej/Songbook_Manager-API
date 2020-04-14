@@ -24,7 +24,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(exclude = "songs")
-//@EntityListeners(AuditingEntityListener.class)
 public class Playlist {
 
   /**
@@ -66,6 +65,10 @@ public class Playlist {
   @ManyToMany(cascade = CascadeType.ALL)
   @JoinTable(name = "playlists_songs", joinColumns = @JoinColumn(name = "playlist_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
   private Set<Song> songs;
+
+  public void addSong(Song song) {
+    songs.add(song);
+  }
 
   // TODO add list of co-owners (or subscribers)
   // TODO add an order of songs

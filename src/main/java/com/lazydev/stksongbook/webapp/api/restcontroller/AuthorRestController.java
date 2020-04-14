@@ -3,11 +3,13 @@ package com.lazydev.stksongbook.webapp.api.restcontroller;
 import com.lazydev.stksongbook.webapp.api.dto.AuthorDTO;
 import com.lazydev.stksongbook.webapp.api.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.api.mappers.AuthorMapper;
+import com.lazydev.stksongbook.webapp.api.mappers.SongMapper;
 import com.lazydev.stksongbook.webapp.api.restcontroller.events.ResourceCreated;
 import com.lazydev.stksongbook.webapp.api.restcontroller.events.SingleResourceRetrieved;
 import com.lazydev.stksongbook.webapp.data.model.Author;
 import com.lazydev.stksongbook.webapp.data.service.AuthorService;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,13 +35,16 @@ public class AuthorRestController {
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
     public List<AuthorDTO> getAll(HttpServletResponse response){
-        List<Author> list = (List<Author>) service.findAll();
         //eventPublisher.publishEvent(new SingleResourceRetrieved(this, response));
-        return list.stream().map(this::convertToDto).collect(Collectors.toList());
+        return service.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     @GetMapping("/id/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
     public AuthorDTO getById(@PathVariable("id") Long id, HttpServletResponse response) {
         Optional<Author> optAuthor = service.findById(id);
 
@@ -47,36 +52,31 @@ public class AuthorRestController {
         return optAuthor.map(this::convertToDto).orElse(null);
     }
 
-    @GetMapping("/id/{id}/songs")
-    @ResponseBody
-    public List<SongDTO> getAuthorSongs(@PathVariable("id") Long id, HttpServletResponse response) {
-        //Todo
-        return Collections.emptyList();
-    }
-
     @GetMapping("/name/{name}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
     public List<AuthorDTO> getByName(@PathVariable("name") String name, HttpServletResponse response) {
-        List<Author> list = (List<Author>) service.findByName(name);
-
-        eventPublisher.publishEvent(new SingleResourceRetrieved(this, response));
-        return list.stream().map(this::convertToDto).collect(Collectors.toList());
+        //eventPublisher.publishEvent(new SingleResourceRetrieved(this, response));
+        return service.findByName(name).stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
     public AuthorDTO create(@RequestBody AuthorDTO authorDto, HttpServletResponse response) {
         //Preconditions.checkNotNull(authorDto);
         Author author = convertToEntity(authorDto);
         Author created = service.save(author);
 
-        eventPublisher.publishEvent(new ResourceCreated(this, response, created.getId()));
+        //eventPublisher.publishEvent(new ResourceCreated(this, response, created.getId()));
         return convertToDto(created);
     }
 
     @PutMapping("/id/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody AuthorDTO authorDto) {
+    public void update(@PathVariable("id") Long id, @RequestBody AuthorDTO authorDto) {
         Author author = convertToEntity(authorDto);
+        author.setId(id);
         service.save(author);
     }
 

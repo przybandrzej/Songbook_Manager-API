@@ -26,39 +26,40 @@ public class CategoryRestController {
     }
 
     @GetMapping
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     public List<CategoryDTO> getAll(){
-        List<Category> categories = (List<Category>) service.findAll();
-        return categories.stream().map(this::convertToDto).collect(Collectors.toList());
+        return service.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     @GetMapping("/id/{id}")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     public CategoryDTO getById(@PathVariable("id") Long id) {
         Optional<Category> object =  service.findById(id);
         return object.map(this::convertToDto).orElse(null);
     }
 
     @GetMapping("/name/{name}")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     public List<CategoryDTO> getByName(@PathVariable("name") String name){
-        List<Category> list = (List<Category>) service.findByName(name);
-        return list.stream().map(this::convertToDto).collect(Collectors.toList());
-    }
-
-    @GetMapping("/id/{id}/songs")
-    public List<CategoryDTO> getCategorySongs(@PathVariable("id") Long id){
-        //Todo
-        return Collections.emptyList();
+        return service.findByName(name).stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
     public CategoryDTO create(@RequestBody CategoryDTO categoryDto) {
         return convertToDto(service.save(convertToEntity(categoryDto)));
     }
 
     @PutMapping("/id/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody CategoryDTO categoryDto) {
-        service.save(convertToEntity(categoryDto));
+    public void update(@PathVariable("id") Long id, @RequestBody CategoryDTO categoryDto) {
+        var category = convertToEntity(categoryDto);
+        category.setId(id);
+        service.save(category);
     }
 
     @DeleteMapping("/id/{id}")

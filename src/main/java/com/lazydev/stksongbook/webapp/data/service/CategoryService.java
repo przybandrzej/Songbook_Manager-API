@@ -14,23 +14,18 @@ import java.util.Optional;
 @AllArgsConstructor
 public class CategoryService {
 
-    @Autowired
     private CategoryRepository dao;
 
     public Optional<Category> findById(Long id) {
         return dao.findById(id);
     }
 
-    public Iterable<Category> findByName(String name) {
-        List<Category> list = new ArrayList<>();
-        for (Category element : dao.findAll()) {
-            if(element.getName().equals(name)) list.add(element);
-        }
-        return list;
+    public List<Category> findAll() {
+        return dao.findAll();
     }
 
-    public Iterable<Category> findAll() {
-        return dao.findAll();
+    public List<Category> findByName(String name) {
+        return dao.findByName(name);
     }
 
     public Category save(Category saveAuthor) {

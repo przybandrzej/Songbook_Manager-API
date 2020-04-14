@@ -1,13 +1,10 @@
 package com.lazydev.stksongbook.webapp.data.service;
 
 import com.lazydev.stksongbook.webapp.data.model.Author;
-import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.data.repository.AuthorRepository;
-import com.lazydev.stksongbook.webapp.data.repository.SongRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,9 +13,8 @@ import java.util.Optional;
 public class AuthorService {
 
     private AuthorRepository authorRepository;
-    private SongRepository songRepository;
 
-    public Iterable<Author> findAll() {
+    public List<Author> findAll() {
         return authorRepository.findAll();
     }
 
@@ -26,13 +22,8 @@ public class AuthorService {
         return authorRepository.findById(id);
     }
 
-    public Iterable<Author> findByName(String name) {
+    public List<Author> findByName(String name) {
         return authorRepository.findByName(name);
-    }
-
-    //TODO
-    public Iterable<Song> findAuthorSongs(Long id) {
-        return null;
     }
 
     public Author save(Author saveAuthor) {

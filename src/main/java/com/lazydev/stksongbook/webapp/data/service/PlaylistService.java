@@ -1,7 +1,9 @@
 package com.lazydev.stksongbook.webapp.data.service;
 
+import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.data.repository.PlaylistRepository;
 import com.lazydev.stksongbook.webapp.data.model.Playlist;
+import com.lazydev.stksongbook.webapp.data.repository.SongRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,66 +11,62 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
 public class PlaylistService {
 
-    @Autowired
     private PlaylistRepository dao;
+    private SongRepository songRepository;
 
     public Optional<Playlist> findById(Long id) {
         return dao.findById(id);
     }
 
     public Optional<Playlist> findPublicById(Long id) {
-        Optional<Playlist> var = dao.findById(id);
-        if(var.isPresent() && !var.get().isPrivate()) return var;
-        else return Optional.empty();
+        return dao.findPublicById(id);
     }
 
-    public Iterable<Playlist> findByName(String name) {
-        List<Playlist> list = new ArrayList<>();
-        for (Playlist element : dao.findAll()) {
-            if(element.getName().equals(name)) list.add(element);
-        }
-        return list;
+    public List<Playlist> findByName(String name) {
+        return dao.findAllByName(name);
     }
 
-    public Iterable<Playlist> findPublicByName(String name) {
-        List<Playlist> list = new ArrayList<>();
-        for (Playlist element : dao.findAll()) {
-            if(element.getName().equals(name) && !element.isPrivate()) list.add(element);
-        }
-        return list;
+    public List<Playlist> findPublicByName(String name) {
+        return dao.findPublicByName(name);
     }
 
-    public Iterable<Playlist> findByOwnerId(Long id) {
-        List<Playlist> list = new ArrayList<>();
-        for (Playlist element : dao.findAll()) {
-            if(element.getOwner().getId() == id) list.add(element);
-        }
-        return list;
+    public List<Playlist> findByOwnerId(Long id) {
+        return dao.findByOwner(id);
     }
 
-    public Iterable<Playlist> findPublicByOwnerId(Long id) {
-        List<Playlist> list = new ArrayList<>();
-        for (Playlist element : dao.findAll()) {
-            if(element.getOwner().getId() == id && !element.isPrivate()) list.add(element);
-        }
-        return list;
+    public List<Playlist> findPublicByOwnerId(Long id) {
+        return dao.findPublicByOwner(id);
     }
 
-    public Iterable<Playlist> findAllPublic() {
-        List<Playlist> list = new ArrayList<>();
-        for (Playlist element : dao.findAll()) {
-            if(!element.isPrivate()) list.add(element);
-        }
-        return list;
+    public List<Playlist> findAllPublic() {
+        return dao.findAllPublic();
     }
 
-    public Iterable<Playlist> findAll() {
+    public List<Playlist> findAll() {
         return dao.findAll();
+    }
+
+    public Set<Song> findAllSongs(Long playlistId) {
+        return songRepository.findSongsFromPlaylist(playlistId);
+    }
+
+    public Set<Song> findAllSongsFromPublic(Long playlistId) {
+        return songRepository.findSongsFromPublicPlaylist(playlistId);
+    }
+
+    public Set<Song> addSongToPublic(Long playlistId, Song song) {
+        songRepository.addSongToPlaylist(playlistId, song.getId());
+        return songRepository.findSongsFromPublicPlaylist(playlistId);
+    }
+
+    public void deleteSongByIdFromPublic(Long playlistId, Long songId) {
+        songRepository.deleteSongFromPlaylist(playlistId, songId);
     }
 
     public Playlist save(Playlist saveAuthor) {

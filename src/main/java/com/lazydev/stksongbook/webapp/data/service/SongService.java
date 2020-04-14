@@ -15,7 +15,6 @@ import java.util.Optional;
 @AllArgsConstructor
 public class SongService {
 
-    @Autowired
     private SongRepository dao;
 
     public Optional<Song> findById(Long id) {
