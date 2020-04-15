@@ -1,13 +1,9 @@
 package com.lazydev.stksongbook.webapp.api.restcontroller;
 
 import com.lazydev.stksongbook.webapp.api.dto.AuthorDTO;
-import com.lazydev.stksongbook.webapp.api.dto.SongAuthorDTO;
 import com.lazydev.stksongbook.webapp.api.mappers.AuthorMapper;
-import com.lazydev.stksongbook.webapp.api.mappers.SongAuthorMapper;
 import com.lazydev.stksongbook.webapp.data.model.Author;
-import com.lazydev.stksongbook.webapp.data.model.SongAuthor;
 import com.lazydev.stksongbook.webapp.data.service.AuthorService;
-import com.lazydev.stksongbook.webapp.data.service.SongAuthorService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -26,15 +22,12 @@ public class AuthorRestController {
 
   private AuthorService service;
   private AuthorMapper authorMapper;
-  private SongAuthorMapper songAuthorMapper;
-  private SongAuthorService songAuthorService;
   private ApplicationEventPublisher eventPublisher;
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public List<AuthorDTO> getAll(HttpServletResponse response) {
-    //eventPublisher.publishEvent(new SingleResourceRetrieved(this, response));
     return service.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
   }
 
@@ -44,30 +37,6 @@ public class AuthorRestController {
   public AuthorDTO getById(@PathVariable("id") Long id, HttpServletResponse response) {
     Optional<Author> optAuthor = service.findById(id);
     return optAuthor.map(this::convertToDto).orElse(null);
-  }
-
-  @GetMapping("/id/{id}/songs")
-  @ResponseStatus(HttpStatus.OK)
-  @ResponseBody
-  public List<SongAuthorDTO> getSongsAuthor(@PathVariable("id") Long id, HttpServletResponse response) {
-    List<SongAuthor> authors = songAuthorService.findByAuthorId(id);
-    return authors.stream().map(songAuthorMapper::songsAuthorsEntityToSongAuthorDTO).collect(Collectors.toList());
-  }
-
-  @GetMapping("/song/{id}")
-  @ResponseStatus(HttpStatus.OK)
-  @ResponseBody
-  public List<SongAuthorDTO> getBySong(@PathVariable("id") Long id, HttpServletResponse response) {
-    List<SongAuthor> authors = songAuthorService.findBySongId(id);
-    return authors.stream().map(songAuthorMapper::songsAuthorsEntityToSongAuthorDTO).collect(Collectors.toList());
-  }
-
-  @GetMapping("/function/{function}")
-  @ResponseStatus(HttpStatus.OK)
-  @ResponseBody
-  public List<SongAuthorDTO> getSongsAuthor(@PathVariable("function") String function, HttpServletResponse response) {
-    List<SongAuthor> authors = songAuthorService.findByFunction(function);
-    return authors.stream().map(songAuthorMapper::songsAuthorsEntityToSongAuthorDTO).collect(Collectors.toList());
   }
 
   @GetMapping("/name/{name}")
@@ -89,18 +58,6 @@ public class AuthorRestController {
     return convertToDto(created);
   }
 
-  @PostMapping("id/{id}/songs")
-  @ResponseStatus(HttpStatus.CREATED)
-  @ResponseBody
-  public SongAuthorDTO create(@PathVariable("id") Long id, @RequestBody SongAuthorDTO songAuthorDTO, HttpServletResponse response) {
-    //Preconditions.checkNotNull(authorDto);
-    SongAuthor entity = songAuthorMapper.songsAuthorsEntityDTOToSongAuthor(songAuthorDTO);
-    SongAuthor created = songAuthorService.save(entity);
-
-    //eventPublisher.publishEvent(new ResourceCreated(this, response, created.getId()));
-    return songAuthorMapper.songsAuthorsEntityToSongAuthorDTO(created);
-  }
-
   @PutMapping("/id/{id}")
   @ResponseStatus(HttpStatus.OK)
   public void update(@PathVariable("id") Long id, @RequestBody AuthorDTO authorDto) {
@@ -109,23 +66,10 @@ public class AuthorRestController {
     service.save(author);
   }
 
-  @PutMapping("/id/{id}/songs")
-  @ResponseStatus(HttpStatus.OK)
-  public void updateSong(@PathVariable("id") Long id, @RequestBody SongAuthorDTO songAuthorDTO) {
-    SongAuthor author = songAuthorMapper.songsAuthorsEntityDTOToSongAuthor(songAuthorDTO);
-    songAuthorService.save(author);
-  }
-
   @DeleteMapping("/id/{id}")
   public void delete(@PathVariable("id") Long id) {
     service.deleteById(id);
   }
-
-    @DeleteMapping("/id/{id}/songs")
-    public void deleteSong(@PathVariable("id") Long id, SongAuthorDTO songAuthorDTO) {
-      var entity = songAuthorMapper.songsAuthorsEntityDTOToSongAuthor(songAuthorDTO);
-      songAuthorService.delete(entity);
-    }
 
   public AuthorDTO convertToDto(Author author) {
     return authorMapper.authorToAuthorDTO(author);
