@@ -23,7 +23,6 @@ public class PlaylistRestController {
 
   private PlaylistService service;
   private PlaylistMapper modelMapper;
-  private SongMapper songMapper;
 
   @GetMapping
   @ResponseBody
@@ -53,25 +52,10 @@ public class PlaylistRestController {
     return service.findByOwnerId(ownerId).stream().map(this::convertToDto).collect(Collectors.toList());
   }
 
-  @GetMapping("/id/{id}/songs")
-  @ResponseBody
-  @ResponseStatus(HttpStatus.OK)
-  public Set<SongDTO> getPlaylistSongs(@PathVariable("id") Long id) {
-    return service.findAllSongsFromPublic(id).stream().map(songMapper::songToSongDTO).collect(Collectors.toSet());
-  }
-
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public PlaylistDTO create(@RequestBody PlaylistDTO playlist) {
     return convertToDto(service.save(convertToEntity(playlist)));
-  }
-
-  @PostMapping("/id/{id}/songs")
-  @ResponseStatus(HttpStatus.CREATED)
-  @ResponseBody
-  public Set<SongDTO> addSong(@PathVariable("id") Long playlistId, @RequestBody SongDTO songDTO) {
-    return service.addSongToPublic(playlistId, songMapper.songDTOToSong(songDTO))
-        .stream().map(songMapper::songToSongDTO).collect(Collectors.toSet());
   }
 
   @PutMapping("/id/{id}")
@@ -85,11 +69,6 @@ public class PlaylistRestController {
   @DeleteMapping("/id/{id}")
   public void delete(@PathVariable("id") Long id) {
     service.deleteById(id);
-  }
-
-  @DeleteMapping("/id/{id}/songs/{songId}")
-  public void deleteSong(@PathVariable("id") Long id, @PathVariable("songId") Long songId) {
-    service.deleteSongByIdFromPublic(id, songId);
   }
 
   public PlaylistDTO convertToDto(Playlist playlist) {

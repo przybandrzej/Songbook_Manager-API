@@ -70,6 +70,10 @@ public class Playlist {
     songs.add(song);
   }
 
+  public boolean removeSong(Song song) {
+    return songs.remove(song);
+  }
+
   // TODO add list of co-owners (or subscribers)
   // TODO add an order of songs
 }

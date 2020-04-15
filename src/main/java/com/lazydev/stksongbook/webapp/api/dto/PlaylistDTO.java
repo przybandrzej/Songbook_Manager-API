@@ -3,6 +3,8 @@ package com.lazydev.stksongbook.webapp.api.dto;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @EqualsAndHashCode
 public class PlaylistDTO {
@@ -12,20 +14,15 @@ public class PlaylistDTO {
     private final Long ownerId;
     private final boolean isPrivate;
     private final String creationTime;
+    private final List<Long> songs;
 
-    //private List<ListSongDTO> songs;
-    // link to self
-    // link to songs within this playlist
-    // link to all user's playlists
-    // link to user
-    // link to all playlists
-
-    private PlaylistDTO(Long id, String name, Long ownerId, boolean isPrivate, String creationTime) {
+    private PlaylistDTO(Long id, String name, Long ownerId, boolean isPrivate, String creationTime, List<Long> songs) {
         this.id = id;
         this.name = name;
         this.ownerId = ownerId;
         this.isPrivate = isPrivate;
         this.creationTime = creationTime;
+        this.songs = songs;
     }
 
     public static PlaylistDTO.Builder builder() {
@@ -38,9 +35,10 @@ public class PlaylistDTO {
         private Long ownerId;
         private boolean isPrivate;
         private String creationTime;
+        private List<Long> songs;
 
         public PlaylistDTO create() {
-            return new PlaylistDTO(id, name, ownerId, isPrivate, creationTime);
+            return new PlaylistDTO(id, name, ownerId, isPrivate, creationTime, songs);
         }
         public PlaylistDTO.Builder id(Long id) {
             this.id = id;
@@ -62,12 +60,17 @@ public class PlaylistDTO {
             this.creationTime = creationTime;
             return this;
         }
+        public PlaylistDTO.Builder songs(List<Long> songs) {
+            this.songs = songs;
+            return this;
+        }
         public PlaylistDTO.Builder copy(PlaylistDTO source) {
             this.id = source.id;
             this.name = source.name;
             this.ownerId = source.ownerId;
             this.isPrivate = source.isPrivate;
             this.creationTime = source.creationTime;
+            this.songs = List.copyOf(source.songs);
             return this;
         }
     }
