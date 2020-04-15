@@ -1,7 +1,7 @@
 package com.lazydev.stksongbook.webapp.data.service;
 
-import com.lazydev.stksongbook.webapp.data.repository.UserRepository;
 import com.lazydev.stksongbook.webapp.data.model.User;
+import com.lazydev.stksongbook.webapp.data.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,30 +14,33 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository repository;
+  private UserRepository repository;
 
-    public Optional<User> findById(Long id) {
-        return repository.findById(id);
-    }
+  public Optional<User> findById(Long id) {
+    return repository.findById(id);
+  }
 
-    public Iterable<User> findByUsername(String name) {
-        List<User> list = new ArrayList<>();
-        for (User element : repository.findAll()) {
-            if(element.getUsername().equals(name)) list.add(element);
-        }
-        return list;
+  public Iterable<User> findByUsername(String name) {
+    List<User> list = new ArrayList<>();
+    for(User element : repository.findAll()) {
+      if(element.getUsername().equals(name)) list.add(element);
     }
+    return list;
+  }
 
-    public Iterable<User> findAll() {
-        return repository.findAll();
-    }
+  public List<User> findByUserRole(Long id) {
+    return repository.findByUserRoleId(id);
+  }
 
-    public User save(User saveUser) {
-        return repository.save(saveUser);
-    }
+  public Iterable<User> findAll() {
+    return repository.findAll();
+  }
 
-    public void deleteById(Long id) {
-        repository.deleteById(id);
-    }
+  public User save(User saveUser) {
+    return repository.save(saveUser);
+  }
+
+  public void deleteById(Long id) {
+    repository.deleteById(id);
+  }
 }
