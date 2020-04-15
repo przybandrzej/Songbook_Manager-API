@@ -13,61 +13,61 @@ import java.util.Optional;
 @AllArgsConstructor
 public class SongService {
 
-  private SongRepository dao;
+  private SongRepository repository;
 
   public List<Song> findAll() {
-    return dao.findAll();
+    return repository.findAll();
   }
 
   public Optional<Song> findById(Long id) {
-    return dao.findById(id);
+    return repository.findById(id);
   }
 
   public List<Song> findByTitle(String val) {
-    return dao.findByTitle(val);
+    return repository.findByTitle(val);
   }
 
   public List<Song> findByTitleContains(String val) {
-    return dao.findByTitleContaining(val);
+    return repository.findByTitleContaining(val);
   }
 
   public List<Song> findByLyricsContains(String val) {
-    return dao.findByLyricsContaining(val);
+    return repository.findByLyricsContaining(val);
   }
 
   public List<Song> findByAuthorId(Long authorId) {
-    return dao.findByAuthorsIdAuthorId(authorId);
+    return repository.findByAuthorsIdAuthorId(authorId);
   }
 
   public List<Song> findByCategoryId(Long id) {
-    return dao.findByCategoryId(id);
+    return repository.findByCategoryId(id);
   }
 
   public List<Song> findByTagId(Long id) {
-    return dao.findByTagsId(id);
+    return repository.findByTagsId(id);
   }
 
   public List<Song> findByRatingEqualGreater(Double val) {
-    return dao.findByRatingsRatingGreaterThanEqual(val);
+    return repository.findByRatingsRatingGreaterThanEqual(val);
   }
 
   public List<Song> findByRatingEqualLess(Double val) {
-    return dao.findByRatingsRatingLessThanEqual(val);
+    return repository.findByRatingsRatingLessThanEqual(val);
   }
 
   public List<Song> findByAdditionTimeEqualGreater(LocalDateTime val) {
-    return dao.findByAdditionTimeGreaterThanEqual(val);
+    return repository.findByAdditionTimeGreaterThanEqual(val);
   }
 
   public List<Song> findByAdditionTimeEqualLess(LocalDateTime val) {
-    return dao.findByAdditionTimeLessThanEqual(val);
+    return repository.findByAdditionTimeLessThanEqual(val);
   }
 
   public Song save(Song saveSong) {
-    return dao.save(saveSong);
+    return repository.save(saveSong);
   }
 
   public void deleteById(Long id) {
-    dao.deleteById(id);
+    repository.deleteById(id);
   }
 }

@@ -1,12 +1,10 @@
 package com.lazydev.stksongbook.webapp.data.service;
 
-import com.lazydev.stksongbook.webapp.data.repository.TagRepository;
 import com.lazydev.stksongbook.webapp.data.model.Tag;
+import com.lazydev.stksongbook.webapp.data.repository.TagRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,30 +12,25 @@ import java.util.Optional;
 @AllArgsConstructor
 public class TagService {
 
-    @Autowired
-    private TagRepository dao;
+    private TagRepository repository;
 
     public Optional<Tag> findById(Long id) {
-        return dao.findById(id);
+        return repository.findById(id);
     }
 
-    public Iterable<Tag> findByName(String name) {
-        List<Tag> list = new ArrayList<>();
-        for (Tag element : dao.findAll()) {
-            if(element.getName().equals(name)) list.add(element);
-        }
-        return list;
+    public List<Tag> findByName(String name) {
+        return repository.findByName(name);
     }
 
-    public Iterable<Tag> findAll() {
-        return dao.findAll();
+    public List<Tag> findAll() {
+        return repository.findAll();
     }
 
     public Tag save(Tag saveObj) {
-        return dao.save(saveObj);
+        return repository.save(saveObj);
     }
 
     public void deleteById(Long id) {
-        dao.deleteById(id);
+        repository.deleteById(id);
     }
 }

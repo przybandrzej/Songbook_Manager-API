@@ -14,25 +14,25 @@ import java.util.Optional;
 @AllArgsConstructor
 public class CategoryService {
 
-    private CategoryRepository dao;
+    private CategoryRepository repository;
 
     public Optional<Category> findById(Long id) {
-        return dao.findById(id);
+        return repository.findById(id);
     }
 
     public List<Category> findAll() {
-        return dao.findAll();
+        return repository.findAll();
     }
 
     public List<Category> findByName(String name) {
-        return dao.findByName(name);
+        return repository.findByName(name);
     }
 
     public Category save(Category saveAuthor) {
-        return dao.save(saveAuthor);
+        return repository.save(saveAuthor);
     }
 
     public void deleteById(Long id) {
-        dao.deleteById(id);
+        repository.deleteById(id);
     }
 }

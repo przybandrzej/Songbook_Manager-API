@@ -12,45 +12,45 @@ import java.util.Optional;
 @AllArgsConstructor
 public class PlaylistService {
 
-    private PlaylistRepository dao;
+    private PlaylistRepository repository;
 
     public Optional<Playlist> findById(Long id) {
-        return dao.findById(id);
+        return repository.findById(id);
     }
 
     public Optional<Playlist> findPublicById(Long id) {
-        return dao.findPublicById(id);
+        return repository.findPublicById(id);
     }
 
     public List<Playlist> findByName(String name) {
-        return dao.findAllByName(name);
+        return repository.findAllByName(name);
     }
 
     public List<Playlist> findPublicByName(String name) {
-        return dao.findPublicByName(name);
+        return repository.findPublicByName(name);
     }
 
     public List<Playlist> findByOwnerId(Long id) {
-        return dao.findByOwner(id);
+        return repository.findByOwner(id);
     }
 
     public List<Playlist> findPublicByOwnerId(Long id) {
-        return dao.findPublicByOwner(id);
+        return repository.findPublicByOwner(id);
     }
 
     public List<Playlist> findAllPublic() {
-        return dao.findAllPublic();
+        return repository.findAllPublic();
     }
 
     public List<Playlist> findAll() {
-        return dao.findAll();
+        return repository.findAll();
     }
 
     public Playlist save(Playlist saveAuthor) {
-        return dao.save(saveAuthor);
+        return repository.save(saveAuthor);
     }
 
     public void deleteById(Long id) {
-        dao.deleteById(id);
+        repository.deleteById(id);
     }
 }

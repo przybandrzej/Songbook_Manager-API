@@ -12,17 +12,24 @@ import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/categories")
+@RequestMapping("/api")
 @AllArgsConstructor
-public class CategorySongsRestController {
+public class ExternalSongRestController {
 
   private SongService songService;
   private SongMapper songMapper;
 
-  @GetMapping("/id/{id}/songs")
+  @GetMapping("/categories/id/{id}/songs")
   @ResponseBody
   @ResponseStatus(HttpStatus.OK)
-  public List<SongDTO> getById(@PathVariable("id") Long id) {
+  public List<SongDTO> getByCategoryId(@PathVariable("id") Long id) {
     return songService.findByCategoryId(id).stream().map(songMapper::songToSongDTO).collect(Collectors.toList());
+  }
+
+  @GetMapping("/tags/id/{id}/songs")
+  @ResponseBody
+  @ResponseStatus(HttpStatus.OK)
+  public List<SongDTO> getByTagId(@PathVariable("id") Long id) {
+    return songService.findByTagId(id).stream().map(songMapper::songToSongDTO).collect(Collectors.toList());
   }
 }

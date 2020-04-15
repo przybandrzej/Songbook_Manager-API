@@ -15,29 +15,29 @@ import java.util.Optional;
 public class UserRoleService {
 
     @Autowired
-    private UserRoleRepository dao;
+    private UserRoleRepository repository;
 
     public Optional<UserRole> findById(Long id) {
-        return dao.findById(id);
+        return repository.findById(id);
     }
 
     public Iterable<UserRole> findByName(String name) {
         List<UserRole> list = new ArrayList<>();
-        for (UserRole element : dao.findAll()) {
+        for (UserRole element : repository.findAll()) {
             if(element.getName().equals(name)) list.add(element);
         }
         return list;
     }
 
     public Iterable<UserRole> findAll() {
-        return dao.findAll();
+        return repository.findAll();
     }
 
     public UserRole save(UserRole saveRole) {
-        return dao.save(saveRole);
+        return repository.save(saveRole);
     }
 
     public void deleteById(Long id) {
-        dao.deleteById(id);
+        repository.deleteById(id);
     }
 }
