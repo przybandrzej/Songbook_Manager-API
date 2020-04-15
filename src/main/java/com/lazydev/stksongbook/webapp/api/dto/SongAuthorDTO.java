@@ -11,12 +11,6 @@ public class SongAuthorDTO {
     private final Long authorId;
     private final String function;
 
-    // link to self
-    // link to this author
-    // link link to the song
-
-    // link to all SongAuthors of this song
-
     private SongAuthorDTO(Long songId, Long authorId, String function) {
         this.songId = songId;
         this.authorId = authorId;

@@ -1,16 +1,12 @@
 package com.lazydev.stksongbook.webapp.data.service;
 
 import com.lazydev.stksongbook.webapp.data.model.Playlist;
-import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.data.repository.PlaylistRepository;
-import com.lazydev.stksongbook.webapp.data.repository.SongRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @AllArgsConstructor
