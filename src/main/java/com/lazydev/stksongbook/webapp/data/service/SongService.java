@@ -21,7 +21,7 @@ public class SongService {
         return dao.findById(id);
     }
 
-    public Iterable<Song> findByTitle(String name) {
+    public List<Song> findByTitle(String name) {
         List<Song> list = new ArrayList<>();
         for (Song element : dao.findAll()) {
             if(element.getTitle().equals(name)) list.add(element);
@@ -29,19 +29,19 @@ public class SongService {
         return list;
     }
 
-    public Iterable<Song> findByAuthorId(Long authorId) {
+    public List<Song> findByAuthorId(Long authorId) {
         return dao.findByAuthorId(authorId);
     }
 
-    public Iterable<Song> findByCategoryId(Long id) {
+    public List<Song> findByCategoryId(Long id) {
         return dao.findByCategoryId(id);
     }
 
-    public Iterable<Song> findByTagId(Long id) {
+    public List<Song> findByTagId(Long id) {
         return dao.findByTagId(id);
     }
 
-    public Iterable<Song> findAll() {
+    public List<Song> findAll() {
         return dao.findAll();
     }
 
