@@ -73,7 +73,9 @@ class User {
   private String lastName;
 
   @ManyToMany(cascade = CascadeType.ALL)
-  @JoinTable(name = "users_songs", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
+  @JoinTable(name = "users_songs",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "song_id"))
   private Set<Song> songs;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

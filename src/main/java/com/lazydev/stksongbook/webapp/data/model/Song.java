@@ -79,7 +79,9 @@ public class Song {
   private Category category;
 
   @ManyToMany(cascade = CascadeType.ALL)
-  @JoinTable(name = "songs_tags", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
+  @JoinTable(name = "songs_tags",
+      joinColumns = @JoinColumn(name = "song_id"),
+      inverseJoinColumns = @JoinColumn(name = "tag_id"))
   private Set<Tag> tags;
 
   @ManyToMany(mappedBy = "songs")

@@ -1,18 +1,14 @@
 package com.lazydev.stksongbook.webapp.api.restcontroller;
 
 import com.lazydev.stksongbook.webapp.api.dto.PlaylistDTO;
-import com.lazydev.stksongbook.webapp.api.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.api.mappers.PlaylistMapper;
-import com.lazydev.stksongbook.webapp.api.mappers.SongMapper;
 import com.lazydev.stksongbook.webapp.data.model.Playlist;
 import com.lazydev.stksongbook.webapp.data.service.PlaylistService;
-import com.lazydev.stksongbook.webapp.data.service.SongService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController

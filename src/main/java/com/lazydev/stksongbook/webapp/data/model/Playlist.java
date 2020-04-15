@@ -63,7 +63,9 @@ public class Playlist {
   private LocalDateTime creationTime;
 
   @ManyToMany(cascade = CascadeType.ALL)
-  @JoinTable(name = "playlists_songs", joinColumns = @JoinColumn(name = "playlist_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
+  @JoinTable(name = "playlists_songs",
+      joinColumns = @JoinColumn(name = "playlist_id"),
+      inverseJoinColumns = @JoinColumn(name = "song_id"))
   private Set<Song> songs;
 
   public void addSong(Song song) {

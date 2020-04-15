@@ -36,7 +36,7 @@ public class Author {
   @Column(name = "name", nullable = false, unique = true)
   private String name;
 
-  @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
   private Set<SongAuthor> songs;
 
   // TODO add:
