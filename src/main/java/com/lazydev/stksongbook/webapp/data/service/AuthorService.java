@@ -1,12 +1,10 @@
 package com.lazydev.stksongbook.webapp.data.service;
 
-import com.lazydev.stksongbook.webapp.data.repository.AuthorRepository;
 import com.lazydev.stksongbook.webapp.data.model.Author;
+import com.lazydev.stksongbook.webapp.data.repository.AuthorRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,30 +12,25 @@ import java.util.Optional;
 @AllArgsConstructor
 public class AuthorService {
 
-    @Autowired
-    private AuthorRepository authorDao;
+    private AuthorRepository authorRepository;
+
+    public List<Author> findAll() {
+        return authorRepository.findAll();
+    }
 
     public Optional<Author> findById(Long id) {
-        return authorDao.findById(id);
+        return authorRepository.findById(id);
     }
 
-    public Iterable<Author> findByName(String name) {
-        List<Author> list = new ArrayList<>();
-        for (Author element : authorDao.findAll()) {
-            if(element.getName().equals(name)) list.add(element);
-        }
-        return list;
-    }
-
-    public Iterable<Author> findAll() {
-        return authorDao.findAll();
+    public List<Author> findByName(String name) {
+        return authorRepository.findByNameIgnoreCase(name);
     }
 
     public Author save(Author saveAuthor) {
-        return authorDao.save(saveAuthor);
+        return authorRepository.save(saveAuthor);
     }
 
     public void deleteById(Long id) {
-        authorDao.deleteById(id);
+        authorRepository.deleteById(id);
     }
 }

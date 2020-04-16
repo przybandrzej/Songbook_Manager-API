@@ -24,7 +24,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(exclude = "songs")
-//@EntityListeners(AuditingEntityListener.class)
 public class Playlist {
 
   /**
@@ -60,12 +59,22 @@ public class Playlist {
   /**
    * @param creationTime stores the date and time of the playlist's creation.
    */
-  @Column(name = "creation_time", nullable = false)
+  @Column(name = "creation_time", nullable = false, columnDefinition = "TIMESTAMP default NOW()")
   private LocalDateTime creationTime;
 
   @ManyToMany(cascade = CascadeType.ALL)
-  @JoinTable(name = "playlists_songs", joinColumns = @JoinColumn(name = "playlist_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
+  @JoinTable(name = "playlists_songs",
+      joinColumns = @JoinColumn(name = "playlist_id"),
+      inverseJoinColumns = @JoinColumn(name = "song_id"))
   private Set<Song> songs;
+
+  public void addSong(Song song) {
+    songs.add(song);
+  }
+
+  public boolean removeSong(Song song) {
+    return songs.remove(song);
+  }
 
   // TODO add list of co-owners (or subscribers)
   // TODO add an order of songs

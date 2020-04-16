@@ -1,13 +1,11 @@
 package com.lazydev.stksongbook.webapp.data.service;
 
-import com.lazydev.stksongbook.webapp.data.repository.SongRepository;
 import com.lazydev.stksongbook.webapp.data.model.Song;
-import com.lazydev.stksongbook.webapp.data.model.SongAuthor;
+import com.lazydev.stksongbook.webapp.data.repository.SongRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,57 +13,61 @@ import java.util.Optional;
 @AllArgsConstructor
 public class SongService {
 
-    @Autowired
-    private SongRepository dao;
+  private SongRepository repository;
 
-    public Optional<Song> findById(Long id) {
-        return dao.findById(id);
-    }
+  public List<Song> findAll() {
+    return repository.findAll();
+  }
 
-    public Iterable<Song> findByTitle(String name) {
-        List<Song> list = new ArrayList<>();
-        for (Song element : dao.findAll()) {
-            if(element.getTitle().equals(name)) list.add(element);
-        }
-        return list;
-    }
+  public Optional<Song> findById(Long id) {
+    return repository.findById(id);
+  }
 
-    public Iterable<Song> findByAuthorId(Long authorId) {
-        List<Song> list = new ArrayList<>();
-        for (Song element : dao.findAll()) {
-            for(SongAuthor author : element.getAuthors())
-                if(author.getAuthor().getId().equals(authorId)) list.add(element);
-        }
-        return list;
-    }
+  public List<Song> findByTitle(String val) {
+    return repository.findByTitleIgnoreCase(val);
+  }
 
-    public Iterable<Song> findByCategoryId(Long id) {
-        List<Song> list = new ArrayList<>();
-        for (Song element : dao.findAll()) {
-            if(element.getCategory().getId().equals(id)) list.add(element);
-        }
-        return list;
-    }
+  public List<Song> findByTitleContains(String val) {
+    return repository.findByTitleContainingIgnoreCase(val);
+  }
 
-    // TODO addtags to songs
-    // TODO Add searching by multiple tags
-    /*public Iterable<Song> findByTag(String name) {
-        List<Song> list = new ArrayList<>();
-        for (Song element : dao.findAll()) {
-            if(element.getTitle().equals(name)) list.add(element);
-        }
-        return list;
-    }*/
+  public List<Song> findByLyricsContains(String val) {
+    return repository.findByLyricsContainingIgnoreCase(val);
+  }
 
-    public Iterable<Song> findAll() {
-        return dao.findAll();
-    }
+  public List<Song> findByAuthorId(Long authorId) {
+    return repository.findByAuthorsIdAuthorId(authorId);
+  }
 
-    public Song save(Song saveSong) {
-        return dao.save(saveSong);
-    }
+  public List<Song> findByCategoryId(Long id) {
+    return repository.findByCategoryId(id);
+  }
 
-    public void deleteById(Long id) {
-        dao.deleteById(id);
-    }
+  public List<Song> findByTagId(Long id) {
+    return repository.findByTagsId(id);
+  }
+
+  public List<Song> findByRatingEqualGreater(Double val) {
+    return repository.findByRatingsRatingGreaterThanEqual(val);
+  }
+
+  public List<Song> findByRatingEqualLess(Double val) {
+    return repository.findByRatingsRatingLessThanEqual(val);
+  }
+
+  public List<Song> findByAdditionTimeEqualGreater(LocalDateTime val) {
+    return repository.findByAdditionTimeGreaterThanEqual(val);
+  }
+
+  public List<Song> findByAdditionTimeEqualLess(LocalDateTime val) {
+    return repository.findByAdditionTimeLessThanEqual(val);
+  }
+
+  public Song save(Song saveSong) {
+    return repository.save(saveSong);
+  }
+
+  public void deleteById(Long id) {
+    repository.deleteById(id);
+  }
 }

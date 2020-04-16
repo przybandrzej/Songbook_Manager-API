@@ -22,7 +22,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(exclude = {"usersSongs", "playlists", "ratings"})
-//@EntityListeners(AuditingEntityListener.class)
 public class Song {
 
   /**
@@ -68,7 +67,7 @@ public class Song {
   /**
    * @param addition_time stores the date and time of the song's insertion to the database.
    */
-  @Column(name = "addition_time", nullable = false)
+  @Column(name = "addition_time", nullable = false, columnDefinition = "TIMESTAMP default NOW()")
   private LocalDateTime additionTime;
 
   /**
@@ -80,7 +79,9 @@ public class Song {
   private Category category;
 
   @ManyToMany(cascade = CascadeType.ALL)
-  @JoinTable(name = "songs_tags", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
+  @JoinTable(name = "songs_tags",
+      joinColumns = @JoinColumn(name = "song_id"),
+      inverseJoinColumns = @JoinColumn(name = "tag_id"))
   private Set<Tag> tags;
 
   @ManyToMany(mappedBy = "songs")

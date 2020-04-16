@@ -20,7 +20,7 @@ import java.util.Set;
 @Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
-@Check(constraints = "length(password) >= 6 AND length(username) >= 4 AND length(login) >= 5")
+@Check(constraints = "length(password) >= 6 AND length(username) >= 4")
 @EqualsAndHashCode(exclude = "playlists")
 //@EntityListeners(AuditingEntityListener.class)
 public @Data
@@ -37,8 +37,8 @@ class User {
   /**
    * @param login must be unique. It is used for logging in to the database and the application.
    */
-  @Column(name = "login", nullable = false, unique = true)
-  private String login;
+  @Column(name = "e_mail", nullable = false, unique = true)
+  private String email;
 
   /**
    * @param password must be at least 5 characters. It is used for logging in to the database and the application.
@@ -73,7 +73,9 @@ class User {
   private String lastName;
 
   @ManyToMany(cascade = CascadeType.ALL)
-  @JoinTable(name = "users_songs", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
+  @JoinTable(name = "users_songs",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "song_id"))
   private Set<Song> songs;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
