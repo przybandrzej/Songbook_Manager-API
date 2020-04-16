@@ -1,12 +1,10 @@
 package com.lazydev.stksongbook.webapp.data.service;
 
-import com.lazydev.stksongbook.webapp.data.repository.UserRepository;
 import com.lazydev.stksongbook.webapp.data.model.User;
+import com.lazydev.stksongbook.webapp.data.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,30 +12,33 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository dao;
+  private UserRepository repository;
 
-    public Optional<User> findById(Long id) {
-        return dao.findById(id);
-    }
+  public Optional<User> findById(Long id) {
+    return repository.findById(id);
+  }
 
-    public Iterable<User> findByUsername(String name) {
-        List<User> list = new ArrayList<>();
-        for (User element : dao.findAll()) {
-            if(element.getUsername().equals(name)) list.add(element);
-        }
-        return list;
-    }
+  public Optional<User> findByUsername(String name) {
+    return repository.findByUsername(name);
+  }
 
-    public Iterable<User> findAll() {
-        return dao.findAll();
-    }
+  public List<User> findByUsernameContains(String text) {
+    return repository.findByUsernameContaining(text);
+  }
 
-    public User save(User saveUser) {
-        return dao.save(saveUser);
-    }
+  public List<User> findByUserRole(Long id) {
+    return repository.findByUserRoleId(id);
+  }
 
-    public void deleteById(Long id) {
-        dao.deleteById(id);
-    }
+  public List<User> findAll() {
+    return repository.findAll();
+  }
+
+  public User save(User saveUser) {
+    return repository.save(saveUser);
+  }
+
+  public void deleteById(Long id) {
+    repository.deleteById(id);
+  }
 }

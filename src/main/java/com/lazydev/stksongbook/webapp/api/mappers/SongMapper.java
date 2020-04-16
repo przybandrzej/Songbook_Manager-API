@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", uses = {Tag.class}, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@Mapper(componentModel = "spring", uses = {Tag.class, SongAuthorMapper.class}, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 @DecoratedWith(SongMapperDecorator.class)
 public interface SongMapper {
 

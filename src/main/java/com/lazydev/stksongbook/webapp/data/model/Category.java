@@ -39,7 +39,7 @@ public class Category {
   @Column(name = "name", nullable = false, unique = true)
   private String name;
 
-  @OneToMany(mappedBy = "category")
+  @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
   private Set<Song> songs;
 
   // TODO add a category-marker (or icon/color)
