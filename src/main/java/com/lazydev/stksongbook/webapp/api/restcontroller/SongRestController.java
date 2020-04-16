@@ -1,7 +1,13 @@
 package com.lazydev.stksongbook.webapp.api.restcontroller;
 
+import com.lazydev.stksongbook.webapp.api.dto.PlaylistDTO;
 import com.lazydev.stksongbook.webapp.api.dto.SongDTO;
+import com.lazydev.stksongbook.webapp.api.dto.UserDTO;
+import com.lazydev.stksongbook.webapp.api.dto.UserSongRatingDTO;
+import com.lazydev.stksongbook.webapp.api.mappers.PlaylistMapper;
 import com.lazydev.stksongbook.webapp.api.mappers.SongMapper;
+import com.lazydev.stksongbook.webapp.api.mappers.UserMapper;
+import com.lazydev.stksongbook.webapp.api.mappers.UserSongRatingMapper;
 import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.data.service.SongService;
 import lombok.AllArgsConstructor;
@@ -9,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -19,6 +26,9 @@ public class SongRestController {
 
   private SongService service;
   private SongMapper songMapper;
+  private UserSongRatingMapper userSongRatingMapper;
+  private UserMapper userMapper;
+  private PlaylistMapper playlistMapper;
 
   @GetMapping
   public List<SongDTO> getAll() {
@@ -50,23 +60,29 @@ public class SongRestController {
     return service.findByTagId(id).stream().map(this::convertToDto).collect(Collectors.toList());
   }
 
-  /*@GetMapping("/id/{id}/ratings")
-  public List<UserSongRatingDTO> getSongRatings(@PathVariable("id") Long id) {
-    //Todo
-      return Collections.emptyList();
-  }*/
+  @GetMapping("/id/{id}/ratings")
+  public Set<UserSongRatingDTO> getSongRatings(@PathVariable("id") Long id) {
+    return service.findById(id)
+        .map(song -> song.getRatings()
+            .stream().map(userSongRatingMapper::usersSongsRatingsEntityToUserSongRatingDTO).collect(Collectors.toSet()))
+        .orElse(null);
+  }
 
-  /*@GetMapping("/id/{id}/user_libs")
-  public List<UserDTO> getSongLibraries(@PathVariable("id") Long id) {
-    //Todo
-    return Collections.emptyList();
-  }*/
+  @GetMapping("/id/{id}/users")
+  public Set<UserDTO> getSongUserLibraries(@PathVariable("id") Long id) {
+    return service.findById(id)
+        .map(song -> song.getUsersSongs()
+            .stream().map(userMapper::userToUserDTO).collect(Collectors.toSet()))
+        .orElse(null);
+  }
 
-  /*@GetMapping("/id/{id}/playlists")
-  public List<PlaylistDTO> getSongPlaylists(@PathVariable("id") Long id) {
-    //Todo
-    return Collections.emptyList();
-  }*/
+  @GetMapping("/id/{id}/playlists")
+  public Set<PlaylistDTO> getSongPlaylists(@PathVariable("id") Long id) {
+    return service.findById(id)
+        .map(song -> song.getPlaylists()
+            .stream().map(playlistMapper::playlistToPlaylistDTO).collect(Collectors.toSet()))
+        .orElse(null);
+  }
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)

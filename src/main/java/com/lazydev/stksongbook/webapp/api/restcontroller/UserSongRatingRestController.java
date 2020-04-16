@@ -2,7 +2,6 @@ package com.lazydev.stksongbook.webapp.api.restcontroller;
 
 import com.lazydev.stksongbook.webapp.api.dto.UserSongRatingDTO;
 import com.lazydev.stksongbook.webapp.api.mappers.UserSongRatingMapper;
-import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.data.model.UserSongRating;
 import com.lazydev.stksongbook.webapp.data.service.UserSongRatingService;
 import lombok.AllArgsConstructor;
@@ -39,7 +38,6 @@ public class UserSongRatingRestController {
         .collect(Collectors.toList());
   }
 
-  //TODO
   @GetMapping("/user_song/{userId}/{songId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
