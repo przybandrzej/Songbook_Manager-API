@@ -29,35 +29,10 @@ After this application I will create an Android app that will be connected to th
 ## Getting Started
  * The API on Heroku: https://stk-songbook.herokuapp.com/
 
-### How to use the API (outdated)
-Refer to the following endpoints:
-* Authors:
-   * all : /api/authors
-   * one by ID: /api/authors/id/{id}
-   * all matching the name (usually one): /api/authors/name/{name}
- * Songs:
-   * all : /api/songs
-   * one by ID: /api/songs/id/{id}
-   * all matching the title: /api/songs/title/{title}
-   * all matching the author: /api/songs/author/{authorId}
-   * all matching the category: /api/songs/category/{categoryId}
- * Tags:
-   * all : /api/tags
-   * one by ID: /api/tags/id/{id}
-   * all matching the name (usually one): /api/tags/name/{name}
- * Categories:
-   * all : /api/categories
-   * one by ID: /api/categories/id/{id}
-   * all matching the name (usually one): /api/categories/name/{name}
- * Playlists (only the ones with 'public' marker):
-   * all : /api/playlists
-   * one by ID: /api/playlists/id/{id}
-   * all matching the name: /api/playlists/name/{name}
-   * all matching the owner: /api/playlists/owner/{ownerId}
- * UserRoles:
-   * all : /api/user_roles
-   * one by ID: /api/user_roles/id/{id}
-   * all matching the name: /api/user_roles/name/{name}
+### How to use the API
+
+Full documentation is available on the server (the main page redirects directly to the documentation).
+
 
 ## Built With
 * [Java 13]()
