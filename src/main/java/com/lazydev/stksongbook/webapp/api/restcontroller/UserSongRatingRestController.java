@@ -39,7 +39,8 @@ public class UserSongRatingRestController {
         .collect(Collectors.toList());
   }
 
-  @GetMapping("/user_song/{userId},{songId}")
+  //TODO
+  @GetMapping("/user_song/{userId}/{songId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public UserSongRatingDTO getByUserIdAndSongId(
