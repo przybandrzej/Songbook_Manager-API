@@ -39,7 +39,7 @@ public class UserRoleRestController {
   }
 
   @GetMapping("/id/{id}/users")
-  public List<UserDTO> getRoleUsers(@PathVariable("id") Long id) {
+  public List<UserDTO> getUsersByRoleId(@PathVariable("id") Long id) {
     return service.findById(id)
         .map(userRole -> userRole.getUsers().stream().map(userMapper::userToUserDTO).collect(Collectors.toList()))
         .orElse(null);

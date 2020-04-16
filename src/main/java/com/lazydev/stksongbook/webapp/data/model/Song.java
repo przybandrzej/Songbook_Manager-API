@@ -67,7 +67,7 @@ public class Song {
   /**
    * @param addition_time stores the date and time of the song's insertion to the database.
    */
-  @Column(name = "addition_time", nullable = false)
+  @Column(name = "addition_time", nullable = false, columnDefinition = "TIMESTAMP default NOW()")
   private LocalDateTime additionTime;
 
   /**

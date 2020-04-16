@@ -24,7 +24,7 @@ public class UserSongRatingRestController {
   @GetMapping("/user/{id}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public List<UserSongRatingDTO> findByUserId(@PathVariable("id") Long userId) {
+  public List<UserSongRatingDTO> getByUserId(@PathVariable("id") Long userId) {
     return service.findByUserId(userId)
         .stream().map(mapper::usersSongsRatingsEntityToUserSongRatingDTO)
         .collect(Collectors.toList());
@@ -33,7 +33,7 @@ public class UserSongRatingRestController {
   @GetMapping("/song/{id}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public List<UserSongRatingDTO> findBySongId(@PathVariable("id") Long songId) {
+  public List<UserSongRatingDTO> getBySongId(@PathVariable("id") Long songId) {
     return service.findBySongId(songId).stream()
         .map(mapper::usersSongsRatingsEntityToUserSongRatingDTO)
         .collect(Collectors.toList());
@@ -42,7 +42,7 @@ public class UserSongRatingRestController {
   @GetMapping("/user_song/{userId},{songId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public UserSongRatingDTO findByUserAndSongId(
+  public UserSongRatingDTO getByUserIdAndSongId(
       @PathVariable("userId") Long userId, @PathVariable("songId") Long songId) {
     return service.findByUserIdAndSongId(userId, songId)
         .map(mapper::usersSongsRatingsEntityToUserSongRatingDTO)
@@ -52,7 +52,7 @@ public class UserSongRatingRestController {
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public List<UserSongRatingDTO> findByRatingEqual(
+  public List<UserSongRatingDTO> getAll(
       @RequestParam(value = "greaterThanEqual", required = false) Double greaterValue,
       @RequestParam(value = "lessThanEqual", required = false) Double lessValue,
       @RequestParam(value = "equal", required = false) Double value) {

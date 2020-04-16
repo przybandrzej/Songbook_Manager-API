@@ -41,7 +41,7 @@ public class TagRestController {
     @GetMapping("/id/{id}/songs")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<SongDTO> getByTagId(@PathVariable("id") Long id) {
+    public List<SongDTO> getSongsByTagId(@PathVariable("id") Long id) {
         return service.findById(id)
             .map(tag -> tag.getSongs().stream().map(songMapper::songToSongDTO).collect(Collectors.toList()))
             .orElse(null);

@@ -20,7 +20,7 @@ import java.util.Set;
 @Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
-@Check(constraints = "length(password) >= 6 AND length(username) >= 4 AND length(login) >= 5")
+@Check(constraints = "length(password) >= 6 AND length(username) >= 4")
 @EqualsAndHashCode(exclude = "playlists")
 //@EntityListeners(AuditingEntityListener.class)
 public @Data

@@ -24,7 +24,7 @@ public class SongAuthorRestController {
   @GetMapping("/id/{id}/songs")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public List<SongAuthorDTO> getSongsAuthor(@PathVariable("id") Long id, HttpServletResponse response) {
+  public List<SongAuthorDTO> getAuthorSongs(@PathVariable("id") Long id, HttpServletResponse response) {
     List<SongAuthor> authors = songAuthorService.findByAuthorId(id);
     return authors.stream().map(songAuthorMapper::songsAuthorsEntityToSongAuthorDTO).collect(Collectors.toList());
   }
@@ -32,7 +32,7 @@ public class SongAuthorRestController {
   @GetMapping("/song/{id}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public List<SongAuthorDTO> getBySong(@PathVariable("id") Long id, HttpServletResponse response) {
+  public List<SongAuthorDTO> getBySongId(@PathVariable("id") Long id, HttpServletResponse response) {
     List<SongAuthor> authors = songAuthorService.findBySongId(id);
     return authors.stream().map(songAuthorMapper::songsAuthorsEntityToSongAuthorDTO).collect(Collectors.toList());
   }
@@ -45,6 +45,7 @@ public class SongAuthorRestController {
     return authors.stream().map(songAuthorMapper::songsAuthorsEntityToSongAuthorDTO).collect(Collectors.toList());
   }
 
+  //TODO
   /*@PostMapping("id/{id}/songs")
   @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody

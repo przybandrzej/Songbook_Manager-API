@@ -49,7 +49,7 @@ public class CategoryRestController {
   @GetMapping("/id/{id}/songs")
   @ResponseBody
   @ResponseStatus(HttpStatus.OK)
-  public List<SongDTO> getByCategoryId(@PathVariable("id") Long id) {
+  public List<SongDTO> getSongsByCategoryId(@PathVariable("id") Long id) {
     var tmp = service.findById(id);
     return tmp.map(category -> category.getSongs().stream().map(songMapper::songToSongDTO).collect(Collectors.toList()))
         .orElse(null);

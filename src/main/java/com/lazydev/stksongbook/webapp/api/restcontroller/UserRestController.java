@@ -37,7 +37,7 @@ public class UserRestController {
     }
 
     @GetMapping("/id/{id}/ratings")
-    public List<UserSongRatingDTO> getUserRatings(@PathVariable("id") Long id) {
+    public List<UserSongRatingDTO> getRatingsByUserId(@PathVariable("id") Long id) {
         return userService.findById(id)
             .map(user -> user.getUserRatings().stream()
                 .map(userSongRatingMapper::usersSongsRatingsEntityToUserSongRatingDTO).collect(Collectors.toList()))
@@ -45,7 +45,7 @@ public class UserRestController {
     }
 
     @GetMapping("/id/{id}/playlists")
-    public List<PlaylistDTO> getUserPlaylists(@PathVariable("id") Long id) {
+    public List<PlaylistDTO> getPlaylistsByUserId(@PathVariable("id") Long id) {
         return userService.findById(id)
             .map(user -> user.getPlaylists().stream()
                 .map(playlistMapper::playlistToPlaylistDTO).collect(Collectors.toList()))
