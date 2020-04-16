@@ -1,6 +1,7 @@
 package com.lazydev.stksongbook.webapp.api.restcontroller;
 
 import com.lazydev.stksongbook.webapp.api.dto.AuthorDTO;
+import com.lazydev.stksongbook.webapp.api.dto.SongAuthorDTO;
 import com.lazydev.stksongbook.webapp.api.mappers.AuthorMapper;
 import com.lazydev.stksongbook.webapp.data.model.Author;
 import com.lazydev.stksongbook.webapp.data.service.AuthorService;

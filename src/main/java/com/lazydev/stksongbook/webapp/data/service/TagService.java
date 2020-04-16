@@ -19,7 +19,7 @@ public class TagService {
     }
 
     public List<Tag> findByName(String name) {
-        return repository.findByName(name);
+        return repository.findByNameIgnoreCase(name);
     }
 
     public List<Tag> findAll() {

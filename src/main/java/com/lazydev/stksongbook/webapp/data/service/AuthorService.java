@@ -23,7 +23,7 @@ public class AuthorService {
     }
 
     public List<Author> findByName(String name) {
-        return authorRepository.findByName(name);
+        return authorRepository.findByNameIgnoreCase(name);
     }
 
     public Author save(Author saveAuthor) {

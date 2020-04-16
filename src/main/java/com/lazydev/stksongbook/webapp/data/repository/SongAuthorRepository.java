@@ -9,5 +9,5 @@ public interface SongAuthorRepository extends JpaRepository<SongAuthor, Long> {
 
   List<SongAuthor> findBySongId(Long id);
   List<SongAuthor> findByAuthorId(Long id);
-  List<SongAuthor> findByFunction(String function);
+  List<SongAuthor> findByFunctionIgnoreCase(String function);
 }

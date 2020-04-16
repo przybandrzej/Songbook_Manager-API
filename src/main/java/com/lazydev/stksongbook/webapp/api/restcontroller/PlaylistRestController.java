@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class PlaylistRestController {
 
+  public static final boolean SEARCH_PRIVATE = false;
+
   private PlaylistService service;
   private PlaylistMapper modelMapper;
 
@@ -24,28 +26,28 @@ public class PlaylistRestController {
   @ResponseBody
   @ResponseStatus(HttpStatus.OK)
   public List<PlaylistDTO> getAll() {
-    return service.findAllPublic().stream().map(this::convertToDto).collect(Collectors.toList());
+    return service.findAll(SEARCH_PRIVATE).stream().map(this::convertToDto).collect(Collectors.toList());
   }
 
   @GetMapping("/id/{id}")
   @ResponseBody
   @ResponseStatus(HttpStatus.OK)
   public PlaylistDTO getById(@PathVariable("id") Long id) {
-    return service.findPublicById(id).map(this::convertToDto).orElse(null);
+    return service.findById(id, SEARCH_PRIVATE).map(this::convertToDto).orElse(null);
   }
 
   @GetMapping("/name/{name}")
   @ResponseBody
   @ResponseStatus(HttpStatus.OK)
   public List<PlaylistDTO> getByName(@PathVariable("name") String name) {
-    return service.findPublicByName(name).stream().map(this::convertToDto).collect(Collectors.toList());
+    return service.findByName(name, SEARCH_PRIVATE).stream().map(this::convertToDto).collect(Collectors.toList());
   }
 
   @GetMapping("/ownerId/{id}")
   @ResponseBody
   @ResponseStatus(HttpStatus.OK)
   public List<PlaylistDTO> getByOwnerId(@PathVariable("id") Long ownerId) {
-    return service.findByOwnerId(ownerId).stream().map(this::convertToDto).collect(Collectors.toList());
+    return service.findByOwnerId(ownerId, SEARCH_PRIVATE).stream().map(this::convertToDto).collect(Collectors.toList());
   }
 
   @PostMapping

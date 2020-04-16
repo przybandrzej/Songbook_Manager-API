@@ -12,45 +12,30 @@ import java.util.Optional;
 @AllArgsConstructor
 public class PlaylistService {
 
-    private PlaylistRepository repository;
+  private PlaylistRepository repository;
 
-    public Optional<Playlist> findById(Long id) {
-        return repository.findById(id);
-    }
+  public Optional<Playlist> findById(Long id, boolean isPrivate) {
+    return repository.findByIdAndIsPrivate(id, isPrivate);
+  }
 
-    public Optional<Playlist> findPublicById(Long id) {
-        return repository.findPublicById(id);
-    }
 
-    public List<Playlist> findByName(String name) {
-        return repository.findAllByName(name);
-    }
+  public List<Playlist> findByName(String name, boolean isPrivate) {
+    return repository.findByNameIgnoreCaseAndIsPrivate(name, isPrivate);
+  }
 
-    public List<Playlist> findPublicByName(String name) {
-        return repository.findPublicByName(name);
-    }
+  public List<Playlist> findByOwnerId(Long id, boolean isPrivate) {
+    return repository.findByOwnerIdAndIsPrivate(id, isPrivate);
+  }
 
-    public List<Playlist> findByOwnerId(Long id) {
-        return repository.findByOwner(id);
-    }
+  public List<Playlist> findAll(boolean isPrivate) {
+    return repository.findByIsPrivate(isPrivate);
+  }
 
-    public List<Playlist> findPublicByOwnerId(Long id) {
-        return repository.findPublicByOwner(id);
-    }
+  public Playlist save(Playlist saveAuthor) {
+    return repository.save(saveAuthor);
+  }
 
-    public List<Playlist> findAllPublic() {
-        return repository.findAllPublic();
-    }
-
-    public List<Playlist> findAll() {
-        return repository.findAll();
-    }
-
-    public Playlist save(Playlist saveAuthor) {
-        return repository.save(saveAuthor);
-    }
-
-    public void deleteById(Long id) {
-        repository.deleteById(id);
-    }
+  public void deleteById(Long id) {
+    repository.deleteById(id);
+  }
 }

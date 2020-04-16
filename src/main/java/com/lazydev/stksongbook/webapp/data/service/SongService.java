@@ -24,15 +24,15 @@ public class SongService {
   }
 
   public List<Song> findByTitle(String val) {
-    return repository.findByTitle(val);
+    return repository.findByTitleIgnoreCase(val);
   }
 
   public List<Song> findByTitleContains(String val) {
-    return repository.findByTitleContaining(val);
+    return repository.findByTitleContainingIgnoreCase(val);
   }
 
   public List<Song> findByLyricsContains(String val) {
-    return repository.findByLyricsContaining(val);
+    return repository.findByLyricsContainingIgnoreCase(val);
   }
 
   public List<Song> findByAuthorId(Long authorId) {

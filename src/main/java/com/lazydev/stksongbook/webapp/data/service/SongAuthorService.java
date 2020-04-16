@@ -26,7 +26,7 @@ public class SongAuthorService {
   }
 
   public List<SongAuthor> findByFunction(String function) {
-    return repository.findByFunction(function);
+    return repository.findByFunctionIgnoreCase(function);
   }
 
   public SongAuthor save(SongAuthor songAuthor) {

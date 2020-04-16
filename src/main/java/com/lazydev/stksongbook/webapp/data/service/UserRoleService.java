@@ -19,7 +19,7 @@ public class UserRoleService {
   }
 
   public List<UserRole> findByName(String name) {
-    return repository.findByName(name);
+    return repository.findByNameIgnoreCase(name);
   }
 
   public List<UserRole> findAll() {

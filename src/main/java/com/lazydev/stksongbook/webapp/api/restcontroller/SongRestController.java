@@ -4,6 +4,7 @@ import com.lazydev.stksongbook.webapp.api.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.api.mappers.SongMapper;
 import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.data.service.SongService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,15 +14,11 @@ import java.util.stream.Collectors;
 @RestController
 @CrossOrigin
 @RequestMapping("/api/songs")
+@AllArgsConstructor
 public class SongRestController {
 
   private SongService service;
   private SongMapper songMapper;
-
-  public SongRestController(SongService service, SongMapper mapper) {
-    this.service = service;
-    this.songMapper = mapper;
-  }
 
   @GetMapping
   public List<SongDTO> getAll() {

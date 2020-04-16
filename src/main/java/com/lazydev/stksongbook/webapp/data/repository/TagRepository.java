@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
 
-  List<Tag> findByName(String name);
+  List<Tag> findByNameIgnoreCase(String name);
 }

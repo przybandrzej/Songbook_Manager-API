@@ -3,10 +3,8 @@ package com.lazydev.stksongbook.webapp.data.service;
 import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.data.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,19 +18,19 @@ public class UserService {
     return repository.findById(id);
   }
 
-  public Iterable<User> findByUsername(String name) {
-    List<User> list = new ArrayList<>();
-    for(User element : repository.findAll()) {
-      if(element.getUsername().equals(name)) list.add(element);
-    }
-    return list;
+  public Optional<User> findByUsername(String name) {
+    return repository.findByUsername(name);
+  }
+
+  public List<User> findByUsernameContains(String text) {
+    return repository.findByUsernameContaining(text);
   }
 
   public List<User> findByUserRole(Long id) {
     return repository.findByUserRoleId(id);
   }
 
-  public Iterable<User> findAll() {
+  public List<User> findAll() {
     return repository.findAll();
   }
 

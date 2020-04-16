@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @EqualsAndHashCode
@@ -14,9 +15,9 @@ public class PlaylistDTO {
     private final Long ownerId;
     private final boolean isPrivate;
     private final String creationTime;
-    private final List<Long> songs;
+    private final Set<Long> songs;
 
-    private PlaylistDTO(Long id, String name, Long ownerId, boolean isPrivate, String creationTime, List<Long> songs) {
+    private PlaylistDTO(Long id, String name, Long ownerId, boolean isPrivate, String creationTime, Set<Long> songs) {
         this.id = id;
         this.name = name;
         this.ownerId = ownerId;
@@ -35,7 +36,7 @@ public class PlaylistDTO {
         private Long ownerId;
         private boolean isPrivate;
         private String creationTime;
-        private List<Long> songs;
+        private Set<Long> songs;
 
         public PlaylistDTO create() {
             return new PlaylistDTO(id, name, ownerId, isPrivate, creationTime, songs);
@@ -60,7 +61,7 @@ public class PlaylistDTO {
             this.creationTime = creationTime;
             return this;
         }
-        public PlaylistDTO.Builder songs(List<Long> songs) {
+        public PlaylistDTO.Builder songs(Set<Long> songs) {
             this.songs = songs;
             return this;
         }
@@ -70,7 +71,7 @@ public class PlaylistDTO {
             this.ownerId = source.ownerId;
             this.isPrivate = source.isPrivate;
             this.creationTime = source.creationTime;
-            this.songs = List.copyOf(source.songs);
+            this.songs = source.songs;
             return this;
         }
     }

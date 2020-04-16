@@ -3,10 +3,8 @@ package com.lazydev.stksongbook.webapp.data.service;
 import com.lazydev.stksongbook.webapp.data.repository.CategoryRepository;
 import com.lazydev.stksongbook.webapp.data.model.Category;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +23,7 @@ public class CategoryService {
     }
 
     public List<Category> findByName(String name) {
-        return repository.findByName(name);
+        return repository.findByNameIgnoreCase(name);
     }
 
     public Category save(Category saveAuthor) {

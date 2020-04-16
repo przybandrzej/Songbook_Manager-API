@@ -34,16 +34,4 @@ public abstract class PlaylistMapperDecorator implements PlaylistMapper {
     playlist.setSongs(songs);
     return playlist;
   }
-
-  @Override
-  public PlaylistDTO playlistToPlaylistDTO(Playlist entity) {
-    var dto = delegate.playlistToPlaylistDTO(entity);
-    List<Long> songs = entity.getSongs().stream().map(Song::getId).collect(Collectors.toList());
-    return PlaylistDTO.builder()
-        .copy(dto)
-        .isPrivate(entity.isPrivate())
-        .ownerId(entity.getOwner().getId())
-        .songs(songs)
-        .create();
-  }
 }

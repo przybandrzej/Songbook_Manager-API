@@ -1,7 +1,9 @@
 package com.lazydev.stksongbook.webapp.api.restcontroller;
 
 import com.lazydev.stksongbook.webapp.api.dto.CategoryDTO;
+import com.lazydev.stksongbook.webapp.api.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.api.mappers.CategoryMapper;
+import com.lazydev.stksongbook.webapp.api.mappers.SongMapper;
 import com.lazydev.stksongbook.webapp.data.model.Category;
 import com.lazydev.stksongbook.webapp.data.service.CategoryService;
 import lombok.AllArgsConstructor;
@@ -20,6 +22,7 @@ public class CategoryRestController {
 
   private CategoryService service;
   private CategoryMapper modelMapper;
+  private SongMapper songMapper;
 
   @GetMapping
   @ResponseBody
@@ -41,6 +44,15 @@ public class CategoryRestController {
   @ResponseStatus(HttpStatus.OK)
   public List<CategoryDTO> getByName(@PathVariable("name") String name) {
     return service.findByName(name).stream().map(this::convertToDto).collect(Collectors.toList());
+  }
+
+  @GetMapping("/id/{id}/songs")
+  @ResponseBody
+  @ResponseStatus(HttpStatus.OK)
+  public List<SongDTO> getByCategoryId(@PathVariable("id") Long id) {
+    var tmp = service.findById(id);
+    return tmp.map(category -> category.getSongs().stream().map(songMapper::songToSongDTO).collect(Collectors.toList()))
+        .orElse(null);
   }
 
   @PostMapping

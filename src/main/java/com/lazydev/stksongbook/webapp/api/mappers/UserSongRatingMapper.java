@@ -1,13 +1,12 @@
 package com.lazydev.stksongbook.webapp.api.mappers;
 
 import com.lazydev.stksongbook.webapp.api.dto.UserSongRatingDTO;
+import com.lazydev.stksongbook.webapp.api.mappers.decorator.UserSongRatingDecorator;
 import com.lazydev.stksongbook.webapp.data.model.UserSongRating;
-import org.mapstruct.InjectionStrategy;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@DecoratedWith(UserSongRatingDecorator.class)
 public interface UserSongRatingMapper {
 
     @Mapping(target="userRating", source = "rating")
