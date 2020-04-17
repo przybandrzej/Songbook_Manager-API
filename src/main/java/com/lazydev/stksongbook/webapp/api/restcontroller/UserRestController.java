@@ -60,7 +60,7 @@ public class UserRestController {
         return convertToDto(userCreated);
     }
 
-    @PutMapping("/id/{id}")
+    @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public void update(@RequestBody UserDTO userDto) {
         User user = convertToEntity(userDto);

@@ -58,11 +58,10 @@ public class AuthorRestController {
     return convertToDto(created);
   }
 
-  @PutMapping("/id/{id}")
+  @PutMapping
   @ResponseStatus(HttpStatus.OK)
-  public void update(@PathVariable("id") Long id, @RequestBody AuthorDTO authorDto) {
+  public void update(@RequestBody AuthorDTO authorDto) {
     Author author = convertToEntity(authorDto);
-    author.setId(id);
     service.save(author);
   }
 

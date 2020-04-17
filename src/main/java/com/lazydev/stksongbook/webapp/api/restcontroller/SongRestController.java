@@ -90,7 +90,7 @@ public class SongRestController {
     return convertToDto(service.save(convertToEntity(obj)));
   }
 
-  @PutMapping("/id/{id}")
+  @PutMapping
   @ResponseStatus(HttpStatus.OK)
   public void update(@RequestBody SongDTO obj) {
     service.save(convertToEntity(obj));

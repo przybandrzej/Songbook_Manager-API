@@ -78,7 +78,7 @@ public class UserSongRatingRestController {
     return mapper.usersSongsRatingsEntityToUserSongRatingDTO(saved);
   }
 
-  @PutMapping("/id/{id}")
+  @PutMapping
   @ResponseStatus(HttpStatus.OK)
   public void update(@RequestBody UserSongRatingDTO dto) {
     UserSongRating user = mapper.usersSongsRatingsEntityDTOToUserSongRating(dto);
