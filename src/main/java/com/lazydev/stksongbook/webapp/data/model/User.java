@@ -26,6 +26,7 @@ import java.util.Set;
 public @Data
 class User {
 
+  public static final Long DEFAULT_ID = 0L;
   /**
    * @param id is the Primary Key in the table. By definition, it must be unique
    */

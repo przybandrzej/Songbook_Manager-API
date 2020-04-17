@@ -1,5 +1,6 @@
 package com.lazydev.stksongbook.webapp.api.mappers;
 
+import com.lazydev.stksongbook.webapp.api.dto.RegisterNewUserForm;
 import com.lazydev.stksongbook.webapp.api.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.api.mappers.decorator.UserMapperDecorator;
 import com.lazydev.stksongbook.webapp.data.model.Song;
@@ -10,11 +11,8 @@ import org.mapstruct.DecoratedWith;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR,
@@ -29,6 +27,8 @@ public interface UserMapper {
   @Mapping(target = "songs", ignore = true)
   @Mapping(target = "userRole", ignore = true)
   User userDTOToUser(UserDTO dto);
+
+  User registerFormToUser(RegisterNewUserForm form);
 
   default Set<Long> getIds(Set<Song> list) {
     return list.stream().map(Song::getId).collect(Collectors.toSet());

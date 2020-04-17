@@ -25,6 +25,10 @@ import java.util.Set;
 //@EntityListeners(AuditingEntityListener.class)
 public class UserRole {
 
+  public static final Long CONST_USER_ID = 1L;
+  public static final Long CONST_ADMIN_ID = 2L;
+  public static final Long CONST_MODERATOR_ID = 3L;
+
   /**
    * @param id is the Primary Key in the table. By definition, it must be unique.
    */
