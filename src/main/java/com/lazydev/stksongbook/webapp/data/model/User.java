@@ -26,11 +26,12 @@ import java.util.Set;
 public @Data
 class User {
 
+  public static final Long DEFAULT_ID = 0L;
   /**
    * @param id is the Primary Key in the table. By definition, it must be unique
    */
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private Long id;
 
@@ -72,7 +73,7 @@ class User {
   @Column(name = "last_name")
   private String lastName;
 
-  @ManyToMany(cascade = CascadeType.ALL)
+  @ManyToMany
   @JoinTable(name = "users_songs",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "song_id"))

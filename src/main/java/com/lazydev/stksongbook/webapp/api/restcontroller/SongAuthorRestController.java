@@ -45,29 +45,28 @@ public class SongAuthorRestController {
     return authors.stream().map(songAuthorMapper::songsAuthorsEntityToSongAuthorDTO).collect(Collectors.toList());
   }
 
-  //TODO
-  /*@PostMapping("id/{id}/songs")
+  @PostMapping("/functions")
   @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody
-  public SongAuthorDTO create(@PathVariable("id") Long id, @RequestBody SongAuthorDTO songAuthorDTO, HttpServletResponse response) {
+  public SongAuthorDTO create(@RequestBody SongAuthorDTO songAuthorDTO, HttpServletResponse response) {
     //Preconditions.checkNotNull(authorDto);
     SongAuthor entity = songAuthorMapper.songsAuthorsEntityDTOToSongAuthor(songAuthorDTO);
     SongAuthor created = songAuthorService.save(entity);
 
     //eventPublisher.publishEvent(new ResourceCreated(this, response, created.getId()));
     return songAuthorMapper.songsAuthorsEntityToSongAuthorDTO(created);
-  }*/
+  }
 
-  /*@PutMapping("/id/{id}/songs")
+  @PutMapping("/functions")
   @ResponseStatus(HttpStatus.OK)
-  public void updateSong(@PathVariable("id") Long id, @RequestBody SongAuthorDTO songAuthorDTO) {
+  public void update(@RequestBody SongAuthorDTO songAuthorDTO) {
     SongAuthor author = songAuthorMapper.songsAuthorsEntityDTOToSongAuthor(songAuthorDTO);
     songAuthorService.save(author);
-  }*/
+  }
 
-  /*@DeleteMapping("/id/{id}/songs")
-    public void deleteSong(@PathVariable("id") Long id, SongAuthorDTO songAuthorDTO) {
+  @DeleteMapping("/functions")
+    public void delete(@RequestBody SongAuthorDTO songAuthorDTO) {
       var entity = songAuthorMapper.songsAuthorsEntityDTOToSongAuthor(songAuthorDTO);
       songAuthorService.delete(entity);
-    }*/
+    }
 }

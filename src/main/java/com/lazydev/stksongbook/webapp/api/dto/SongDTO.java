@@ -3,9 +3,7 @@ package com.lazydev.stksongbook.webapp.api.dto;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -20,12 +18,7 @@ public class SongDTO {
     private final String guitarTabs;
     private final String curio;
     private final String additionTime;
-    private final List<Long> tagsId;
-
-    // link to self
-    // link to all songs
-    // link to all users' libraries that have this song in the library
-    // link to all public playlists that include this song
+    private final List<Long> tags;
 
     private SongDTO(Long id, Long categoryId, String title, Set<SongAuthorDTO> authors, String lyrics,
                     String guitarTabs, String curio, String additionTime, List<Long> tagsId) {
@@ -37,7 +30,7 @@ public class SongDTO {
         this.guitarTabs = guitarTabs;
         this.curio = curio;
         this.additionTime = additionTime;
-        this.tagsId = Objects.requireNonNullElseGet(tagsId, ArrayList::new);
+        this.tags = tagsId;
     }
 
     public static SongDTO.Builder builder() {

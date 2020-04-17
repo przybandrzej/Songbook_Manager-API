@@ -1,6 +1,7 @@
 package com.lazydev.stksongbook.webapp.api.restcontroller;
 
 import com.lazydev.stksongbook.webapp.api.dto.PlaylistDTO;
+import com.lazydev.stksongbook.webapp.api.dto.RegisterNewUserForm;
 import com.lazydev.stksongbook.webapp.api.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.api.dto.UserSongRatingDTO;
 import com.lazydev.stksongbook.webapp.api.mappers.PlaylistMapper;
@@ -54,13 +55,13 @@ public class UserRestController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDTO create(@RequestBody UserDTO userDto) {
-        User user = convertToEntity(userDto);
+    public UserDTO register(@RequestBody RegisterNewUserForm form) {
+        User user = modelMapper.registerFormToUser(form);
         User userCreated = userService.save(user);
         return convertToDto(userCreated);
     }
 
-    @PutMapping("/id/{id}")
+    @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public void update(@RequestBody UserDTO userDto) {
         User user = convertToEntity(userDto);

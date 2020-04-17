@@ -7,10 +7,6 @@ import lombok.Getter;
 @EqualsAndHashCode
 public class UserRoleDTO {
 
-    // link to self
-    // link to all userRoles
-    // link to all users with this role
-
     private final Long id;
     private final String name;
 

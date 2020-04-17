@@ -25,11 +25,15 @@ import java.util.Set;
 //@EntityListeners(AuditingEntityListener.class)
 public class UserRole {
 
+  public static final Long CONST_USER_ID = 1L;
+  public static final Long CONST_ADMIN_ID = 2L;
+  public static final Long CONST_MODERATOR_ID = 3L;
+
   /**
    * @param id is the Primary Key in the table. By definition, it must be unique.
    */
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private Long id;
 
@@ -39,6 +43,7 @@ public class UserRole {
   @Column(name = "name", nullable = false, unique = true)
   private String name;
 
+  //TODO Don't cascade-delete users - change their role to some default value - normal user
   @OneToMany(mappedBy = "userRole")
   private Set<User> users;
 

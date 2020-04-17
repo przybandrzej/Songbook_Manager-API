@@ -53,7 +53,7 @@ public class TagRestController {
         return convertToDto(service.save(convertToEntity(obj)));
     }
 
-    @PutMapping("/id/{id}")
+    @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public void update(@RequestBody TagDTO obj) {
         service.save(convertToEntity(obj));

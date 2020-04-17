@@ -65,14 +65,5 @@ public class PlaylistDTO {
             this.songs = songs;
             return this;
         }
-        public PlaylistDTO.Builder copy(PlaylistDTO source) {
-            this.id = source.id;
-            this.name = source.name;
-            this.ownerId = source.ownerId;
-            this.isPrivate = source.isPrivate;
-            this.creationTime = source.creationTime;
-            this.songs = source.songs;
-            return this;
-        }
     }
 }

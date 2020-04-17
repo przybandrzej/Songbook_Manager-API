@@ -41,11 +41,5 @@ public class SongAuthorDTO {
             this.function = function;
             return this;
         }
-        public SongAuthorDTO.Builder copy(SongAuthorDTO source) {
-            this.authorId = source.songId;
-            this.authorId = source.authorId;
-            this.function = source.function;
-            return this;
-        }
     }
 }

@@ -51,7 +51,7 @@ public class UserRoleRestController {
     return convertToDto(service.save(convertToEntity(obj)));
   }
 
-  @PutMapping("/id/{id}")
+  @PutMapping
   @ResponseStatus(HttpStatus.OK)
   public void update(@RequestBody UserRoleDTO obj) {
     service.save(convertToEntity(obj));
