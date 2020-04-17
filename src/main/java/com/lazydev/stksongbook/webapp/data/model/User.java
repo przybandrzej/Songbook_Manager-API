@@ -72,7 +72,7 @@ class User {
   @Column(name = "last_name")
   private String lastName;
 
-  @ManyToMany(cascade = CascadeType.ALL)
+  @ManyToMany
   @JoinTable(name = "users_songs",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "song_id"))

@@ -62,7 +62,7 @@ public class Playlist {
   @Column(name = "creation_time", nullable = false, columnDefinition = "TIMESTAMP default NOW()")
   private LocalDateTime creationTime;
 
-  @ManyToMany(cascade = CascadeType.ALL)
+  @ManyToMany
   @JoinTable(name = "playlists_songs",
       joinColumns = @JoinColumn(name = "playlist_id"),
       inverseJoinColumns = @JoinColumn(name = "song_id"))

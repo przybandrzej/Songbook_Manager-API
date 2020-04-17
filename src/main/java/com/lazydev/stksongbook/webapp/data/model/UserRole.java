@@ -39,6 +39,7 @@ public class UserRole {
   @Column(name = "name", nullable = false, unique = true)
   private String name;
 
+  //TODO Don't cascade-delete users - change their role to some default value - normal user
   @OneToMany(mappedBy = "userRole")
   private Set<User> users;
 
