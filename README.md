@@ -24,7 +24,7 @@ After this application I will create an Android app that will be connected to th
 * Browse a huge database of guitar songs' lyrics and guitar tabs
 * Add new songs even from a file
 * Create your own library of your favorite songs
-* Create a playlist for each occassion
+* Create a playlist for every occassion
 * Create a printable songbook out of any playlist
 * see all upcoming and past singing events and come to one!
 
