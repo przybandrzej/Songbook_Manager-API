@@ -7,10 +7,6 @@ import lombok.Getter;
 @EqualsAndHashCode
 public class TagDTO {
 
-    // link to self
-    // link to all tags
-    // link to all songs with this tag
-
     private final Long id;
     private final String name;
 

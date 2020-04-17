@@ -7,10 +7,6 @@ import lombok.Getter;
 @EqualsAndHashCode
 public class CategoryDTO {
 
-    // link to self
-    //link to all categories
-    // link to songs with this category
-
     private final Long id;
     private final String name;
 

@@ -7,19 +7,14 @@ import lombok.Getter;
 @EqualsAndHashCode
 public class UserSongRatingDTO {
 
-    // link to self
-    // link to the real song
-    // link to all user's songs ratings
-    // link to user
-
     private final Long userId;
     private final Long songId;
-    private final Double userRating;
+    private final Double rating;
 
     private UserSongRatingDTO(Long userId, Long songId, Double userRating) {
         this.userId = userId;
         this.songId = songId;
-        this.userRating = userRating;
+        this.rating = userRating;
     }
 
     public static UserSongRatingDTO.Builder builder() {
