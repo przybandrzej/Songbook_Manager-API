@@ -5,6 +5,8 @@ import com.lazydev.stksongbook.webapp.api.mappers.decorator.PlaylistMapperDecora
 import com.lazydev.stksongbook.webapp.data.model.Playlist;
 import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.data.model.User;
+import com.lazydev.stksongbook.webapp.data.service.SongService;
+import com.lazydev.stksongbook.webapp.data.service.UserService;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -13,7 +15,8 @@ import org.mapstruct.Mapping;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = {User.class})
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR,
+    uses = {UserService.class, SongService.class})
 @DecoratedWith(PlaylistMapperDecorator.class)
 public interface PlaylistMapper {
 
@@ -24,9 +27,14 @@ public interface PlaylistMapper {
 
     @Mapping(target="creationTime", source = "creationTime", dateFormat = "dd-MM-yyyy HH:mm:ss")
     @Mapping(target = "songs", ignore = true)
+    @Mapping(target = "owner", ignore = true)
     Playlist playlistDTOToPlaylist(PlaylistDTO dto);
 
     default Set<Long> getIds(Set<Song> list) {
-        return list.stream().map(Song::getId).collect(Collectors.toSet());
+        if(list != null) {
+            return list.stream().map(Song::getId).collect(Collectors.toSet());
+        } else {
+            return null;
+        }
     }
 }

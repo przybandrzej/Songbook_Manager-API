@@ -29,7 +29,7 @@ public class Song {
    * By definition, it must be unique.
    */
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private Long id;
 
@@ -78,7 +78,7 @@ public class Song {
   @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
   private Category category;
 
-  @ManyToMany(cascade = CascadeType.ALL)
+  @ManyToMany
   @JoinTable(name = "songs_tags",
       joinColumns = @JoinColumn(name = "song_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))

@@ -62,11 +62,10 @@ public class CategoryRestController {
     return convertToDto(service.save(convertToEntity(categoryDto)));
   }
 
-  @PutMapping("/id/{id}")
+  @PutMapping
   @ResponseStatus(HttpStatus.OK)
-  public void update(@PathVariable("id") Long id, @RequestBody CategoryDTO categoryDto) {
+  public void update(@RequestBody CategoryDTO categoryDto) {
     var category = convertToEntity(categoryDto);
-    category.setId(id);
     service.save(category);
   }
 

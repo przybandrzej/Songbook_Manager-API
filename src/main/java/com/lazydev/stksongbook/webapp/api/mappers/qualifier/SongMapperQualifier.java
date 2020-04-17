@@ -23,7 +23,7 @@ public class SongMapperQualifier {
   @TagsIDsToTags
   public List<Tag> tagsIDsToTags(SongDTO dto) {
     List<Tag> tags = new ArrayList<>();
-    dto.getTagsId().forEach(id -> tagService.findById(id).ifPresent(tags::add));
+    dto.getTags().forEach(id -> tagService.findById(id).ifPresent(tags::add));
     return tags;
   }
 

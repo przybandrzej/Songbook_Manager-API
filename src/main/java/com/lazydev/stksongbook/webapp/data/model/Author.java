@@ -25,7 +25,7 @@ public class Author {
    * By definition, it must be unique.
    */
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private Long id;
 
@@ -36,7 +36,7 @@ public class Author {
   @Column(name = "name", nullable = false, unique = true)
   private String name;
 
-  @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<SongAuthor> songs;
 
   // TODO add:

@@ -30,7 +30,7 @@ public class Tag {
    */
   @Id
   @Column(name = "id")
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   /**
@@ -39,6 +39,7 @@ public class Tag {
   @Column(name = "name", nullable = false, unique = true)
   private String name;
 
+  //TODO Don't cascade-delete songs - change their tags to some default value (empty list)
   @ManyToMany(mappedBy = "tags")
   private Set<Song> songs;
 

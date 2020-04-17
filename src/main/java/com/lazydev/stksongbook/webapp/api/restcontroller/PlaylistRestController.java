@@ -56,11 +56,10 @@ public class PlaylistRestController {
     return convertToDto(service.save(convertToEntity(playlist)));
   }
 
-  @PutMapping("/id/{id}")
+  @PutMapping
   @ResponseStatus(HttpStatus.OK)
-  public void update(@PathVariable("id") Long id, @RequestBody PlaylistDTO playlist) {
+  public void update(@RequestBody PlaylistDTO playlist) {
     var entity = convertToEntity(playlist);
-    entity.setId(id);
     service.save(entity);
   }
 
