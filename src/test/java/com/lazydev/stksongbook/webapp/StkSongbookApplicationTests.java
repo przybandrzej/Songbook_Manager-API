@@ -1,8 +1,6 @@
 package com.lazydev.stksongbook.webapp;
 
-import com.lazydev.stksongbook.webapp.api.restcontroller.*;
-import junit.framework.TestSuite;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
