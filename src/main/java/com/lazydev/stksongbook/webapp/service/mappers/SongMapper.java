@@ -38,11 +38,12 @@ public interface SongMapper {
   }
 
   default Double calculateAverageRating(Set<UserSongRating> ratings) {
-    var optional = ratings.stream().mapToDouble(UserSongRating::getRating).average();
-    if(optional.isPresent()) {
-      return optional.getAsDouble();
-    } else {
-      return null;
+    if(ratings != null) {
+      var optional = ratings.stream().mapToDouble(UserSongRating::getRating).average();
+      if(optional.isPresent()) {
+        return optional.getAsDouble();
+      }
     }
+    return null;
   }
 }
