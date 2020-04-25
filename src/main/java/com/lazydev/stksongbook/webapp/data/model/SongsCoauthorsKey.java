@@ -12,11 +12,11 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UsersSongsRatingsKey implements Serializable {
-
-  @Column(name = "user_id", nullable = false)
-  private Long userId;
+public class SongsCoauthorsKey implements Serializable {
 
   @Column(name = "song_id", nullable = false)
   private Long songId;
+
+  @Column(name = "author_id", nullable = false)
+  private Long authorId;
 }

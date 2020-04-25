@@ -3,6 +3,7 @@ package com.lazydev.stksongbook.webapp.data.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.net.URL;
 import java.util.Set;
 
 /**
@@ -36,10 +37,12 @@ public class Author {
   @Column(name = "name", nullable = false, unique = true)
   private String name;
 
-  @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<SongAuthor> songs;
+  @Column(name = "biography_url")
+  private URL biographyUrl;
 
-  // TODO add:
-  //  a photo
-  //  a link to biography
+  @Column(name = "photo_resource")
+  private String photoResource;
+
+  @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<SongCoauthor> songs;
 }

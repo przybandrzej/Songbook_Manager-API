@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.net.URL;
 import java.util.Set;
 
 /**
@@ -21,7 +22,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(exclude = "songs")
-//@EntityListeners(AuditingEntityListener.class)
 public class Category {
 
   /**
@@ -39,9 +39,6 @@ public class Category {
   @Column(name = "name", nullable = false, unique = true)
   private String name;
 
-  //TODO Don't cascade-delete songs - change their category to some default value
-  @OneToMany(mappedBy = "category")
+  @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private Set<Song> songs;
-
-  // TODO add a category-marker (or icon/color)
 }
