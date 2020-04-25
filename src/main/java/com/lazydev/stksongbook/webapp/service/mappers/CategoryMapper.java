@@ -17,8 +17,8 @@ public interface CategoryMapper {
 
     Category map(CategoryDTO dto);
 
-    @Mapping(target = "songs", expression = "java(new HashSet<>())")
-    @Mapping(target = "id", expression = "java(Constants.DEFAULT_ID)")
+    @Mapping(target = "songs", ignore = true)
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "name", source = "name")
     Category map(UniversalCreateDTO dto);
 }
