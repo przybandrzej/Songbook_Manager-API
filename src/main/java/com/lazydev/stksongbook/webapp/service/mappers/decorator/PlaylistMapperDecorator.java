@@ -1,11 +1,11 @@
 package com.lazydev.stksongbook.webapp.service.mappers.decorator;
 
-import com.lazydev.stksongbook.webapp.service.dto.PlaylistDTO;
-import com.lazydev.stksongbook.webapp.service.mappers.PlaylistMapper;
 import com.lazydev.stksongbook.webapp.data.model.Playlist;
 import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.service.SongService;
 import com.lazydev.stksongbook.webapp.service.UserService;
+import com.lazydev.stksongbook.webapp.service.dto.PlaylistDTO;
+import com.lazydev.stksongbook.webapp.service.mappers.PlaylistMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -25,9 +25,9 @@ public abstract class PlaylistMapperDecorator implements PlaylistMapper {
   @Override
   public Playlist map(PlaylistDTO dto) {
     var playlist = delegate.map(dto);
-    playlist.setOwner(userService.findById(dto.getOwnerId()).orElse(null));
+    playlist.setOwner(userService.findById(dto.getOwnerId()));
     Set<Song> songs = new HashSet<>();
-    dto.getSongs().forEach(s -> songs.add(songService.findById(s).orElse(null)));
+    dto.getSongs().forEach(s -> songs.add(songService.findById(s)));
     playlist.setSongs(songs);
     return playlist;
   }
