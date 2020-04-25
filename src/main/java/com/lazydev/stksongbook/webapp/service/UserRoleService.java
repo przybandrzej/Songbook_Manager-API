@@ -2,6 +2,7 @@ package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.data.model.UserRole;
 import com.lazydev.stksongbook.webapp.repository.UserRoleRepository;
+import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +15,12 @@ public class UserRoleService {
 
   private UserRoleRepository repository;
 
-  public Optional<UserRole> findById(Long id) {
+  public Optional<UserRole> findByIdNoException(Long id) {
     return repository.findById(id);
+  }
+
+  public UserRole findById(Long id) {
+    return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(UserRole.class, id));
   }
 
   public List<UserRole> findByName(String name) {

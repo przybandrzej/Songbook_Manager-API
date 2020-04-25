@@ -20,5 +20,7 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
 
   List<Playlist> findByNameIgnoreCaseAndIsPrivate(String name, boolean isPrivate);
 
+  List<Playlist> findByNameIgnoreCase(String name);
+
   List<Playlist> findByNameContainsIgnoreCaseAndIsPrivate(String name, boolean isPrivate);
 }

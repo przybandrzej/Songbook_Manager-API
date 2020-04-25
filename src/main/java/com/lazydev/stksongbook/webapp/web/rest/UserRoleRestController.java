@@ -1,13 +1,20 @@
 package com.lazydev.stksongbook.webapp.web.rest;
 
+import com.lazydev.stksongbook.webapp.data.model.UserRole;
+import com.lazydev.stksongbook.webapp.service.dto.UserRoleDTO;
+import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserRoleDTO;
+import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
+import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.UserRoleMapper;
 import com.lazydev.stksongbook.webapp.data.model.UserRole;
 import com.lazydev.stksongbook.webapp.service.UserRoleService;
+import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,53 +27,54 @@ import java.util.stream.Collectors;
 public class UserRoleRestController {
 
   private UserRoleService service;
-  private UserRoleMapper modelMapper;
+  private UserRoleMapper mapper;
   private UserMapper userMapper;
 
   @GetMapping
-  public List<UserRoleDTO> getAll() {
-    return service.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
+  public ResponseEntity<List<UserRoleDTO>> getAll() {
+    List<UserRoleDTO> list = service.findAll().stream().map(mapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @GetMapping("/id/{id}")
-  public UserRoleDTO getById(@PathVariable("id") Long id) {
-    return service.findById(id).map(this::convertToDto).orElse(null);
+  public ResponseEntity<UserRoleDTO> getById(@PathVariable("id") Long id) {
+    return new ResponseEntity<>(mapper.map(service.findById(id)), HttpStatus.OK);
   }
 
   @GetMapping("/name/{name}")
-  public List<UserRoleDTO> getByName(@PathVariable("name") String name) {
-    return service.findByName(name).stream().map(this::convertToDto).collect(Collectors.toList());
+  public ResponseEntity<List<UserRoleDTO>> getByName(@PathVariable("name") String name) {
+    List<UserRoleDTO> list = service.findByName(name).stream().map(mapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @GetMapping("/id/{id}/users")
-  public List<UserDTO> getUsersByRoleId(@PathVariable("id") Long id) {
-    return service.findById(id)
-        .map(userRole -> userRole.getUsers().stream().map(userMapper::map).collect(Collectors.toList()))
-        .orElse(null);
+  public ResponseEntity<List<UserDTO>> getUsersByUserRoleId(@PathVariable("id") Long id) {
+    var tmp = service.findById(id);
+    List<UserDTO> list = tmp.getUsers().stream().map(userMapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
-  public UserRoleDTO create(@RequestBody UserRoleDTO obj) {
-    return convertToDto(service.save(convertToEntity(obj)));
+  public ResponseEntity<UserRoleDTO> create(@RequestBody UniversalCreateDTO userRoleDto) {
+    var userRole = mapper.map(userRoleDto);
+    userRole.setId(Constants.DEFAULT_ID);
+    var saved = service.save(userRole);
+    return new ResponseEntity<>(mapper.map(saved), HttpStatus.CREATED);
   }
 
   @PutMapping
-  @ResponseStatus(HttpStatus.OK)
-  public void update(@RequestBody UserRoleDTO obj) {
-    service.save(convertToEntity(obj));
+  public ResponseEntity<UserRoleDTO> update(@RequestBody UserRoleDTO userRoleDto) {
+    if(service.findByIdNoException(userRoleDto.getId()).isEmpty()) {
+      throw new EntityNotFoundException(UserRole.class, userRoleDto.getId());
+    }
+    var userRole = mapper.map(userRoleDto);
+    var saved = service.save(userRole);
+    return new ResponseEntity<>(mapper.map(saved), HttpStatus.OK);
   }
 
   @DeleteMapping("/id/{id}")
-  public void delete(@PathVariable("id") Long id) {
+  public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
     service.deleteById(id);
-  }
-
-  public UserRoleDTO convertToDto(UserRole userRole) {
-    return modelMapper.map(userRole);
-  }
-
-  public UserRole convertToEntity(UserRoleDTO userRoleDto) {
-    return modelMapper.map(userRoleDto);
+    return ResponseEntity.noContent().build();
   }
 }
