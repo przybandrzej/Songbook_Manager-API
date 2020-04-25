@@ -3,14 +3,17 @@ package com.lazydev.stksongbook.webapp.web.rest;
 import com.lazydev.stksongbook.webapp.data.model.Author;
 import com.lazydev.stksongbook.webapp.service.AuthorService;
 import com.lazydev.stksongbook.webapp.service.dto.AuthorDTO;
+import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
+import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.AuthorMapper;
+import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
+import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -20,59 +23,54 @@ import java.util.stream.Collectors;
 public class AuthorRestController {
 
   private AuthorService service;
-  private AuthorMapper authorMapper;
+  private AuthorMapper mapper;
+  private SongMapper songMapper;
 
   @GetMapping
-  @ResponseStatus(HttpStatus.OK)
-  @ResponseBody
-  public List<AuthorDTO> getAll(HttpServletResponse response) {
-    return service.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
+  public ResponseEntity<List<AuthorDTO>> getAll() {
+    List<AuthorDTO> list = service.findAll().stream().map(mapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @GetMapping("/id/{id}")
-  @ResponseStatus(HttpStatus.OK)
-  @ResponseBody
-  public AuthorDTO getById(@PathVariable("id") Long id, HttpServletResponse response) {
-    Optional<Author> optAuthor = service.findById(id);
-    return optAuthor.map(this::convertToDto).orElse(null);
+  public ResponseEntity<AuthorDTO> getById(@PathVariable("id") Long id) {
+    return new ResponseEntity<>(mapper.map(service.findById(id)), HttpStatus.OK);
   }
 
   @GetMapping("/name/{name}")
-  @ResponseStatus(HttpStatus.OK)
-  @ResponseBody
-  public List<AuthorDTO> getByName(@PathVariable("name") String name, HttpServletResponse response) {
-    return service.findByName(name).stream().map(this::convertToDto).collect(Collectors.toList());
+  public ResponseEntity<List<AuthorDTO>> getByName(@PathVariable("name") String name) {
+    List<AuthorDTO> list = service.findByName(name).stream().map(mapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
+  }
+
+  @GetMapping("/id/{id}/songs")
+  public ResponseEntity<List<SongDTO>> getSongsByAuthorId(@PathVariable("id") Long id) {
+    var tmp = service.findById(id);
+    List<SongDTO> list = tmp.getSongs().stream().map(songMapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
-  @ResponseBody
-  public AuthorDTO create(@RequestBody AuthorDTO authorDto, HttpServletResponse response) {
-    //Preconditions.checkNotNull(authorDto);
-    Author author = convertToEntity(authorDto);
-    Author created = service.save(author);
-
-    //eventPublisher.publishEvent(new ResourceCreated(this, response, created.getId()));
-    return convertToDto(created);
+  public ResponseEntity<AuthorDTO> create(@RequestBody AuthorDTO authorDto) {
+    var author = mapper.map(authorDto);
+    author.setId(Constants.DEFAULT_ID);
+    var saved = service.save(author);
+    return new ResponseEntity<>(mapper.map(saved), HttpStatus.CREATED);
   }
 
   @PutMapping
-  @ResponseStatus(HttpStatus.OK)
-  public void update(@RequestBody AuthorDTO authorDto) {
-    Author author = convertToEntity(authorDto);
-    service.save(author);
+  public ResponseEntity<AuthorDTO> update(@RequestBody AuthorDTO authorDto) {
+    if(service.findByIdNoException(authorDto.getId()).isEmpty()) {
+      throw new EntityNotFoundException(Author.class, authorDto.getId());
+    }
+    var author = mapper.map(authorDto);
+    var saved = service.save(author);
+    return new ResponseEntity<>(mapper.map(saved), HttpStatus.OK);
   }
 
   @DeleteMapping("/id/{id}")
-  public void delete(@PathVariable("id") Long id) {
+  public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
     service.deleteById(id);
-  }
-
-  public AuthorDTO convertToDto(Author author) {
-    return authorMapper.map(author);
-  }
-
-  public Author convertToEntity(AuthorDTO authorDto) {
-    return authorMapper.map(authorDto);
+    return ResponseEntity.noContent().build();
   }
 }

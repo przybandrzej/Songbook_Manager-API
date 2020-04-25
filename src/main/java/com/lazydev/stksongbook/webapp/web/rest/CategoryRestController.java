@@ -1,17 +1,19 @@
 package com.lazydev.stksongbook.webapp.web.rest;
 
-import com.lazydev.stksongbook.webapp.service.dto.CategoryDTO;
-import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
-import com.lazydev.stksongbook.webapp.service.mappers.CategoryMapper;
-import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
 import com.lazydev.stksongbook.webapp.data.model.Category;
 import com.lazydev.stksongbook.webapp.service.CategoryService;
+import com.lazydev.stksongbook.webapp.service.dto.CategoryDTO;
+import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
+import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
+import com.lazydev.stksongbook.webapp.service.mappers.CategoryMapper;
+import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
+import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -25,58 +27,50 @@ public class CategoryRestController {
   private SongMapper songMapper;
 
   @GetMapping
-  @ResponseStatus(HttpStatus.OK)
-  public List<CategoryDTO> getAll() {
-    return service.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
+  public ResponseEntity<List<CategoryDTO>> getAll() {
+    List<CategoryDTO> list = service.findAll().stream().map(modelMapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @GetMapping("/id/{id}")
-  @ResponseStatus(HttpStatus.OK)
-  public CategoryDTO getById(@PathVariable("id") Long id) {
-    Optional<Category> object = service.findById(id);
-    return object.map(this::convertToDto).orElse(null);
+  public ResponseEntity<CategoryDTO> getById(@PathVariable("id") Long id) {
+    return new ResponseEntity<>(modelMapper.map(service.findById(id)), HttpStatus.OK);
   }
 
   @GetMapping("/name/{name}")
-  @ResponseBody
-  @ResponseStatus(HttpStatus.OK)
-  public List<CategoryDTO> getByName(@PathVariable("name") String name) {
-    return service.findByName(name).stream().map(this::convertToDto).collect(Collectors.toList());
+  public ResponseEntity<List<CategoryDTO>> getByName(@PathVariable("name") String name) {
+    List<CategoryDTO> list = service.findByName(name).stream().map(modelMapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @GetMapping("/id/{id}/songs")
-  @ResponseBody
-  @ResponseStatus(HttpStatus.OK)
-  public List<SongDTO> getSongsByCategoryId(@PathVariable("id") Long id) {
+  public ResponseEntity<List<SongDTO>> getSongsByCategoryId(@PathVariable("id") Long id) {
     var tmp = service.findById(id);
-    return tmp.map(category -> category.getSongs().stream().map(songMapper::map).collect(Collectors.toList()))
-        .orElse(null);
+    List<SongDTO> list = tmp.getSongs().stream().map(songMapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
-  @ResponseBody
-  public CategoryDTO create(@RequestBody CategoryDTO categoryDto) {
-    return convertToDto(service.save(convertToEntity(categoryDto)));
+  public ResponseEntity<CategoryDTO> create(@RequestBody CategoryDTO categoryDto) {
+    var category = modelMapper.map(categoryDto);
+    category.setId(Constants.DEFAULT_ID);
+    var saved = service.save(category);
+    return new ResponseEntity<>(modelMapper.map(saved), HttpStatus.CREATED);
   }
 
   @PutMapping
-  @ResponseStatus(HttpStatus.OK)
-  public void update(@RequestBody CategoryDTO categoryDto) {
-    var category = convertToEntity(categoryDto);
-    service.save(category);
+  public ResponseEntity<CategoryDTO> update(@RequestBody CategoryDTO categoryDto) {
+    if(service.findByIdNoException(categoryDto.getId()).isEmpty()) {
+      throw new EntityNotFoundException(Category.class, categoryDto.getId());
+    }
+    var category = modelMapper.map(categoryDto);
+    var saved = service.save(category);
+    return new ResponseEntity<>(modelMapper.map(saved), HttpStatus.OK);
   }
 
   @DeleteMapping("/id/{id}")
-  public void delete(@PathVariable("id") Long id) {
+  public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
     service.deleteById(id);
-  }
-
-  public CategoryDTO convertToDto(Category category) {
-    return modelMapper.map(category);
-  }
-
-  public Category convertToEntity(CategoryDTO categoryDto) {
-    return modelMapper.map(categoryDto);
+    return ResponseEntity.noContent().build();
   }
 }
