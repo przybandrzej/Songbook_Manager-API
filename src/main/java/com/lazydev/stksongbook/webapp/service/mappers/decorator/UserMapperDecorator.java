@@ -2,7 +2,7 @@ package com.lazydev.stksongbook.webapp.service.mappers.decorator;
 
 import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.service.*;
-import com.lazydev.stksongbook.webapp.service.dto.RegisterNewUserForm;
+import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm;
 import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
 import com.lazydev.stksongbook.webapp.util.Constants;

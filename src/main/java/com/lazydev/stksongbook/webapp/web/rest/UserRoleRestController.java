@@ -5,6 +5,7 @@ import com.lazydev.stksongbook.webapp.service.dto.UserRoleDTO;
 import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserRoleDTO;
+import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.UserRoleMapper;
@@ -54,7 +55,7 @@ public class UserRoleRestController {
   }
 
   @PostMapping
-  public ResponseEntity<UserRoleDTO> create(@RequestBody UserRoleDTO userRoleDto) {
+  public ResponseEntity<UserRoleDTO> create(@RequestBody UniversalCreateDTO userRoleDto) {
     var userRole = mapper.map(userRoleDto);
     userRole.setId(Constants.DEFAULT_ID);
     var saved = service.save(userRole);

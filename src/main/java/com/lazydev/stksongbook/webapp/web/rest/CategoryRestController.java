@@ -4,6 +4,7 @@ import com.lazydev.stksongbook.webapp.data.model.Category;
 import com.lazydev.stksongbook.webapp.service.CategoryService;
 import com.lazydev.stksongbook.webapp.service.dto.CategoryDTO;
 import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
+import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.CategoryMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
@@ -51,7 +52,7 @@ public class CategoryRestController {
   }
 
   @PostMapping
-  public ResponseEntity<CategoryDTO> create(@RequestBody CategoryDTO categoryDto) {
+  public ResponseEntity<CategoryDTO> create(@RequestBody UniversalCreateDTO categoryDto) {
     var category = modelMapper.map(categoryDto);
     category.setId(Constants.DEFAULT_ID);
     var saved = service.save(category);

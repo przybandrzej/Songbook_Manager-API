@@ -1,6 +1,6 @@
 package com.lazydev.stksongbook.webapp.service.mappers;
 
-import com.lazydev.stksongbook.webapp.service.dto.RegisterNewUserForm;
+import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm;
 import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.service.mappers.decorator.UserMapperDecorator;
 import com.lazydev.stksongbook.webapp.data.model.Song;

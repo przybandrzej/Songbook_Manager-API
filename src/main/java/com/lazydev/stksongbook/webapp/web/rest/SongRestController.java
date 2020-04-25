@@ -6,6 +6,7 @@ import com.lazydev.stksongbook.webapp.service.dto.PlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserSongRatingDTO;
+import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.PlaylistMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
@@ -83,7 +84,7 @@ public class SongRestController {
   }
 
   @PostMapping
-  public ResponseEntity<SongDTO> create(@RequestBody SongDTO obj) {
+  public ResponseEntity<SongDTO> create(@RequestBody CreateSongDTO obj) {
     var song = mapper.map(obj);
     song.setId(Constants.DEFAULT_ID);
     var saved = service.save(song);

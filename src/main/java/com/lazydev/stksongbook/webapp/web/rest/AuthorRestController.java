@@ -4,6 +4,7 @@ import com.lazydev.stksongbook.webapp.data.model.Author;
 import com.lazydev.stksongbook.webapp.service.AuthorService;
 import com.lazydev.stksongbook.webapp.service.dto.AuthorDTO;
 import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
+import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.AuthorMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
@@ -51,7 +52,7 @@ public class AuthorRestController {
   }
 
   @PostMapping
-  public ResponseEntity<AuthorDTO> create(@RequestBody AuthorDTO authorDto) {
+  public ResponseEntity<AuthorDTO> create(@RequestBody UniversalCreateDTO authorDto) {
     var author = mapper.map(authorDto);
     author.setId(Constants.DEFAULT_ID);
     var saved = service.save(author);
