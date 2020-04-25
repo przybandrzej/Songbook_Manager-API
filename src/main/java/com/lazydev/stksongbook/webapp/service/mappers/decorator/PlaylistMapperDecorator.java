@@ -27,9 +27,7 @@ public abstract class PlaylistMapperDecorator implements PlaylistMapper {
     var playlist = delegate.map(dto);
     playlist.setOwner(userService.findById(dto.getOwnerId()).orElse(null));
     Set<Song> songs = new HashSet<>();
-    dto.getSongs().forEach(s -> {
-      songs.add(songService.findById(s).orElse(null));
-    });
+    dto.getSongs().forEach(s -> songs.add(songService.findById(s).orElse(null)));
     playlist.setSongs(songs);
     return playlist;
   }

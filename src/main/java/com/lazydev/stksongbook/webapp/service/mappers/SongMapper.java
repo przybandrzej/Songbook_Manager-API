@@ -23,7 +23,7 @@ public interface SongMapper {
   @Mapping(target = "creationTime", source = "creationTime", dateFormat = "dd-MM-yyyy HH:mm:ss")
   @Mapping(target = "categoryId", source = "entity.category.id")
   @Mapping(target = "authorId", source = "entity.author.id")
-  @Mapping(target = "tagsId", expression = "java(convertTagsToIDs(entity.getTags()))")
+  @Mapping(target = "tags", expression = "java(convertTagsToIDs(entity.getTags()))")
   @Mapping(target = "averageRating", expression = "java(calculateAverageRating(entity.getRatings()))")
   SongDTO map(Song entity);
 

@@ -1,14 +1,13 @@
 package com.lazydev.stksongbook.webapp.service.mappers.decorator;
 
-import com.lazydev.stksongbook.webapp.service.AuthorService;
+import com.lazydev.stksongbook.webapp.data.model.Song;
+import com.lazydev.stksongbook.webapp.service.*;
 import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
-import com.lazydev.stksongbook.webapp.data.model.Song;
-import com.lazydev.stksongbook.webapp.service.CategoryService;
-import com.lazydev.stksongbook.webapp.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 public abstract class SongMapperDecorator implements SongMapper {
@@ -22,6 +21,12 @@ public abstract class SongMapperDecorator implements SongMapper {
   private CategoryService categoryService;
   @Autowired
   private AuthorService authorService;
+  @Autowired
+  private UserService userService;
+  @Autowired
+  private UserSongRatingService userSongRatingService;
+  @Autowired
+  private PlaylistService playlistService;
 
   @Override
   public Song map(SongDTO dto) {
@@ -29,6 +34,9 @@ public abstract class SongMapperDecorator implements SongMapper {
     song.setTags(dto.getTags().stream().map(t -> tagService.findById(t).orElse(null)).collect(Collectors.toSet()));
     song.setCategory(categoryService.findById(dto.getCategoryId()).orElse(null));
     song.setAuthor(authorService.findById(dto.getAuthorId()).orElse(null));
+    song.setUsersSongs(new HashSet<>(userService.findBySong(dto.getId())));
+    song.setRatings(new HashSet<>(userSongRatingService.findBySongId(dto.getId())));
+    song.setPlaylists(new HashSet<>(playlistService.findBySongId(dto.getId())));
     return song;
   }
 }

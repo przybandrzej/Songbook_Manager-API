@@ -47,7 +47,7 @@ public class PlaylistRestController {
   @ResponseBody
   @ResponseStatus(HttpStatus.OK)
   public List<PlaylistDTO> getByOwnerId(@PathVariable("id") Long ownerId) {
-    return service.findByOwnerId(ownerId, SEARCH_PRIVATE).stream().map(this::convertToDto).collect(Collectors.toList());
+    return service.findByOwnerId(ownerId).stream().map(this::convertToDto).collect(Collectors.toList());
   }
 
   @PostMapping

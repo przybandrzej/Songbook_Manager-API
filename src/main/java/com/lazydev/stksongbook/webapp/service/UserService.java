@@ -30,6 +30,10 @@ public class UserService {
     return repository.findByUserRoleId(id);
   }
 
+  public List<User> findBySong(Long id) {
+    return repository.findBySongsId(id);
+  }
+
   public List<User> findAll() {
     return repository.findAll();
   }

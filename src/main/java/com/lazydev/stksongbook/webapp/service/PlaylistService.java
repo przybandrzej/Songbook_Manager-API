@@ -23,8 +23,12 @@ public class PlaylistService {
     return repository.findByNameIgnoreCaseAndIsPrivate(name, isPrivate);
   }
 
-  public List<Playlist> findByOwnerId(Long id, boolean isPrivate) {
-    return repository.findByOwnerIdAndIsPrivate(id, isPrivate);
+  public List<Playlist> findByOwnerId(Long id) {
+    return repository.findByOwnerId(id);
+  }
+
+  public List<Playlist> findBySongId(Long id) {
+    return repository.findBySongsId(id);
   }
 
   public List<Playlist> findAll(boolean isPrivate) {

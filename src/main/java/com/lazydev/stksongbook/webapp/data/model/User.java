@@ -20,10 +20,10 @@ import java.util.Set;
 @Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Check(constraints = "length(password) >= 6 AND length(username) >= 4")
 @EqualsAndHashCode(exclude = {"playlists", "userRatings"})
-public @Data
-class User {
+public class User {
 
   /**
    * @param id is the Primary Key in the table. By definition, it must be unique
