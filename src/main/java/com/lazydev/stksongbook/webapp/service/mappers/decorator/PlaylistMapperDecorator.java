@@ -23,8 +23,8 @@ public abstract class PlaylistMapperDecorator implements PlaylistMapper {
   private UserService userService;
 
   @Override
-  public Playlist playlistDTOToPlaylist(PlaylistDTO dto) {
-    var playlist = delegate.playlistDTOToPlaylist(dto);
+  public Playlist map(PlaylistDTO dto) {
+    var playlist = delegate.map(dto);
     playlist.setOwner(userService.findById(dto.getOwnerId()).orElse(null));
     Set<Song> songs = new HashSet<>();
     dto.getSongs().forEach(s -> {

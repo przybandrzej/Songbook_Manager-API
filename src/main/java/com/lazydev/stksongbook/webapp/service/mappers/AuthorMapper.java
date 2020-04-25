@@ -8,6 +8,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface AuthorMapper {
 
-    AuthorDTO authorToAuthorDTO(Author entity);
-    Author authorDTOToAuthor(AuthorDTO dto);
+    AuthorDTO map(Author entity);
+    Author map(AuthorDTO dto);
 }

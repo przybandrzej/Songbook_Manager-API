@@ -9,20 +9,20 @@ import org.hibernate.annotations.Check;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "songs_authors")
-@Check(constraints = "function IN ('" + SongAuthor._Function_Music_Polish + "', '" + SongAuthor._Function_Text_Polish + "')")
+@Table(name = "songs_coauthors")
+@Check(constraints = "function IN ('" + SongCoauthor._Function_Music_Polish + "', '" + SongCoauthor._Function_Text_Polish + "')")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(exclude = "song")
-public class SongAuthor {
+public class SongCoauthor {
 
   //public final static String _Function_Author_Polish = "Autor";
   public static final String _Function_Music_Polish = "Muzyka";
   public static final String _Function_Text_Polish = "Tekst";
 
   @EmbeddedId
-  private SongsAuthorsKey id;
+  private SongsCoauthorsKey id;
 
   @ManyToOne
   @MapsId("song_id")

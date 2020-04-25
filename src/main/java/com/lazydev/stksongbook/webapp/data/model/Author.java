@@ -44,5 +44,5 @@ public class Author {
   private String photoResource;
 
   @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<SongAuthor> songs;
+  private Set<SongCoauthor> songs;
 }

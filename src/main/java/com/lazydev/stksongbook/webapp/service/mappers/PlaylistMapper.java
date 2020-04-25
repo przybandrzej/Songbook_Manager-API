@@ -11,6 +11,7 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,18 +23,18 @@ public interface PlaylistMapper {
     @Mapping(target="creationTime", source = "creationTime", dateFormat = "dd-MM-yyyy HH:mm:ss")
     @Mapping(target = "songs", expression = "java(getIds(entity.getSongs()))")
     @Mapping(target = "ownerId", source = "owner.id")
-    PlaylistDTO playlistToPlaylistDTO(Playlist entity);
+    PlaylistDTO map(Playlist entity);
 
     @Mapping(target="creationTime", source = "creationTime", dateFormat = "dd-MM-yyyy HH:mm:ss")
     @Mapping(target = "songs", ignore = true)
     @Mapping(target = "owner", ignore = true)
-    Playlist playlistDTOToPlaylist(PlaylistDTO dto);
+    Playlist map(PlaylistDTO dto);
 
     default Set<Long> getIds(Set<Song> list) {
         if(list != null) {
             return list.stream().map(Song::getId).collect(Collectors.toSet());
         } else {
-            return null;
+            return new HashSet<>();
         }
     }
 }

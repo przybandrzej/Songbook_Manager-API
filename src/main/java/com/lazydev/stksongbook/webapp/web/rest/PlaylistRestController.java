@@ -69,10 +69,10 @@ public class PlaylistRestController {
   }
 
   public PlaylistDTO convertToDto(Playlist playlist) {
-    return modelMapper.playlistToPlaylistDTO(playlist);
+    return modelMapper.map(playlist);
   }
 
   public Playlist convertToEntity(PlaylistDTO playlistDto) {
-    return modelMapper.playlistDTOToPlaylist(playlistDto);
+    return modelMapper.map(playlistDto);
   }
 }

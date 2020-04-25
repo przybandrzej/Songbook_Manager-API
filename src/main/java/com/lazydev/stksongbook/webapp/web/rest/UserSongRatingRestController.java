@@ -25,7 +25,7 @@ public class UserSongRatingRestController {
   @ResponseBody
   public List<UserSongRatingDTO> getByUserId(@PathVariable("id") Long userId) {
     return service.findByUserId(userId)
-        .stream().map(mapper::usersSongsRatingsEntityToUserSongRatingDTO)
+        .stream().map(mapper::map)
         .collect(Collectors.toList());
   }
 
@@ -34,7 +34,7 @@ public class UserSongRatingRestController {
   @ResponseBody
   public List<UserSongRatingDTO> getBySongId(@PathVariable("id") Long songId) {
     return service.findBySongId(songId).stream()
-        .map(mapper::usersSongsRatingsEntityToUserSongRatingDTO)
+        .map(mapper::map)
         .collect(Collectors.toList());
   }
 
@@ -44,7 +44,7 @@ public class UserSongRatingRestController {
   public UserSongRatingDTO getByUserIdAndSongId(
       @PathVariable("userId") Long userId, @PathVariable("songId") Long songId) {
     return service.findByUserIdAndSongId(userId, songId)
-        .map(mapper::usersSongsRatingsEntityToUserSongRatingDTO)
+        .map(mapper::map)
         .orElse(null);
   }
 
@@ -66,28 +66,28 @@ public class UserSongRatingRestController {
       list = service.findAll();
     }
     return list.stream()
-        .map(mapper::usersSongsRatingsEntityToUserSongRatingDTO)
+        .map(mapper::map)
         .collect(Collectors.toList());
   }
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public UserSongRatingDTO create(@RequestBody UserSongRatingDTO dto) {
-    UserSongRating user = mapper.usersSongsRatingsEntityDTOToUserSongRating(dto);
+    UserSongRating user = mapper.map(dto);
     var saved = service.save(user);
-    return mapper.usersSongsRatingsEntityToUserSongRatingDTO(saved);
+    return mapper.map(saved);
   }
 
   @PutMapping
   @ResponseStatus(HttpStatus.OK)
   public void update(@RequestBody UserSongRatingDTO dto) {
-    UserSongRating user = mapper.usersSongsRatingsEntityDTOToUserSongRating(dto);
+    UserSongRating user = mapper.map(dto);
     service.save(user);
   }
 
   @DeleteMapping
   public void delete(@RequestBody UserSongRatingDTO dto) {
-    var obj = mapper.usersSongsRatingsEntityDTOToUserSongRating(dto);
+    var obj = mapper.map(dto);
     service.delete(obj);
   }
 }

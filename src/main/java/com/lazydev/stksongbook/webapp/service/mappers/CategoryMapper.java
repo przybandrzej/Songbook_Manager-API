@@ -8,6 +8,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface CategoryMapper {
 
-    CategoryDTO categoryToCategoryDTO(Category entity);
-    Category categoryDTOToCategory(CategoryDTO dto);
+    CategoryDTO map(Category entity);
+    Category map(CategoryDTO dto);
 }

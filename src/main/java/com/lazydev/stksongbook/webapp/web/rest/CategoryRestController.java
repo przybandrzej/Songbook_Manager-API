@@ -51,7 +51,7 @@ public class CategoryRestController {
   @ResponseStatus(HttpStatus.OK)
   public List<SongDTO> getSongsByCategoryId(@PathVariable("id") Long id) {
     var tmp = service.findById(id);
-    return tmp.map(category -> category.getSongs().stream().map(songMapper::songToSongDTO).collect(Collectors.toList()))
+    return tmp.map(category -> category.getSongs().stream().map(songMapper::map).collect(Collectors.toList()))
         .orElse(null);
   }
 
@@ -75,10 +75,10 @@ public class CategoryRestController {
   }
 
   public CategoryDTO convertToDto(Category category) {
-    return modelMapper.categoryToCategoryDTO(category);
+    return modelMapper.map(category);
   }
 
   public Category convertToEntity(CategoryDTO categoryDto) {
-    return modelMapper.categoryDTOToCategory(categoryDto);
+    return modelMapper.map(categoryDto);
   }
 }

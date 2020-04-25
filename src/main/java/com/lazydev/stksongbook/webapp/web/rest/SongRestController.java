@@ -64,7 +64,7 @@ public class SongRestController {
   public Set<UserSongRatingDTO> getSongRatings(@PathVariable("id") Long id) {
     return service.findById(id)
         .map(song -> song.getRatings()
-            .stream().map(userSongRatingMapper::usersSongsRatingsEntityToUserSongRatingDTO).collect(Collectors.toSet()))
+            .stream().map(userSongRatingMapper::map).collect(Collectors.toSet()))
         .orElse(null);
   }
 
@@ -72,7 +72,7 @@ public class SongRestController {
   public Set<UserDTO> getSongUserLibraries(@PathVariable("id") Long id) {
     return service.findById(id)
         .map(song -> song.getUsersSongs()
-            .stream().map(userMapper::userToUserDTO).collect(Collectors.toSet()))
+            .stream().map(userMapper::map).collect(Collectors.toSet()))
         .orElse(null);
   }
 
@@ -80,7 +80,7 @@ public class SongRestController {
   public Set<PlaylistDTO> getSongPlaylists(@PathVariable("id") Long id) {
     return service.findById(id)
         .map(song -> song.getPlaylists()
-            .stream().map(playlistMapper::playlistToPlaylistDTO).collect(Collectors.toSet()))
+            .stream().map(playlistMapper::map).collect(Collectors.toSet()))
         .orElse(null);
   }
 
@@ -102,10 +102,10 @@ public class SongRestController {
   }
 
   public SongDTO convertToDto(Song song) {
-    return songMapper.songToSongDTO(song);
+    return songMapper.map(song);
   }
 
   public Song convertToEntity(SongDTO songDto) {
-    return songMapper.songDTOToSong(songDto);
+    return songMapper.map(songDto);
   }
 }

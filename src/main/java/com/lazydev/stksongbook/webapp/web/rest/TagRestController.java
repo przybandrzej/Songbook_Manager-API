@@ -43,7 +43,7 @@ public class TagRestController {
     @ResponseStatus(HttpStatus.OK)
     public List<SongDTO> getSongsByTagId(@PathVariable("id") Long id) {
         return service.findById(id)
-            .map(tag -> tag.getSongs().stream().map(songMapper::songToSongDTO).collect(Collectors.toList()))
+            .map(tag -> tag.getSongs().stream().map(songMapper::map).collect(Collectors.toList()))
             .orElse(null);
     }
 
@@ -65,10 +65,10 @@ public class TagRestController {
     }
 
     public TagDTO convertToDto(Tag tag) {
-        return modelMapper.tagToTagDTO(tag);
+        return modelMapper.map(tag);
     }
 
     public Tag convertToEntity(TagDTO tagDto) {
-        return modelMapper.tagDTOToTag(tagDto);
+        return modelMapper.map(tagDto);
     }
 }

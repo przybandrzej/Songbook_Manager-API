@@ -8,6 +8,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface TagMapper {
 
-    TagDTO tagToTagDTO(Tag entity);
-    Tag tagDTOToTag(TagDTO dto);
+    TagDTO map(Tag entity);
+    Tag map(TagDTO dto);
 }

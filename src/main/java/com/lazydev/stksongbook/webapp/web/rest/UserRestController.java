@@ -41,7 +41,7 @@ public class UserRestController {
     public List<UserSongRatingDTO> getRatingsByUserId(@PathVariable("id") Long id) {
         return userService.findById(id)
             .map(user -> user.getUserRatings().stream()
-                .map(userSongRatingMapper::usersSongsRatingsEntityToUserSongRatingDTO).collect(Collectors.toList()))
+                .map(userSongRatingMapper::map).collect(Collectors.toList()))
             .orElse(null);
     }
 
@@ -49,14 +49,14 @@ public class UserRestController {
     public List<PlaylistDTO> getPlaylistsByUserId(@PathVariable("id") Long id) {
         return userService.findById(id)
             .map(user -> user.getPlaylists().stream()
-                .map(playlistMapper::playlistToPlaylistDTO).collect(Collectors.toList()))
+                .map(playlistMapper::map).collect(Collectors.toList()))
             .orElse(null);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDTO register(@RequestBody RegisterNewUserForm form) {
-        User user = modelMapper.registerFormToUser(form);
+        User user = modelMapper.mapFromRegisterForm(form);
         User userCreated = userService.save(user);
         return convertToDto(userCreated);
     }
@@ -74,10 +74,10 @@ public class UserRestController {
     }
 
     public UserDTO convertToDto(User user) {
-        return modelMapper.userToUserDTO(user);
+        return modelMapper.map(user);
     }
 
     public User convertToEntity(UserDTO userDto) {
-        return modelMapper.userDTOToUser(userDto);
+        return modelMapper.map(userDto);
     }
 }

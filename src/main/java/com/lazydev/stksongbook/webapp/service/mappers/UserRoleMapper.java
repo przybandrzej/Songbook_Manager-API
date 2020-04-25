@@ -8,6 +8,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface UserRoleMapper {
 
-  UserRoleDTO userRoleToUserRoleDTO(UserRole entity);
-  UserRole userRoleDTOToUserRole(UserRoleDTO dto);
+  UserRoleDTO map(UserRole entity);
+  UserRole map(UserRoleDTO dto);
 }

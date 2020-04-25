@@ -22,13 +22,13 @@ public interface UserMapper {
 
   @Mapping(target = "userRoleId", expression = "java(entity.getUserRole().getId())")
   @Mapping(target = "songs", expression = "java(getIds(entity.getSongs()))")
-  UserDTO userToUserDTO(User entity);
+  UserDTO map(User entity);
 
   @Mapping(target = "songs", ignore = true)
   @Mapping(target = "userRole", ignore = true)
-  User userDTOToUser(UserDTO dto);
+  User map(UserDTO dto);
 
-  User registerFormToUser(RegisterNewUserForm form);
+  User mapFromRegisterForm(RegisterNewUserForm form);
 
   default Set<Long> getIds(Set<Song> list) {
     return list.stream().map(Song::getId).collect(Collectors.toSet());

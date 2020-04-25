@@ -36,7 +36,7 @@ public class SongService {
   }
 
   public List<Song> findByAuthorId(Long authorId) {
-    return repository.findByAuthorsIdAuthorId(authorId);
+    return repository.findByAuthorId(authorId);
   }
 
   public List<Song> findByCategoryId(Long id) {
@@ -55,12 +55,12 @@ public class SongService {
     return repository.findByRatingsRatingLessThanEqual(val);
   }
 
-  public List<Song> findByAdditionTimeEqualGreater(LocalDateTime val) {
-    return repository.findByAdditionTimeGreaterThanEqual(val);
+  public List<Song> findByCreationTimeEqualGreater(LocalDateTime val) {
+    return repository.findByCreationTimeGreaterThanEqual(val);
   }
 
-  public List<Song> findByAdditionTimeEqualLess(LocalDateTime val) {
-    return repository.findByAdditionTimeLessThanEqual(val);
+  public List<Song> findByCreationTimeEqualLess(LocalDateTime val) {
+    return repository.findByCreationTimeLessThanEqual(val);
   }
 
   public Song save(Song saveSong) {

@@ -42,7 +42,7 @@ public class Song {
    * By definition, it must be unique.
    */
   @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<SongAuthor> authors;
+  private Set<SongCoauthor> coauthors;
 
   /**
    * @param title stores the song's title.

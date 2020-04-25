@@ -1,11 +1,10 @@
 package com.lazydev.stksongbook.webapp.web.rest;
 
-import com.lazydev.stksongbook.webapp.service.dto.AuthorDTO;
-import com.lazydev.stksongbook.webapp.service.mappers.AuthorMapper;
 import com.lazydev.stksongbook.webapp.data.model.Author;
 import com.lazydev.stksongbook.webapp.service.AuthorService;
+import com.lazydev.stksongbook.webapp.service.dto.AuthorDTO;
+import com.lazydev.stksongbook.webapp.service.mappers.AuthorMapper;
 import lombok.AllArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +21,6 @@ public class AuthorRestController {
 
   private AuthorService service;
   private AuthorMapper authorMapper;
-  private ApplicationEventPublisher eventPublisher;
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
@@ -71,10 +69,10 @@ public class AuthorRestController {
   }
 
   public AuthorDTO convertToDto(Author author) {
-    return authorMapper.authorToAuthorDTO(author);
+    return authorMapper.map(author);
   }
 
   public Author convertToEntity(AuthorDTO authorDto) {
-    return authorMapper.authorDTOToAuthor(authorDto);
+    return authorMapper.map(authorDto);
   }
 }

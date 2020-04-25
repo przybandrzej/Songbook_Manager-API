@@ -41,7 +41,7 @@ public class UserRoleRestController {
   @GetMapping("/id/{id}/users")
   public List<UserDTO> getUsersByRoleId(@PathVariable("id") Long id) {
     return service.findById(id)
-        .map(userRole -> userRole.getUsers().stream().map(userMapper::userToUserDTO).collect(Collectors.toList()))
+        .map(userRole -> userRole.getUsers().stream().map(userMapper::map).collect(Collectors.toList()))
         .orElse(null);
   }
 
@@ -63,10 +63,10 @@ public class UserRoleRestController {
   }
 
   public UserRoleDTO convertToDto(UserRole userRole) {
-    return modelMapper.userRoleToUserRoleDTO(userRole);
+    return modelMapper.map(userRole);
   }
 
   public UserRole convertToEntity(UserRoleDTO userRoleDto) {
-    return modelMapper.userRoleDTOToUserRole(userRoleDto);
+    return modelMapper.map(userRoleDto);
   }
 }

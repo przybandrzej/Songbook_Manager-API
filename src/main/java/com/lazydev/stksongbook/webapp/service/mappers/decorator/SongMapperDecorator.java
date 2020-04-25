@@ -1,5 +1,6 @@
 package com.lazydev.stksongbook.webapp.service.mappers.decorator;
 
+import com.lazydev.stksongbook.webapp.service.AuthorService;
 import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
 import com.lazydev.stksongbook.webapp.data.model.Song;
@@ -19,12 +20,15 @@ public abstract class SongMapperDecorator implements SongMapper {
   private TagService tagService;
   @Autowired
   private CategoryService categoryService;
+  @Autowired
+  private AuthorService authorService;
 
   @Override
-  public Song songDTOToSong(SongDTO dto) {
-    Song song = delegate.songDTOToSong(dto);
+  public Song map(SongDTO dto) {
+    Song song = delegate.map(dto);
     song.setTags(dto.getTags().stream().map(t -> tagService.findById(t).orElse(null)).collect(Collectors.toSet()));
     song.setCategory(categoryService.findById(dto.getCategoryId()).orElse(null));
+    song.setAuthor(authorService.findById(dto.getAuthorId()).orElse(null));
     return song;
   }
 }
