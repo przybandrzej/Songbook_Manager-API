@@ -21,12 +21,10 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Check(constraints = "length(password) >= 6 AND length(username) >= 4")
-@EqualsAndHashCode(exclude = "playlists")
-//@EntityListeners(AuditingEntityListener.class)
+@EqualsAndHashCode(exclude = {"playlists", "userRatings"})
 public @Data
 class User {
 
-  public static final Long DEFAULT_ID = 0L;
   /**
    * @param id is the Primary Key in the table. By definition, it must be unique
    */

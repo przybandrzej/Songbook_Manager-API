@@ -33,6 +33,10 @@ public class Song {
   @Column(name = "id")
   private Long id;
 
+  @ManyToOne
+  @JoinColumn(name = "author_id", referencedColumnName = "id", nullable = false)
+  private Author author;
+
   /**
    * @param authorId is the Foreign Key referencing the ID in the AUTHORS table.
    * By definition, it must be unique.
@@ -67,8 +71,8 @@ public class Song {
   /**
    * @param addition_time stores the date and time of the song's insertion to the database.
    */
-  @Column(name = "addition_time", nullable = false, columnDefinition = "TIMESTAMP default NOW()")
-  private LocalDateTime additionTime;
+  @Column(name = "creation_time", nullable = false, columnDefinition = "TIMESTAMP default NOW()")
+  private LocalDateTime creationTime;
 
   /**
    * @param categoryId is the Foreign Key referencing the ID in the CATEGORIES table.
@@ -92,6 +96,4 @@ public class Song {
 
   @ManyToMany(mappedBy = "songs")
   private Set<Playlist> playlists;
-
-  // TODO add icon
 }

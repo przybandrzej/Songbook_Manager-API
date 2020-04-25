@@ -37,6 +37,6 @@ public class SongAuthor {
   /**
    * if null then it is the main author displayed with the title
    */
-  @Column(name = "function")
+  @Column(name = "function", nullable = false)
   private String function;
 }

@@ -21,7 +21,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(exclude = "songs")
-//@EntityListeners(AuditingEntityListener.class)
 public class Tag {
 
   /**
@@ -39,14 +38,6 @@ public class Tag {
   @Column(name = "name", nullable = false, unique = true)
   private String name;
 
-  //TODO Don't cascade-delete songs - change their tags to some default value (empty list)
   @ManyToMany(mappedBy = "tags")
   private Set<Song> songs;
-
-
-  // TODO add the prefix to the DB
-  /**
-   * @param tagPrefix says what character to use to display tags in the application.
-   */
-  private static final char tagPrefix = '#';
 }

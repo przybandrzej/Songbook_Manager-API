@@ -14,7 +14,6 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"user"})
 public class UserSongRating {
 
   @EmbeddedId

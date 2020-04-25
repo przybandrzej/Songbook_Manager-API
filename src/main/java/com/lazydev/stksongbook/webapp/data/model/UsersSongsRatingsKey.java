@@ -14,9 +14,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class UsersSongsRatingsKey implements Serializable {
 
-  @Column(name = "user_id")
+  @Column(name = "user_id", nullable = false)
   private Long userId;
 
-  @Column(name = "song_id")
+  @Column(name = "song_id", nullable = false)
   private Long songId;
 }
