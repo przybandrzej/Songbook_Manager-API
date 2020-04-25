@@ -2,6 +2,7 @@ package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.data.model.Tag;
 import com.lazydev.stksongbook.webapp.repository.TagRepository;
+import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +15,12 @@ public class TagService {
 
     private TagRepository repository;
 
-    public Optional<Tag> findById(Long id) {
+    public Optional<Tag> findByIdNoException(Long id) {
         return repository.findById(id);
+    }
+
+    public Tag findById(Long id) {
+        return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(Tag.class, id));
     }
 
     public List<Tag> findByName(String name) {

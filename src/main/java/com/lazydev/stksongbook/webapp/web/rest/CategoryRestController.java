@@ -25,14 +25,12 @@ public class CategoryRestController {
   private SongMapper songMapper;
 
   @GetMapping
-  @ResponseBody
   @ResponseStatus(HttpStatus.OK)
   public List<CategoryDTO> getAll() {
     return service.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
   }
 
   @GetMapping("/id/{id}")
-  @ResponseBody
   @ResponseStatus(HttpStatus.OK)
   public CategoryDTO getById(@PathVariable("id") Long id) {
     Optional<Category> object = service.findById(id);

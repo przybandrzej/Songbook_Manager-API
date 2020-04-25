@@ -2,6 +2,7 @@ package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.data.model.UserSongRating;
 import com.lazydev.stksongbook.webapp.repository.UserSongRatingRepository;
+import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +19,13 @@ public class UserSongRatingService {
     return repository.findAll();
   }
 
-  public Optional<UserSongRating> findByUserIdAndSongId(Long userId, Long songId) {
+  public Optional<UserSongRating> findByUserIdAndSongIdNoException(Long userId, Long songId) {
     return repository.findByUserIdAndSongId(userId, songId);
+  }
+
+  public UserSongRating findByUserIdAndSongId(Long userId, Long songId) {
+    return repository.findByUserIdAndSongId(userId, songId)
+        .orElseThrow(() -> new EntityNotFoundException(UserSongRating.class, "User ID " + userId + " Song ID " + songId));
   }
 
   public List<UserSongRating> findBySongId(Long id) {
