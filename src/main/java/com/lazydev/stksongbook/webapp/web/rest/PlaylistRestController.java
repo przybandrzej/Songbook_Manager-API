@@ -1,11 +1,15 @@
 package com.lazydev.stksongbook.webapp.web.rest;
 
-import com.lazydev.stksongbook.webapp.service.dto.PlaylistDTO;
-import com.lazydev.stksongbook.webapp.service.mappers.PlaylistMapper;
 import com.lazydev.stksongbook.webapp.data.model.Playlist;
 import com.lazydev.stksongbook.webapp.service.PlaylistService;
+import com.lazydev.stksongbook.webapp.service.dto.PlaylistDTO;
+import com.lazydev.stksongbook.webapp.service.dto.creational.CreatePlaylistDTO;
+import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
+import com.lazydev.stksongbook.webapp.service.mappers.PlaylistMapper;
+import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,62 +21,53 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class PlaylistRestController {
 
-  public static final boolean SEARCH_PRIVATE = false;
-
   private PlaylistService service;
-  private PlaylistMapper modelMapper;
+  private PlaylistMapper mapper;
 
   @GetMapping
-  @ResponseBody
-  @ResponseStatus(HttpStatus.OK)
-  public List<PlaylistDTO> getAll() {
-    return service.findAll(SEARCH_PRIVATE).stream().map(this::convertToDto).collect(Collectors.toList());
+  public ResponseEntity<List<PlaylistDTO>> getAll() {
+    List<PlaylistDTO> list = service.findAll().stream().map(mapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @GetMapping("/id/{id}")
-  @ResponseBody
-  @ResponseStatus(HttpStatus.OK)
-  public PlaylistDTO getById(@PathVariable("id") Long id) {
-    return service.findById(id, SEARCH_PRIVATE).map(this::convertToDto).orElse(null);
+  public ResponseEntity<PlaylistDTO> getById(@PathVariable("id") Long id) {
+    return new ResponseEntity<>(mapper.map(service.findById(id)), HttpStatus.OK);
   }
 
   @GetMapping("/name/{name}")
-  @ResponseBody
-  @ResponseStatus(HttpStatus.OK)
-  public List<PlaylistDTO> getByName(@PathVariable("name") String name) {
-    return service.findByName(name, SEARCH_PRIVATE).stream().map(this::convertToDto).collect(Collectors.toList());
+  public ResponseEntity<List<PlaylistDTO>> getByName(@PathVariable("name") String name) {
+    List<PlaylistDTO> list = service.findByName(name).stream().map(mapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @GetMapping("/ownerId/{id}")
-  @ResponseBody
-  @ResponseStatus(HttpStatus.OK)
-  public List<PlaylistDTO> getByOwnerId(@PathVariable("id") Long ownerId) {
-    return service.findByOwnerId(ownerId, SEARCH_PRIVATE).stream().map(this::convertToDto).collect(Collectors.toList());
+  public ResponseEntity<List<PlaylistDTO>> getByOwnerId(@PathVariable("id") Long ownerId) {
+    List<PlaylistDTO> list = service.findByOwnerId(ownerId).stream().map(mapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
-  public PlaylistDTO create(@RequestBody PlaylistDTO playlist) {
-    return convertToDto(service.save(convertToEntity(playlist)));
+  public ResponseEntity<PlaylistDTO> create(@RequestBody CreatePlaylistDTO dto) {
+    var playlist = mapper.map(dto);
+    playlist.setId(Constants.DEFAULT_ID);
+    var saved = service.save(playlist);
+    return new ResponseEntity<>(mapper.map(saved), HttpStatus.CREATED);
   }
 
   @PutMapping
-  @ResponseStatus(HttpStatus.OK)
-  public void update(@RequestBody PlaylistDTO playlist) {
-    var entity = convertToEntity(playlist);
-    service.save(entity);
+  public ResponseEntity<PlaylistDTO> update(@RequestBody PlaylistDTO dto) {
+    if(service.findByIdNoException(dto.getId()).isEmpty()) {
+      throw new EntityNotFoundException(Playlist.class, dto.getId());
+    }
+    var playlist = mapper.map(dto);
+    var saved = service.save(playlist);
+    return new ResponseEntity<>(mapper.map(saved), HttpStatus.OK);
   }
 
   @DeleteMapping("/id/{id}")
-  public void delete(@PathVariable("id") Long id) {
+  public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
     service.deleteById(id);
-  }
-
-  public PlaylistDTO convertToDto(Playlist playlist) {
-    return modelMapper.map(playlist);
-  }
-
-  public Playlist convertToEntity(PlaylistDTO playlistDto) {
-    return modelMapper.map(playlistDto);
+    return ResponseEntity.noContent().build();
   }
 }

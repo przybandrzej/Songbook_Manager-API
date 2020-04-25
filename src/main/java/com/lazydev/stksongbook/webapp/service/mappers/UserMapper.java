@@ -1,6 +1,6 @@
 package com.lazydev.stksongbook.webapp.service.mappers;
 
-import com.lazydev.stksongbook.webapp.service.dto.RegisterNewUserForm;
+import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm;
 import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.service.mappers.decorator.UserMapperDecorator;
 import com.lazydev.stksongbook.webapp.data.model.Song;
@@ -26,6 +26,8 @@ public interface UserMapper {
 
   @Mapping(target = "songs", ignore = true)
   @Mapping(target = "userRole", ignore = true)
+  @Mapping(target = "userRatings", ignore = true)
+  @Mapping(target = "playlists", ignore = true)
   User map(UserDTO dto);
 
   User mapFromRegisterForm(RegisterNewUserForm form);

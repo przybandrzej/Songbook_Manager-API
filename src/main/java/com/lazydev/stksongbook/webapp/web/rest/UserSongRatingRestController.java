@@ -1,11 +1,13 @@
 package com.lazydev.stksongbook.webapp.web.rest;
 
-import com.lazydev.stksongbook.webapp.service.dto.UserSongRatingDTO;
-import com.lazydev.stksongbook.webapp.service.mappers.UserSongRatingMapper;
 import com.lazydev.stksongbook.webapp.data.model.UserSongRating;
 import com.lazydev.stksongbook.webapp.service.UserSongRatingService;
+import com.lazydev.stksongbook.webapp.service.dto.UserSongRatingDTO;
+import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
+import com.lazydev.stksongbook.webapp.service.mappers.UserSongRatingMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,37 +23,30 @@ public class UserSongRatingRestController {
   private UserSongRatingService service;
 
   @GetMapping("/user/{id}")
-  @ResponseStatus(HttpStatus.OK)
-  @ResponseBody
-  public List<UserSongRatingDTO> getByUserId(@PathVariable("id") Long userId) {
-    return service.findByUserId(userId)
-        .stream().map(mapper::map)
+  public ResponseEntity<List<UserSongRatingDTO>> getByUserId(@PathVariable("id") Long userId) {
+    List<UserSongRatingDTO> list = service.findByUserId(userId).stream()
+        .map(mapper::map)
         .collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @GetMapping("/song/{id}")
-  @ResponseStatus(HttpStatus.OK)
-  @ResponseBody
-  public List<UserSongRatingDTO> getBySongId(@PathVariable("id") Long songId) {
-    return service.findBySongId(songId).stream()
+  public ResponseEntity<List<UserSongRatingDTO>> getBySongId(@PathVariable("id") Long songId) {
+    List<UserSongRatingDTO> list = service.findBySongId(songId).stream()
         .map(mapper::map)
         .collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
-  @GetMapping("/user_song/{userId}/{songId}")
-  @ResponseStatus(HttpStatus.OK)
-  @ResponseBody
-  public UserSongRatingDTO getByUserIdAndSongId(
+  @GetMapping("/{userId}/{songId}")
+  public ResponseEntity<UserSongRatingDTO> getByUserIdAndSongId(
       @PathVariable("userId") Long userId, @PathVariable("songId") Long songId) {
-    return service.findByUserIdAndSongId(userId, songId)
-        .map(mapper::map)
-        .orElse(null);
+    var tmp = service.findByUserIdAndSongId(userId, songId);
+    return new ResponseEntity<>(mapper.map(tmp), HttpStatus.OK);
   }
 
   @GetMapping
-  @ResponseStatus(HttpStatus.OK)
-  @ResponseBody
-  public List<UserSongRatingDTO> getAll(
+  public ResponseEntity<List<UserSongRatingDTO>> getAll(
       @RequestParam(value = "greaterThanEqual", required = false) Double greaterValue,
       @RequestParam(value = "lessThanEqual", required = false) Double lessValue,
       @RequestParam(value = "equal", required = false) Double value) {
@@ -65,29 +60,34 @@ public class UserSongRatingRestController {
     } else {
       list = service.findAll();
     }
-    return list.stream()
+    List<UserSongRatingDTO> dtos = list.stream()
         .map(mapper::map)
         .collect(Collectors.toList());
+    return new ResponseEntity<>(dtos, HttpStatus.OK);
   }
 
   @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
-  public UserSongRatingDTO create(@RequestBody UserSongRatingDTO dto) {
+  public ResponseEntity<UserSongRatingDTO> create(@RequestBody UserSongRatingDTO dto) {
     UserSongRating user = mapper.map(dto);
     var saved = service.save(user);
-    return mapper.map(saved);
+    return new ResponseEntity<>(mapper.map(saved), HttpStatus.CREATED);
   }
 
   @PutMapping
-  @ResponseStatus(HttpStatus.OK)
-  public void update(@RequestBody UserSongRatingDTO dto) {
+  public ResponseEntity<UserSongRatingDTO> update(@RequestBody UserSongRatingDTO dto) {
+    if(service.findByUserIdAndSongIdNoException(
+        dto.getUserId(), dto.getSongId()).isEmpty()) {
+      throw new EntityNotFoundException(UserSongRating.class);
+    }
     UserSongRating user = mapper.map(dto);
-    service.save(user);
+    var saved = service.save(user);
+    return new ResponseEntity<>(mapper.map(saved), HttpStatus.OK);
   }
 
   @DeleteMapping
-  public void delete(@RequestBody UserSongRatingDTO dto) {
+  public ResponseEntity<Void> delete(@RequestBody UserSongRatingDTO dto) {
     var obj = mapper.map(dto);
     service.delete(obj);
+    return ResponseEntity.noContent().build();
   }
 }

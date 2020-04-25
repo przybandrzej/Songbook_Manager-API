@@ -51,12 +51,12 @@ public class SongDTO {
         private String guitarTabs;
         private String curio;
         private String creationTime;
-        private List<Long> tagsId;
+        private List<Long> tags;
         private Double averageRating;
 
         public SongDTO create() {
             return new SongDTO(id, authorId, categoryId,
-                title, coauthors, lyrics, guitarTabs, curio, creationTime, tagsId, averageRating);
+                title, coauthors, lyrics, guitarTabs, curio, creationTime, tags, averageRating);
         }
         public SongDTO.Builder id(Long id) {
             this.id = id;
@@ -94,8 +94,8 @@ public class SongDTO {
             this.creationTime = creationTime;
             return this;
         }
-        public SongDTO.Builder tagsId(List<Long> tagsId) {
-            this.tagsId = tagsId;
+        public SongDTO.Builder tags(List<Long> tags) {
+            this.tags = tags;
             return this;
         }
         public SongDTO.Builder averageRating(Double averageRating) {

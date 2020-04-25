@@ -1,4 +1,4 @@
-package com.lazydev.stksongbook.webapp.service.dto;
+package com.lazydev.stksongbook.webapp.service.dto.creational;
 
 import lombok.Builder;
 import lombok.Value;
