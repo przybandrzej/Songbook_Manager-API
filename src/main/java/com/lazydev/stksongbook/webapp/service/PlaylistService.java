@@ -15,27 +15,46 @@ public class PlaylistService {
 
   private PlaylistRepository repository;
 
-  public Optional<Playlist> findByIdNoException(Long id) {
+  public Optional<Playlist> findByIdNoException(Long id, boolean includePrivate) {
+    if(!includePrivate) {
+      return repository.findByIdAndIsPrivate(id, false);
+    }
     return repository.findById(id);
   }
 
-  public Playlist findById(Long id) {
+  public Playlist findById(Long id, boolean includePrivate) {
+    if(!includePrivate) {
+      return repository.findByIdAndIsPrivate(id, false)
+              .orElseThrow(() -> new EntityNotFoundException(Playlist.class, id));
+    }
     return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(Playlist.class, id));
   }
 
-  public List<Playlist> findByName(String name) {
+  public List<Playlist> findByName(String name, boolean includePrivate) {
+    if(!includePrivate) {
+      return repository.findByNameIgnoreCaseAndIsPrivate(name, false);
+    }
     return repository.findByNameIgnoreCase(name);
   }
 
-  public List<Playlist> findByOwnerId(Long id) {
+  public List<Playlist> findByOwnerId(Long id, boolean includePrivate) {
+    if(!includePrivate) {
+      return repository.findByOwnerIdAndIsPrivate(id, false);
+    }
     return repository.findByOwnerId(id);
   }
 
-  public List<Playlist> findBySongId(Long id) {
+  public List<Playlist> findBySongId(Long id, boolean includePrivate) {
+    if(!includePrivate) {
+      return repository.findBySongsIdAndIsPrivate(id, false);
+    }
     return repository.findBySongsId(id);
   }
 
-  public List<Playlist> findAll() {
+  public List<Playlist> findAll(boolean includePrivate) {
+    if(!includePrivate) {
+      return repository.findByIsPrivate(false);
+    }
     return repository.findAll();
   }
 
