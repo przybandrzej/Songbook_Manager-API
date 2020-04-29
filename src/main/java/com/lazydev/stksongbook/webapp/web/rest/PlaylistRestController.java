@@ -25,25 +25,32 @@ public class PlaylistRestController {
   private PlaylistMapper mapper;
 
   @GetMapping
-  public ResponseEntity<List<PlaylistDTO>> getAll() {
-    List<PlaylistDTO> list = service.findAll().stream().map(mapper::map).collect(Collectors.toList());
-    return new ResponseEntity<>(list, HttpStatus.OK);
+  public ResponseEntity<List<PlaylistDTO>> getAll(
+          @RequestParam(value = "include_private", required = false, defaultValue = "false") boolean includePrivate) {
+      List<PlaylistDTO> list = service.findAll(includePrivate).stream().map(mapper::map).collect(Collectors.toList());
+      return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @GetMapping("/id/{id}")
-  public ResponseEntity<PlaylistDTO> getById(@PathVariable("id") Long id) {
-    return new ResponseEntity<>(mapper.map(service.findById(id)), HttpStatus.OK);
+  public ResponseEntity<PlaylistDTO> getById(@PathVariable("id") Long id,
+                                             @RequestParam(value = "include_private",
+                                                     required = false, defaultValue = "false") boolean includePrivate) {
+    return new ResponseEntity<>(mapper.map(service.findById(id, includePrivate)), HttpStatus.OK);
   }
 
   @GetMapping("/name/{name}")
-  public ResponseEntity<List<PlaylistDTO>> getByName(@PathVariable("name") String name) {
-    List<PlaylistDTO> list = service.findByName(name).stream().map(mapper::map).collect(Collectors.toList());
+  public ResponseEntity<List<PlaylistDTO>> getByName(@PathVariable("name") String name,
+                                                     @RequestParam(value = "include_private", required = false,
+                                                             defaultValue = "false") boolean includePrivate) {
+    List<PlaylistDTO> list = service.findByName(name, includePrivate).stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @GetMapping("/ownerId/{id}")
-  public ResponseEntity<List<PlaylistDTO>> getByOwnerId(@PathVariable("id") Long ownerId) {
-    List<PlaylistDTO> list = service.findByOwnerId(ownerId).stream().map(mapper::map).collect(Collectors.toList());
+  public ResponseEntity<List<PlaylistDTO>> getByOwnerId(@PathVariable("id") Long ownerId,
+                                                        @RequestParam(value = "include_private", required = false,
+                                                                defaultValue = "false") boolean includePrivate) {
+    List<PlaylistDTO> list = service.findByOwnerId(ownerId, includePrivate).stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
@@ -57,7 +64,7 @@ public class PlaylistRestController {
 
   @PutMapping
   public ResponseEntity<PlaylistDTO> update(@RequestBody PlaylistDTO dto) {
-    if(service.findByIdNoException(dto.getId()).isEmpty()) {
+    if(service.findByIdNoException(dto.getId(), true).isEmpty()) {
       throw new EntityNotFoundException(Playlist.class, dto.getId());
     }
     var playlist = mapper.map(dto);
