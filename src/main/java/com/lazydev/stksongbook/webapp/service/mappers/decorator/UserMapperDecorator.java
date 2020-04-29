@@ -35,7 +35,7 @@ public abstract class UserMapperDecorator implements UserMapper {
     user.setUserRole(userRoleService.findById(dto.getUserRoleId()));
     user.setSongs(dto.getSongs().stream().map(s -> songService.findById(s)).collect(Collectors.toSet()));
     user.setUserRatings(new HashSet<>(userSongRatingService.findByUserId(dto.getId())));
-    user.setPlaylists(new HashSet<>(playlistService.findByOwnerId(dto.getId())));
+    user.setPlaylists(new HashSet<>(playlistService.findByOwnerId(dto.getId(), true)));
     user.setEmail(found.getEmail());
     user.setPassword(found.getPassword());
     return user;

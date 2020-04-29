@@ -38,7 +38,7 @@ public abstract class SongMapperDecorator implements SongMapper {
     song.setAuthor(authorService.findById(dto.getAuthorId()));
     song.setUsersSongs(new HashSet<>(userService.findBySong(dto.getId())));
     song.setRatings(new HashSet<>(userSongRatingService.findBySongId(dto.getId())));
-    song.setPlaylists(new HashSet<>(playlistService.findBySongId(dto.getId())));
+    song.setPlaylists(new HashSet<>(playlistService.findBySongId(dto.getId(), true)));
     return song;
   }
 
