@@ -7,11 +7,14 @@ import com.lazydev.stksongbook.webapp.service.dto.creational.CreatePlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.PlaylistMapper;
 import com.lazydev.stksongbook.webapp.util.Constants;
+import com.lazydev.stksongbook.webapp.util.PdfMaker;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +26,7 @@ public class PlaylistRestController {
 
   private PlaylistService service;
   private PlaylistMapper mapper;
+  private PdfMaker pdfMaker;
 
   @GetMapping
   public ResponseEntity<List<PlaylistDTO>> getAll(
@@ -34,8 +38,10 @@ public class PlaylistRestController {
   @GetMapping("/id/{id}")
   public ResponseEntity<PlaylistDTO> getById(@PathVariable("id") Long id,
                                              @RequestParam(value = "include_private",
-                                                     required = false, defaultValue = "false") boolean includePrivate) {
-    return new ResponseEntity<>(mapper.map(service.findById(id, includePrivate)), HttpStatus.OK);
+                                                     required = false, defaultValue = "false") boolean includePrivate) throws IOException, URISyntaxException {
+    var found = service.findById(id, includePrivate);
+    pdfMaker.createPdfFromPlaylist(found);
+    return new ResponseEntity<>(mapper.map(found), HttpStatus.OK);
   }
 
   @GetMapping("/name/{name}")
