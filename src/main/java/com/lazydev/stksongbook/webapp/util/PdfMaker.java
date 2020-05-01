@@ -46,7 +46,7 @@ public class PdfMaker {
     this.fileSystemStorageService = service;
   }
 
-  public void createPdfFromPlaylist(Playlist playlist) {
+  public String createPdfFromPlaylist(Playlist playlist) {
     try (PDDocument document = new PDDocument()) {
       regularLato = PDType0Font.load(document, new File(ClassLoader.getSystemResource("fonts/Lato2OFL/Lato-Regular.ttf").toURI()));
       boldLato = PDType0Font.load(document, new File(ClassLoader.getSystemResource("fonts/Lato2OFL/Lato-Bold.ttf").toURI()));
@@ -55,10 +55,13 @@ public class PdfMaker {
       document.addPage(getBlankPage());
       createSongsPages(document, playlist);
       setFileProperties(document, playlist);
-      document.save(getFileSave(playlist));
+      File file = getFileSave(playlist);
+      document.save(file);
+      return file.getName();
     } catch (IOException | URISyntaxException e) {
       e.printStackTrace();
     }
+    return "";
   }
 
   protected File getFileSave(Playlist playlist) {
