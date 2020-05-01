@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.lazydev.stksongbook</groupId>
 	<artifactId>webapp</artifactId>
-	<version>0.9.0</version>
+	<version>0.9.5</version>
 	<name>STK Songbook</name>
 	<description>Application for managing a songbook of STK organization</description>
 	<packaging>jar</packaging>
@@ -97,28 +97,17 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!--<dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-hateoas</artifactId>
-		</dependency>!-->
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
 
-		<!--<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.10.19</version>
-			<scope>test</scope>
-		</dependency>-->
-		<!--<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>2.13.1</version>
-		</dependency>-->
-		<!--<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>2.13.1</version>
-		</dependency>-->
-
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>2.0.19</version>
+		</dependency>
 
 	</dependencies>
 

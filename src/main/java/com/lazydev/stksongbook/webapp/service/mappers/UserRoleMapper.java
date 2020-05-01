@@ -18,8 +18,8 @@ public interface UserRoleMapper {
   @Mapping(target = "users", ignore = true)
   UserRole map(UserRoleDTO dto);
 
-  @Mapping(target = "users", expression = "java(new HashSet<>())")
-  @Mapping(target = "id", expression = "java(Constants.DEFAULT_ID)")
+  @Mapping(target = "users", ignore = true)
+  @Mapping(target = "id", ignore = true)
   @Mapping(target = "name", source = "name")
   UserRole map(UniversalCreateDTO dto);
 }

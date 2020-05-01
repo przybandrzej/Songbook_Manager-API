@@ -4,7 +4,9 @@ import com.lazydev.stksongbook.webapp.data.model.Author;
 import com.lazydev.stksongbook.webapp.service.SongCoauthorService;
 import com.lazydev.stksongbook.webapp.service.SongService;
 import com.lazydev.stksongbook.webapp.service.dto.AuthorDTO;
+import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
 import com.lazydev.stksongbook.webapp.service.mappers.AuthorMapper;
+import com.lazydev.stksongbook.webapp.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -27,6 +29,15 @@ public abstract class AuthorMapperDecorator implements AuthorMapper {
     author.setPhotoResource(null);
     author.setCoauthorSongs(new HashSet<>(songCoauthorService.findByAuthorId(dto.getId())));
     author.setSongs(new HashSet<>(songService.findByAuthorId(dto.getId())));
+    return author;
+  }
+
+  @Override
+  public Author map(UniversalCreateDTO dto) {
+    var author = delegate.map(dto);
+    author.setSongs(new HashSet<>());
+    author.setCoauthorSongs(new HashSet<>());
+    author.setId(Constants.DEFAULT_ID);
     return author;
   }
 }

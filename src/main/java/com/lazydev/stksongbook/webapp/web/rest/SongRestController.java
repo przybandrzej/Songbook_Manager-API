@@ -46,7 +46,13 @@ public class SongRestController {
 
   @GetMapping("/title/{title}")
   public ResponseEntity<List<SongDTO>> getByTitle(@PathVariable("title") String title) {
-    List<SongDTO> list = service.findByTitle(title).stream().map(mapper::map).collect(Collectors.toList());
+    List<SongDTO> list = service.findByTitleContains(title).stream().map(mapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
+  }
+
+  @GetMapping("/lyrics_fragment/{value}")
+  public ResponseEntity<List<SongDTO>> getByLyricsFragment(@PathVariable("value") String value) {
+    List<SongDTO> list = service.findByLyricsContains(value).stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
