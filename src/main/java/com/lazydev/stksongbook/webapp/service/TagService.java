@@ -24,7 +24,7 @@ public class TagService {
     }
 
     public List<Tag> findByName(String name) {
-        return repository.findByNameIgnoreCase(name);
+        return repository.findByNameContainingIgnoreCase(name);
     }
 
     public List<Tag> findAll() {

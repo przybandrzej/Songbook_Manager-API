@@ -32,9 +32,9 @@ public class PlaylistService {
 
   public List<Playlist> findByName(String name, boolean includePrivate) {
     if(!includePrivate) {
-      return repository.findByNameIgnoreCaseAndIsPrivate(name, false);
+      return repository.findByNameContainingIgnoreCaseAndIsPrivate(name, false);
     }
-    return repository.findByNameIgnoreCase(name);
+    return repository.findByNameContainingIgnoreCase(name);
   }
 
   public List<Playlist> findByOwnerId(Long id, boolean includePrivate) {
