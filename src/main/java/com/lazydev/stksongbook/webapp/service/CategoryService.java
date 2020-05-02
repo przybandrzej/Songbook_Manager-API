@@ -28,7 +28,7 @@ public class CategoryService {
     }
 
     public List<Category> findByName(String name) {
-        return repository.findByNameIgnoreCase(name);
+        return repository.findByNameContainingIgnoreCase(name);
     }
 
     public Category save(Category saveAuthor) {

@@ -24,7 +24,7 @@ public class UserRoleService {
   }
 
   public List<UserRole> findByName(String name) {
-    return repository.findByNameIgnoreCase(name);
+    return repository.findByNameContainingIgnoreCase(name);
   }
 
   public List<UserRole> findAll() {

@@ -37,7 +37,7 @@ public class SongCoauthorService {
   }
 
   public List<SongCoauthor> findByFunction(String function) {
-    return repository.findByFunctionIgnoreCase(function);
+    return repository.findByFunctionContainingIgnoreCase(function);
   }
 
   public SongCoauthor save(SongCoauthor songCoauthor) {
