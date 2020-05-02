@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -30,6 +29,7 @@ import java.util.List;
 public class PdfMaker {
 
   private static final String IMAGE_RESOURCE_DIRECTORY = "img";
+  private static final String RESOURCES_DIR = "src/main/resources";
   private static final String STK_LOGO_IMAGE = "stk_logo.png";
   private static final String FILE_AUTHOR_PREFIX = "STK AZS UEP";
   private static final String DOCUMENT_SUBJECT = "STK AZS UEP Songbook";
@@ -48,9 +48,9 @@ public class PdfMaker {
 
   public String createPdfFromPlaylist(Playlist playlist) {
     try (PDDocument document = new PDDocument()) {
-      regularLato = PDType0Font.load(document, new File(ClassLoader.getSystemResource("fonts/Lato2OFL/Lato-Regular.ttf").toURI()));
-      boldLato = PDType0Font.load(document, new File(ClassLoader.getSystemResource("fonts/Lato2OFL/Lato-Bold.ttf").toURI()));
-      italicsLato = PDType0Font.load(document, new File(ClassLoader.getSystemResource("fonts/Lato2OFL/Lato-Italic.ttf").toURI()));
+      regularLato = PDType0Font.load(document, new File(RESOURCES_DIR + "/fonts/Lato2OFL/Lato-Regular.ttf"));
+      boldLato = PDType0Font.load(document, new File(RESOURCES_DIR + "/fonts/Lato2OFL/Lato-Bold.ttf"));
+      italicsLato = PDType0Font.load(document, new File(RESOURCES_DIR + "/fonts/Lato2OFL/Lato-Italic.ttf"));
       document.addPage(getTitlePage(document, playlist));
       document.addPage(getBlankPage());
       createSongsPages(document, playlist);
@@ -58,7 +58,7 @@ public class PdfMaker {
       File file = getFileSave(playlist);
       document.save(file);
       return file.getName();
-    } catch (IOException | URISyntaxException e) {
+    } catch (IOException e) {
       e.printStackTrace();
     }
     return "";
@@ -86,9 +86,9 @@ public class PdfMaker {
     return new PDPage();
   }
 
-  protected PDPage getTitlePage(PDDocument document, Playlist playlist) throws IOException, URISyntaxException {
+  protected PDPage getTitlePage(PDDocument document, Playlist playlist) throws IOException {
     PDPage page = new PDPage();
-    Path path = Paths.get(ClassLoader.getSystemResource(IMAGE_RESOURCE_DIRECTORY + "/" + STK_LOGO_IMAGE).toURI());
+    Path path = Paths.get(RESOURCES_DIR + "/" + IMAGE_RESOURCE_DIRECTORY + "/" + STK_LOGO_IMAGE);
     PDImageXObject image = PDImageXObject.createFromFile(path.toAbsolutePath().toString(), document);
     PDPageContentStream contentStream = new PDPageContentStream(document, page);
 
