@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.lazydev.stksongbook</groupId>
 	<artifactId>webapp</artifactId>
-	<version>0.9.0</version>
+	<version>0.9.6</version>
 	<name>STK Songbook</name>
 	<description>Application for managing a songbook of STK organization</description>
 	<packaging>jar</packaging>
