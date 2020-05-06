@@ -40,7 +40,7 @@ public class Playlist {
    * Represents the owner of the playlist.
    */
   @ManyToOne
-  @JoinColumn(name = "owner_id", nullable = false)
+  @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
   private User owner;
 
   /**

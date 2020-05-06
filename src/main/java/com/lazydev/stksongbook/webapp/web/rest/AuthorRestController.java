@@ -40,7 +40,7 @@ public class AuthorRestController {
 
   @GetMapping("/name/{name}")
   public ResponseEntity<List<AuthorDTO>> getByName(@PathVariable("name") String name) {
-    List<AuthorDTO> list = service.findByName(name).stream().map(mapper::map).collect(Collectors.toList());
+    List<AuthorDTO> list = service.findByNameFragment(name).stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
@@ -54,7 +54,6 @@ public class AuthorRestController {
   @PostMapping
   public ResponseEntity<AuthorDTO> create(@RequestBody UniversalCreateDTO authorDto) {
     var author = mapper.map(authorDto);
-    author.setId(Constants.DEFAULT_ID);
     var saved = service.save(author);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.CREATED);
   }

@@ -40,4 +40,8 @@ public class Tag {
 
   @ManyToMany(mappedBy = "tags")
   private Set<Song> songs;
+
+  public boolean addSong(Song song) {
+    return this.songs.add(song);
+  }
 }

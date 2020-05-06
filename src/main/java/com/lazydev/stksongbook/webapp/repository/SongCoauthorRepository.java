@@ -12,4 +12,5 @@ public interface SongCoauthorRepository extends JpaRepository<SongCoauthor, Long
   List<SongCoauthor> findBySongId(Long id);
   List<SongCoauthor> findByAuthorId(Long id);
   List<SongCoauthor> findByFunctionIgnoreCase(String function);
+  List<SongCoauthor> findByFunctionContainingIgnoreCase(String function);
 }

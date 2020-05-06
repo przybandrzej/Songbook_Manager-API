@@ -40,7 +40,7 @@ public class UserService {
   }
 
   public List<User> findByUsernameContains(String text) {
-    return repository.findByUsernameContaining(text);
+    return repository.findByUsernameContainingIgnoreCase(text);
   }
 
   public List<User> findByUserRole(Long id) {

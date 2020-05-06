@@ -23,8 +23,16 @@ public class TagService {
         return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(Tag.class, id));
     }
 
-    public List<Tag> findByName(String name) {
-        return repository.findByNameIgnoreCase(name);
+    public List<Tag> findByNameFragment(String name) {
+        return repository.findByNameContainingIgnoreCase(name);
+    }
+
+    public Optional<Tag> findByNameNoException(String name) {
+        return repository.findByName(name);
+    }
+
+    public Tag findByName(String name) {
+        return repository.findByName(name).orElseThrow(() -> new EntityNotFoundException(Tag.class, name));
     }
 
     public List<Tag> findAll() {
