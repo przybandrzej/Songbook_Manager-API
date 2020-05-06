@@ -40,7 +40,7 @@ public class TagRestController {
 
   @GetMapping("/name/{name}")
   public ResponseEntity<List<TagDTO>> getByName(@PathVariable("name") String name) {
-    List<TagDTO> list = service.findByName(name).stream().map(modelMapper::map).collect(Collectors.toList());
+    List<TagDTO> list = service.findByNameFragment(name).stream().map(modelMapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 

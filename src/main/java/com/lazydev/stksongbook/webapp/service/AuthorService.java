@@ -27,8 +27,16 @@ public class AuthorService {
         return authorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Author.class, id));
     }
 
-    public List<Author> findByName(String name) {
+    public List<Author> findByNameFragment(String name) {
         return authorRepository.findByNameContainingIgnoreCase(name);
+    }
+
+    public Optional<Author> findByNameNoException(String name) {
+        return authorRepository.findByName(name);
+    }
+
+    public Author findByName(String name) {
+        return authorRepository.findByName(name).orElseThrow(() -> new EntityNotFoundException(Author.class, name));
     }
 
     public Author save(Author saveAuthor) {

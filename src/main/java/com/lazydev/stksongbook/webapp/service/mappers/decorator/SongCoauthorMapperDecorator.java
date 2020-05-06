@@ -5,6 +5,7 @@ import com.lazydev.stksongbook.webapp.data.model.SongsCoauthorsKey;
 import com.lazydev.stksongbook.webapp.service.AuthorService;
 import com.lazydev.stksongbook.webapp.service.SongService;
 import com.lazydev.stksongbook.webapp.service.dto.SongCoauthorDTO;
+import com.lazydev.stksongbook.webapp.service.dto.creational.CreateCoauthorDTO;
 import com.lazydev.stksongbook.webapp.service.mappers.SongCoauthorMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

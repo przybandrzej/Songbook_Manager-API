@@ -2,6 +2,7 @@ package com.lazydev.stksongbook.webapp.service.mappers;
 
 import com.lazydev.stksongbook.webapp.data.model.SongCoauthor;
 import com.lazydev.stksongbook.webapp.service.dto.SongCoauthorDTO;
+import com.lazydev.stksongbook.webapp.service.dto.creational.CreateCoauthorDTO;
 import com.lazydev.stksongbook.webapp.service.mappers.decorator.SongCoauthorMapperDecorator;
 import com.lazydev.stksongbook.webapp.service.AuthorService;
 import com.lazydev.stksongbook.webapp.service.SongService;

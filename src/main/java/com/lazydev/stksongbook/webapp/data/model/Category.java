@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.net.URL;
 import java.util.Set;
 
 /**
@@ -39,6 +38,10 @@ public class Category {
   @Column(name = "name", nullable = false, unique = true)
   private String name;
 
-  @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  @OneToMany(mappedBy = "category")
   private Set<Song> songs;
+
+  public boolean addSong(Song song) {
+    return this.songs.add(song);
+  }
 }

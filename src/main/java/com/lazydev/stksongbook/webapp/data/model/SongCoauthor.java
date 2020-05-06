@@ -39,4 +39,16 @@ public class SongCoauthor {
    */
   @Column(name = "function", nullable = false)
   private String function;
+
+  public void setSong(Song song) {
+    this.song = song;
+    song.addCoauthor(this);
+    this.id.setSongId(song.getId());
+  }
+
+  public void setAuthor(Author author) {
+    this.author = author;
+    author.addCoauthorSong(this);
+    this.id.setAuthorId(author.getId());
+  }
 }

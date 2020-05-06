@@ -1,7 +1,10 @@
 package com.lazydev.stksongbook.webapp.web.rest;
 
-import com.lazydev.stksongbook.webapp.data.model.Song;
+import com.lazydev.stksongbook.webapp.data.model.*;
+import com.lazydev.stksongbook.webapp.service.AuthorService;
+import com.lazydev.stksongbook.webapp.service.SongCoauthorService;
 import com.lazydev.stksongbook.webapp.service.SongService;
+import com.lazydev.stksongbook.webapp.service.TagService;
 import com.lazydev.stksongbook.webapp.service.dto.PlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
@@ -18,7 +21,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManager;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -32,6 +38,9 @@ public class SongRestController {
   private UserSongRatingMapper userSongRatingMapper;
   private UserMapper userMapper;
   private PlaylistMapper playlistMapper;
+  private AuthorService authorService;
+  private SongCoauthorService coauthorService;
+  private TagService tagService;
 
   @GetMapping
   public ResponseEntity<List<SongDTO>> getAll() {
@@ -91,10 +100,50 @@ public class SongRestController {
 
   @PostMapping
   public ResponseEntity<SongDTO> create(@RequestBody CreateSongDTO obj) {
+
+    var authorOpt = authorService.findByNameNoException(obj.getAuthorName());
+    Author author = null;
+    if(authorOpt.isPresent()) {
+      author = authorOpt.get();
+    } else {
+      var newAuthor = new Author(Constants.DEFAULT_ID, obj.getAuthorName(), null, null, new HashSet<>(), new HashSet<>());
+      author = authorService.save(newAuthor);
+    }
+
+    Set<Tag> tags = new HashSet<>();
+    obj.getTags().forEach(it -> {
+      var tag = tagService.findByNameNoException(it);
+      if(tag.isPresent()) {
+        tags.add(tag.get());
+      } else {
+        Tag newTag = new Tag(Constants.DEFAULT_ID, it, new HashSet<>());
+        tags.add(tagService.save(newTag));
+      }
+    });
+
     var song = mapper.map(obj);
-    song.setId(Constants.DEFAULT_ID);
-    var saved = service.save(song);
-    return new ResponseEntity<>(mapper.map(saved), HttpStatus.CREATED);
+    author.addSong(song);
+    song.setTags(tags);
+    var savedOnce = service.save(song);
+
+    obj.getCoauthors().forEach(coauthorDTO -> {
+      var opt = authorService.findByNameNoException(coauthorDTO.getAuthorName());
+      Author auth = null;
+      if(opt.isPresent()) {
+        auth = opt.get();
+      } else {
+        var newAuthor = new Author(Constants.DEFAULT_ID, coauthorDTO.getAuthorName(), null, null, new HashSet<>(), new HashSet<>());
+        auth = authorService.save(newAuthor);
+      }
+      var coauthor = new SongCoauthor();
+      coauthor.setId(new SongsCoauthorsKey());
+      coauthor.setAuthor(auth);
+      coauthor.setSong(savedOnce);
+      coauthor.setFunction(coauthorDTO.getFunction());
+      coauthorService.save(coauthor);
+    });
+    var completeSong = service.save(savedOnce);
+    return new ResponseEntity<>(mapper.map(completeSong), HttpStatus.CREATED);
   }
 
   @PutMapping

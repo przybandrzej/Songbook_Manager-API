@@ -21,7 +21,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode(exclude = {"usersSongs", "playlists", "ratings"})
+@EqualsAndHashCode(exclude = {"coauthors", "tags", "usersSongs", "playlists", "ratings"})
 public class Song {
 
   /**
@@ -37,11 +37,7 @@ public class Song {
   @JoinColumn(name = "author_id", referencedColumnName = "id", nullable = false)
   private Author author;
 
-  /**
-   * @param authorId is the Foreign Key referencing the ID in the AUTHORS table.
-   * By definition, it must be unique.
-   */
-  @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "song")
   private Set<SongCoauthor> coauthors;
 
   /**
@@ -96,4 +92,23 @@ public class Song {
 
   @ManyToMany(mappedBy = "songs")
   private Set<Playlist> playlists;
+
+  public void setAuthor(Author author) {
+    this.author = author;
+  }
+
+  public void setCategory(Category category) {
+    this.category = category;
+    category.addSong(this);
+  }
+
+  public void addTag(Tag tag) {
+    if(this.tags.add(tag)) {
+      tag.addSong(this);
+    }
+  }
+
+  public void addCoauthor(SongCoauthor coauthor) {
+    this.coauthors.add(coauthor);
+  }
 }
