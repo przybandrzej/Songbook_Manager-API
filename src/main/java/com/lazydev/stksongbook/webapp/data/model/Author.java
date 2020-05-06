@@ -18,7 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode(exclude = "songs")
+@EqualsAndHashCode(exclude = {"songs", "biographyUrl", "photoResource", "coauthorSongs"})
 public class Author {
 
   /**
@@ -43,9 +43,18 @@ public class Author {
   @Column(name = "photo_resource")
   private String photoResource;
 
-  @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "author")
   private Set<SongCoauthor> coauthorSongs;
 
-  @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "author")
   private Set<Song> songs;
+
+  public void addCoauthorSong(SongCoauthor coauthor) {
+    coauthorSongs.add(coauthor);
+  }
+
+  public void addSong(Song song) {
+    songs.add(song);
+    song.setAuthor(this);
+  }
 }

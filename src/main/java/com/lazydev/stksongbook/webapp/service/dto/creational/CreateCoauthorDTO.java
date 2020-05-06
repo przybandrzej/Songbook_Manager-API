@@ -5,8 +5,8 @@ import lombok.Value;
 
 @Value
 @Builder
-public class UniversalCreateDTO {
+public class CreateCoauthorDTO {
 
-    Long id;
-    String name;
+  String authorName;
+  String function;
 }

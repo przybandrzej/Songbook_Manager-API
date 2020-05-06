@@ -1,6 +1,5 @@
 package com.lazydev.stksongbook.webapp.service.dto.creational;
 
-import com.lazydev.stksongbook.webapp.service.dto.SongCoauthorDTO;
 import lombok.Builder;
 import lombok.Value;
 
@@ -11,12 +10,12 @@ import java.util.Set;
 @Builder
 public class CreateSongDTO {
 
-    Long authorId;
+    String authorName;
     Long categoryId;
     String title;
-    Set<SongCoauthorDTO> coauthors;
+    Set<CreateCoauthorDTO> coauthors;
     String lyrics;
     String guitarTabs;
     String curio;
-    List<Long> tags;
+    List<String> tags;
 }
