@@ -8,7 +8,6 @@ import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.AuthorMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
-import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +27,11 @@ public class AuthorRestController {
   private SongMapper songMapper;
 
   @GetMapping
-  public ResponseEntity<List<AuthorDTO>> getAll() {
+  public ResponseEntity<List<AuthorDTO>> getAll(@RequestParam(value = "limit", required = false) Integer limit) {
+    if(limit != null) {
+      List<AuthorDTO> list = service.findLimited(limit).stream().map(mapper::map).collect(Collectors.toList());
+      return new ResponseEntity<>(list, HttpStatus.OK);
+    }
     List<AuthorDTO> list = service.findAll().stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }

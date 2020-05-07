@@ -4,6 +4,7 @@ import com.lazydev.stksongbook.webapp.data.model.Tag;
 import com.lazydev.stksongbook.webapp.repository.TagRepository;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,6 +38,10 @@ public class TagService {
 
     public List<Tag> findAll() {
         return repository.findAll();
+    }
+
+    public List<Tag> findLimited(int limit) {
+        return repository.findAll(PageRequest.of(0, limit)).toList();
     }
 
     public Tag save(Tag saveObj) {

@@ -28,7 +28,11 @@ public class TagRestController {
   private SongMapper songMapper;
 
   @GetMapping
-  public ResponseEntity<List<TagDTO>> getAll() {
+  public ResponseEntity<List<TagDTO>> getAll(@RequestParam(value = "limit", required = false) Integer limit) {
+    if(limit != null) {
+      List<TagDTO> list = service.findLimited(limit).stream().map(modelMapper::map).collect(Collectors.toList());
+      return new ResponseEntity<>(list, HttpStatus.OK);
+    }
     List<TagDTO> list = service.findAll().stream().map(modelMapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }

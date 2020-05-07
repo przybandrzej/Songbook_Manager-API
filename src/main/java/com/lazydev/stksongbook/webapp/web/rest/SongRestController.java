@@ -21,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityManager;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -43,7 +42,11 @@ public class SongRestController {
   private TagService tagService;
 
   @GetMapping
-  public ResponseEntity<List<SongDTO>> getAll() {
+  public ResponseEntity<List<SongDTO>> getAll(@RequestParam(value = "limit", required = false) Integer limit) {
+    if(limit != null) {
+      List<SongDTO> list = service.findLimited(limit).stream().map(mapper::map).collect(Collectors.toList());
+      return new ResponseEntity<>(list, HttpStatus.OK);
+    }
     List<SongDTO> list = service.findAll().stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
@@ -100,49 +103,7 @@ public class SongRestController {
 
   @PostMapping
   public ResponseEntity<SongDTO> create(@RequestBody CreateSongDTO obj) {
-
-    var authorOpt = authorService.findByNameNoException(obj.getAuthorName());
-    Author author = null;
-    if(authorOpt.isPresent()) {
-      author = authorOpt.get();
-    } else {
-      var newAuthor = new Author(Constants.DEFAULT_ID, obj.getAuthorName(), null, null, new HashSet<>(), new HashSet<>());
-      author = authorService.save(newAuthor);
-    }
-
-    Set<Tag> tags = new HashSet<>();
-    obj.getTags().forEach(it -> {
-      var tag = tagService.findByNameNoException(it);
-      if(tag.isPresent()) {
-        tags.add(tag.get());
-      } else {
-        Tag newTag = new Tag(Constants.DEFAULT_ID, it, new HashSet<>());
-        tags.add(tagService.save(newTag));
-      }
-    });
-
-    var song = mapper.map(obj);
-    author.addSong(song);
-    song.setTags(tags);
-    var savedOnce = service.save(song);
-
-    obj.getCoauthors().forEach(coauthorDTO -> {
-      var opt = authorService.findByNameNoException(coauthorDTO.getAuthorName());
-      Author auth = null;
-      if(opt.isPresent()) {
-        auth = opt.get();
-      } else {
-        var newAuthor = new Author(Constants.DEFAULT_ID, coauthorDTO.getAuthorName(), null, null, new HashSet<>(), new HashSet<>());
-        auth = authorService.save(newAuthor);
-      }
-      var coauthor = new SongCoauthor();
-      coauthor.setId(new SongsCoauthorsKey());
-      coauthor.setAuthor(auth);
-      coauthor.setSong(savedOnce);
-      coauthor.setFunction(coauthorDTO.getFunction());
-      coauthorService.save(coauthor);
-    });
-    var completeSong = service.save(savedOnce);
+    var completeSong = service.save(getSong(obj));
     return new ResponseEntity<>(mapper.map(completeSong), HttpStatus.CREATED);
   }
 
@@ -160,5 +121,49 @@ public class SongRestController {
   public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
     service.deleteById(id);
     return ResponseEntity.noContent().build();
+  }
+
+  private Song getSong(CreateSongDTO obj) {
+    Set<Tag> tags = new HashSet<>();
+    obj.getTags().forEach(it -> {
+      var tag = tagService.findByNameNoException(it);
+      if(tag.isPresent()) {
+        tags.add(tag.get());
+      } else {
+        Tag newTag = new Tag(Constants.DEFAULT_ID, it, new HashSet<>());
+        tags.add(tagService.save(newTag));
+      }
+    });
+
+    Author author = findOrCreateAuthor(obj.getAuthorName());
+    var song = mapper.map(obj);
+    author.addSong(song);
+    song.setTags(tags);
+    var savedSong = service.save(song);
+
+    obj.getCoauthors().forEach(coauthorDTO -> {
+      var auth = findOrCreateAuthor(coauthorDTO.getAuthorName());
+      var coauthor = new SongCoauthor();
+      coauthor.setId(new SongsCoauthorsKey());
+      coauthor.setAuthor(auth);
+      coauthor.setSong(savedSong);
+      coauthor.setFunction(coauthorDTO.getFunction());
+      coauthorService.save(coauthor);
+    });
+
+    return savedSong;
+  }
+
+  private Author findOrCreateAuthor(String authorName) {
+    var opt = authorService.findByNameNoException(authorName);
+    Author auth = null;
+    if(opt.isPresent()) {
+      auth = opt.get();
+    } else {
+      var newAuthor = new Author(Constants.DEFAULT_ID, authorName,
+          null, null, new HashSet<>(), new HashSet<>());
+      auth = authorService.save(newAuthor);
+    }
+    return auth;
   }
 }

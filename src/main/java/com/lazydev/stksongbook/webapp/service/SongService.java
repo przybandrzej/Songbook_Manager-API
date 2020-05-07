@@ -4,6 +4,8 @@ import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.repository.SongRepository;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,6 +20,10 @@ public class SongService {
 
   public List<Song> findAll() {
     return repository.findAll();
+  }
+
+  public List<Song> findLimited(int limit) {
+    return repository.findAll(PageRequest.of(0, limit)).toList();
   }
 
   public Optional<Song> findByIdNoException(Long id) {
