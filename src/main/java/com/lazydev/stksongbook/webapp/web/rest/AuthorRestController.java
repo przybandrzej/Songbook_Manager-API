@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,14 +56,14 @@ public class AuthorRestController {
   }
 
   @PostMapping
-  public ResponseEntity<AuthorDTO> create(@RequestBody UniversalCreateDTO authorDto) {
+  public ResponseEntity<AuthorDTO> create(@RequestBody @Valid UniversalCreateDTO authorDto) {
     var author = mapper.map(authorDto);
     var saved = service.save(author);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.CREATED);
   }
 
   @PutMapping
-  public ResponseEntity<AuthorDTO> update(@RequestBody AuthorDTO authorDto) {
+  public ResponseEntity<AuthorDTO> update(@RequestBody @Valid AuthorDTO authorDto) {
     if(service.findByIdNoException(authorDto.getId()).isEmpty()) {
       throw new EntityNotFoundException(Author.class, authorDto.getId());
     }

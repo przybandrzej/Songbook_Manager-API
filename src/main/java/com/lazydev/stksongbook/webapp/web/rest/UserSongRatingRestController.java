@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,14 +68,14 @@ public class UserSongRatingRestController {
   }
 
   @PostMapping
-  public ResponseEntity<UserSongRatingDTO> create(@RequestBody UserSongRatingDTO dto) {
+  public ResponseEntity<UserSongRatingDTO> create(@RequestBody @Valid UserSongRatingDTO dto) {
     UserSongRating user = mapper.map(dto);
     var saved = service.save(user);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.CREATED);
   }
 
   @PutMapping
-  public ResponseEntity<UserSongRatingDTO> update(@RequestBody UserSongRatingDTO dto) {
+  public ResponseEntity<UserSongRatingDTO> update(@RequestBody @Valid UserSongRatingDTO dto) {
     if(service.findByUserIdAndSongIdNoException(
         dto.getUserId(), dto.getSongId()).isEmpty()) {
       throw new EntityNotFoundException(UserSongRating.class);
@@ -85,7 +86,7 @@ public class UserSongRatingRestController {
   }
 
   @DeleteMapping
-  public ResponseEntity<Void> delete(@RequestBody UserSongRatingDTO dto) {
+  public ResponseEntity<Void> delete(@RequestBody @Valid UserSongRatingDTO dto) {
     var obj = mapper.map(dto);
     service.delete(obj);
     return ResponseEntity.noContent().build();

@@ -1,6 +1,5 @@
 package com.lazydev.stksongbook.webapp.web.rest.errors;
 
-import com.lazydev.stksongbook.webapp.service.exception.EntityFieldValidationException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.exception.InvalidPasswordException;
 import com.lazydev.stksongbook.webapp.service.exception.UserNotExistsException;
@@ -10,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -45,19 +45,20 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
     return buildResponseEntity(apiError);
   }
 
-  @ExceptionHandler(EntityFieldValidationException.class)
-  protected ResponseEntity<Object> handleRejectedValue(EntityFieldValidationException ex, WebRequest request) {
-    Error error = new Error(BAD_REQUEST);
-    error.setMessage("path " + request.getContextPath());
-    ApiValidationError apiError = new ApiValidationError(ex.getObject(), ex.getField(), ex.getRejectedValue(), ex.getMessage());
-    error.setSubErrors(List.of(apiError));
-    return buildResponseEntity(error);
-  }
-
   @ExceptionHandler(IOException.class)
   protected ResponseEntity<Object> handleIOException(IOException ex, WebRequest request) {
     Error error = new Error(BAD_REQUEST);
     error.setMessage("Could not parse Json file! Internal message: " + ex.getMessage());
+    return buildResponseEntity(error);
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  protected ResponseEntity<Object> handleValidationException(MethodArgumentNotValidException ex, WebRequest request) {
+    Error error = new Error(BAD_REQUEST);
+    error.setMessage("path " + request.getContextPath());
+    ApiValidationError apiError = new ApiValidationError(ex.getParameter().getParameterName(),
+        ex.getParameter().getParameterType().getSimpleName(), ex.getMessage());
+    error.setSubErrors(List.of(apiError));
     return buildResponseEntity(error);
   }
 

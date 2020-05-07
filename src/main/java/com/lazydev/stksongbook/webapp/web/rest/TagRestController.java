@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,7 +57,7 @@ public class TagRestController {
   }
 
   @PostMapping
-  public ResponseEntity<TagDTO> create(@RequestBody UniversalCreateDTO tagDto) {
+  public ResponseEntity<TagDTO> create(@RequestBody @Valid UniversalCreateDTO tagDto) {
     var tag = modelMapper.map(tagDto);
     tag.setId(Constants.DEFAULT_ID);
     var saved = service.save(tag);
@@ -64,7 +65,7 @@ public class TagRestController {
   }
 
   @PutMapping
-  public ResponseEntity<TagDTO> update(@RequestBody TagDTO tagDto) {
+  public ResponseEntity<TagDTO> update(@RequestBody @Valid TagDTO tagDto) {
     if(service.findByIdNoException(tagDto.getId()).isEmpty()) {
       throw new EntityNotFoundException(Tag.class, tagDto.getId());
     }

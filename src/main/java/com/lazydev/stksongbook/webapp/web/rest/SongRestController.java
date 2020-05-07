@@ -21,8 +21,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -102,17 +104,19 @@ public class SongRestController {
   }
 
   @PostMapping
-  public ResponseEntity<SongDTO> create(@RequestBody CreateSongDTO obj) {
+  public ResponseEntity<SongDTO> create(@RequestBody @Valid CreateSongDTO obj) {
     var completeSong = service.save(getSong(obj));
     return new ResponseEntity<>(mapper.map(completeSong), HttpStatus.CREATED);
   }
 
   @PutMapping
-  public ResponseEntity<SongDTO> update(@RequestBody SongDTO obj) {
-    if(service.findByIdNoException(obj.getId()).isEmpty()) {
+  public ResponseEntity<SongDTO> update(@RequestBody @Valid SongDTO obj) {
+    Optional<Song> optional = service.findByIdNoException(obj.getId());
+    if(optional.isEmpty()) {
       throw new EntityNotFoundException(Song.class, obj.getId());
     }
     var song = mapper.map(obj);
+    song.setCreationTime(optional.get().getCreationTime());
     var saved = service.save(song);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.OK);
   }

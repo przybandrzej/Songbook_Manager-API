@@ -1,5 +1,6 @@
 package com.lazydev.stksongbook.webapp.data.model;
 
+import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,16 +11,12 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "songs_coauthors")
-@Check(constraints = "function IN ('" + SongCoauthor._Function_Music_Polish + "', '" + SongCoauthor._Function_Text_Polish + "')")
+@Check(constraints = "function IN (" + Constants._Function_Music_Polish + ", " + Constants._Function_Text_Polish + ")")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(exclude = "song")
 public class SongCoauthor {
-
-  //public final static String _Function_Author_Polish = "Autor";
-  public static final String _Function_Music_Polish = "Muzyka";
-  public static final String _Function_Text_Polish = "Tekst";
 
   @EmbeddedId
   private SongsCoauthorsKey id;

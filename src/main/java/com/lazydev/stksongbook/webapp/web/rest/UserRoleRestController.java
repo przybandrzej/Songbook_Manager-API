@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,7 +56,7 @@ public class UserRoleRestController {
   }
 
   @PostMapping
-  public ResponseEntity<UserRoleDTO> create(@RequestBody UniversalCreateDTO userRoleDto) {
+  public ResponseEntity<UserRoleDTO> create(@RequestBody @Valid UniversalCreateDTO userRoleDto) {
     var userRole = mapper.map(userRoleDto);
     userRole.setId(Constants.DEFAULT_ID);
     var saved = service.save(userRole);
@@ -63,7 +64,7 @@ public class UserRoleRestController {
   }
 
   @PutMapping
-  public ResponseEntity<UserRoleDTO> update(@RequestBody UserRoleDTO userRoleDto) {
+  public ResponseEntity<UserRoleDTO> update(@RequestBody @Valid UserRoleDTO userRoleDto) {
     if(service.findByIdNoException(userRoleDto.getId()).isEmpty()) {
       throw new EntityNotFoundException(UserRole.class, userRoleDto.getId());
     }

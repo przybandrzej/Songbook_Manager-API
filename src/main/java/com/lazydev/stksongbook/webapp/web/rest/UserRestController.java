@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,14 +61,14 @@ public class UserRestController {
   }
 
   @PostMapping
-  public ResponseEntity<UserDTO> register(@RequestBody RegisterNewUserForm form) {
+  public ResponseEntity<UserDTO> register(@RequestBody @Valid RegisterNewUserForm form) {
     User user = mapper.mapFromRegisterForm(form);
     User created = service.save(user);
     return new ResponseEntity<>(mapper.map(created), HttpStatus.CREATED);
   }
 
   @PutMapping
-  public ResponseEntity<UserDTO> update(@RequestBody UserDTO dto) {
+  public ResponseEntity<UserDTO> update(@RequestBody @Valid UserDTO dto) {
     if(service.findByIdNoException(dto.getId()).isEmpty()) {
       throw new EntityNotFoundException(User.class, dto.getId());
     }

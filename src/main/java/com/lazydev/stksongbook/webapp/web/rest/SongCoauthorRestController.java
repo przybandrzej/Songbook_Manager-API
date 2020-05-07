@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,14 +45,14 @@ public class SongCoauthorRestController {
   }
 
   @PostMapping
-  public ResponseEntity<SongCoauthorDTO> create(@RequestBody SongCoauthorDTO songCoauthorDTO) {
+  public ResponseEntity<SongCoauthorDTO> create(@RequestBody @Valid SongCoauthorDTO songCoauthorDTO) {
     SongCoauthor entity = songCoauthorMapper.map(songCoauthorDTO);
     SongCoauthor created = songCoauthorService.save(entity);
     return new ResponseEntity<>(songCoauthorMapper.map(created), HttpStatus.CREATED);
   }
 
   @PutMapping
-  public ResponseEntity<SongCoauthorDTO> update(@RequestBody SongCoauthorDTO songCoauthorDTO) {
+  public ResponseEntity<SongCoauthorDTO> update(@RequestBody @Valid SongCoauthorDTO songCoauthorDTO) {
     if(songCoauthorService.findBySongIdAndAuthorIdNoException(
         songCoauthorDTO.getSongId(), songCoauthorDTO.getAuthorId()).isEmpty()) {
       throw new EntityNotFoundException(SongCoauthor.class);
@@ -62,7 +63,7 @@ public class SongCoauthorRestController {
   }
 
   @DeleteMapping
-  public ResponseEntity<Void> delete(@RequestBody SongCoauthorDTO songCoauthorDTO) {
+  public ResponseEntity<Void> delete(@RequestBody @Valid SongCoauthorDTO songCoauthorDTO) {
     var entity = songCoauthorMapper.map(songCoauthorDTO);
     songCoauthorService.delete(entity);
     return ResponseEntity.noContent().build();
