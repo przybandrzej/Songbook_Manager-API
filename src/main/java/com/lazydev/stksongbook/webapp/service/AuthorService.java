@@ -4,6 +4,7 @@ import com.lazydev.stksongbook.webapp.data.model.Author;
 import com.lazydev.stksongbook.webapp.repository.AuthorRepository;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,10 @@ public class AuthorService {
 
     public List<Author> findAll() {
         return authorRepository.findAll();
+    }
+
+    public List<Author> findLimited(int limit) {
+        return authorRepository.findAll(PageRequest.of(0, limit)).toList();
     }
 
     public Optional<Author> findByIdNoException(Long id) {
