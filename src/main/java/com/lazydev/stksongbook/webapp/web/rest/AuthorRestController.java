@@ -5,6 +5,7 @@ import com.lazydev.stksongbook.webapp.service.AuthorService;
 import com.lazydev.stksongbook.webapp.service.dto.AuthorDTO;
 import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
+import com.lazydev.stksongbook.webapp.service.exception.EntityAlreadyExistsException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.AuthorMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,14 +57,18 @@ public class AuthorRestController {
   }
 
   @PostMapping
-  public ResponseEntity<AuthorDTO> create(@RequestBody UniversalCreateDTO authorDto) {
+  public ResponseEntity<AuthorDTO> create(@RequestBody @Valid UniversalCreateDTO authorDto) {
+    var optional = service.findByNameNoException(authorDto.getName());
+    if(optional.isPresent()) {
+      throw new EntityAlreadyExistsException(Author.class.getSimpleName(), optional.get().getId(), optional.get().getName());
+    }
     var author = mapper.map(authorDto);
     var saved = service.save(author);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.CREATED);
   }
 
   @PutMapping
-  public ResponseEntity<AuthorDTO> update(@RequestBody AuthorDTO authorDto) {
+  public ResponseEntity<AuthorDTO> update(@RequestBody @Valid AuthorDTO authorDto) {
     if(service.findByIdNoException(authorDto.getId()).isEmpty()) {
       throw new EntityNotFoundException(Author.class, authorDto.getId());
     }

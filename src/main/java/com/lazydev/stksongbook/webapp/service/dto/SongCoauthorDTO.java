@@ -1,14 +1,22 @@
 package com.lazydev.stksongbook.webapp.service.dto;
 
+import com.lazydev.stksongbook.webapp.util.validators.CoauthorFunctionConstraint;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+
+import javax.validation.constraints.NotNull;
 
 @Getter
 @EqualsAndHashCode
 public class SongCoauthorDTO {
 
+    @NotNull(message = "Song ID must be defined.")
     private final Long songId;
+
+    @NotNull(message = "Author ID must be defined.")
     private final Long authorId;
+
+    @CoauthorFunctionConstraint
     private final String function;
 
     private SongCoauthorDTO(Long songId, Long authorId, String function) {

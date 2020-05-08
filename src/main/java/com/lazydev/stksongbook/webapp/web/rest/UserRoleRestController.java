@@ -6,6 +6,7 @@ import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserRoleDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
+import com.lazydev.stksongbook.webapp.service.exception.EntityAlreadyExistsException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.UserRoleMapper;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,9 +43,9 @@ public class UserRoleRestController {
     return new ResponseEntity<>(mapper.map(service.findById(id)), HttpStatus.OK);
   }
 
-  @GetMapping("/name/{name}")
-  public ResponseEntity<List<UserRoleDTO>> getByName(@PathVariable("name") String name) {
-    List<UserRoleDTO> list = service.findByName(name).stream().map(mapper::map).collect(Collectors.toList());
+  @GetMapping("/name/{searchQuery}")
+  public ResponseEntity<List<UserRoleDTO>> getByNameSearchQuery(@PathVariable("searchQuery") String searchQuery) {
+    List<UserRoleDTO> list = service.findByNameFragment(searchQuery).stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
@@ -55,7 +57,10 @@ public class UserRoleRestController {
   }
 
   @PostMapping
-  public ResponseEntity<UserRoleDTO> create(@RequestBody UniversalCreateDTO userRoleDto) {
+  public ResponseEntity<UserRoleDTO> create(@RequestBody @Valid UniversalCreateDTO userRoleDto) {
+    if(service.findByNameNoException(userRoleDto.getName()).isPresent()) {
+      throw new EntityAlreadyExistsException(UserRole.class.getSimpleName(), userRoleDto.getName());
+    }
     var userRole = mapper.map(userRoleDto);
     userRole.setId(Constants.DEFAULT_ID);
     var saved = service.save(userRole);
@@ -63,7 +68,7 @@ public class UserRoleRestController {
   }
 
   @PutMapping
-  public ResponseEntity<UserRoleDTO> update(@RequestBody UserRoleDTO userRoleDto) {
+  public ResponseEntity<UserRoleDTO> update(@RequestBody @Valid UserRoleDTO userRoleDto) {
     if(service.findByIdNoException(userRoleDto.getId()).isEmpty()) {
       throw new EntityNotFoundException(UserRole.class, userRoleDto.getId());
     }

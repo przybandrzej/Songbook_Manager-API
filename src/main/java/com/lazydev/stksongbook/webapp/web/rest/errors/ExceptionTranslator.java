@@ -1,21 +1,22 @@
 package com.lazydev.stksongbook.webapp.web.rest.errors;
 
-import com.lazydev.stksongbook.webapp.service.exception.EntityFieldValidationException;
-import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
-import com.lazydev.stksongbook.webapp.service.exception.InvalidPasswordException;
-import com.lazydev.stksongbook.webapp.service.exception.UserNotExistsException;
+import com.lazydev.stksongbook.webapp.service.exception.*;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
@@ -45,15 +46,6 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
     return buildResponseEntity(apiError);
   }
 
-  @ExceptionHandler(EntityFieldValidationException.class)
-  protected ResponseEntity<Object> handleRejectedValue(EntityFieldValidationException ex, WebRequest request) {
-    Error error = new Error(BAD_REQUEST);
-    error.setMessage("path " + request.getContextPath());
-    ApiValidationError apiError = new ApiValidationError(ex.getObject(), ex.getField(), ex.getRejectedValue(), ex.getMessage());
-    error.setSubErrors(List.of(apiError));
-    return buildResponseEntity(error);
-  }
-
   @ExceptionHandler(IOException.class)
   protected ResponseEntity<Object> handleIOException(IOException ex, WebRequest request) {
     Error error = new Error(BAD_REQUEST);
@@ -62,11 +54,37 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
   }
 
   @Override
+  protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
+                                                                HttpStatus status, WebRequest request) {
+    List<SubError> errors = new ArrayList<>();
+    for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+      errors.add(new ApiValidationError(error.getField(),
+          error.getRejectedValue() == null ? "null" : error.getRejectedValue().toString(), error.getDefaultMessage()));
+    }
+    for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
+      errors.add(new ApiValidationError(error.getObjectName(), null,  error.getDefaultMessage()));
+    }
+    Error apiError = new Error(HttpStatus.BAD_REQUEST, "Validation failed", errors);
+    return buildResponseEntity(apiError);
+  }
+
+  @ExceptionHandler({ EmailAlreadyUsedException.class,
+      UsernameAlreadyUsedException.class,
+      EntityAlreadyExistsException.class,
+      FileNotFoundException.class,
+      StorageException.class })
+  protected ResponseEntity<Object> handleException(RuntimeException ex, WebRequest request) {
+    Error apiError = new Error(BAD_REQUEST);
+    apiError.setMessage(ex.getMessage());
+    return buildResponseEntity(apiError);
+  }
+
+  @Override
   protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
                                                                 HttpHeaders headers, HttpStatus status,
                                                                 WebRequest request) {
     String error = "Malformed JSON request";
-    return buildResponseEntity(new Error(HttpStatus.BAD_REQUEST, error, ex));
+    return buildResponseEntity(new Error(HttpStatus.BAD_REQUEST, error));
   }
 
   private ResponseEntity<Object> buildResponseEntity(Error apiError) {

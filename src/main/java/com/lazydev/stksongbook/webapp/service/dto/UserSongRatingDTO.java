@@ -3,15 +3,27 @@ package com.lazydev.stksongbook.webapp.service.dto;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+
 @Getter
 @EqualsAndHashCode
 public class UserSongRatingDTO {
 
+    @NotNull(message = "User ID must be defined.")
     private final Long userId;
-    private final Long songId;
-    private final Double rating;
 
-    private UserSongRatingDTO(Long userId, Long songId, Double userRating) {
+    @NotNull(message = "Song ID must be defined.")
+    private final Long songId;
+
+    @NotNull(message = "Rating must be defined!")
+    @DecimalMin(value = "0.0", message = "Rating must be minimum 0!")
+    @DecimalMax(value = "1.0", message = "Rating must be maximum 1!")
+    private final BigDecimal rating;
+
+    private UserSongRatingDTO(Long userId, Long songId, BigDecimal userRating) {
         this.userId = userId;
         this.songId = songId;
         this.rating = userRating;
@@ -24,7 +36,7 @@ public class UserSongRatingDTO {
     public static final class Builder {
         private Long userId;
         private Long songId;
-        private Double userRating;
+        private BigDecimal userRating;
 
         public UserSongRatingDTO create() {
             return new UserSongRatingDTO(userId, songId, userRating);
@@ -38,7 +50,7 @@ public class UserSongRatingDTO {
             this.songId = songId;
             return this;
         }
-        public UserSongRatingDTO.Builder userRating(Double userRating) {
+        public UserSongRatingDTO.Builder userRating(BigDecimal userRating) {
             this.userRating = userRating;
             return this;
         }
