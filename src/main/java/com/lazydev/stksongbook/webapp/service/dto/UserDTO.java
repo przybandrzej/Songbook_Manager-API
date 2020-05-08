@@ -1,6 +1,7 @@
 package com.lazydev.stksongbook.webapp.service.dto;
 
 import com.lazydev.stksongbook.webapp.util.Constants;
+import com.lazydev.stksongbook.webapp.util.validators.NameConstraint;
 import lombok.Builder;
 import lombok.Value;
 
@@ -21,10 +22,10 @@ public class UserDTO {
   @NotNull(message = "User Role ID must be defined.")
   Long userRoleId;
 
-  @Pattern(regexp = Constants.NAME_REGEX, message = Constants.NAME_INVALID_MESSAGE)
+  @NameConstraint
   String firstName;
 
-  @Pattern(regexp = Constants.NAME_REGEX, message = Constants.NAME_INVALID_MESSAGE)
+  @NameConstraint
   String lastName;
 
   @NotNull(message = "Songs list must be initialized.")

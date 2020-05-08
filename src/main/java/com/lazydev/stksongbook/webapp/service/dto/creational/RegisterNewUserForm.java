@@ -1,6 +1,7 @@
 package com.lazydev.stksongbook.webapp.service.dto.creational;
 
 import com.lazydev.stksongbook.webapp.util.Constants;
+import com.lazydev.stksongbook.webapp.util.validators.NameConstraint;
 import lombok.Builder;
 import lombok.Value;
 
@@ -19,9 +20,9 @@ public class RegisterNewUserForm {
   @Pattern(regexp = Constants.USERNAME_REGEX, message = Constants.USERNAME_INVALID_MESSAGE)
   String username;
 
-  @Pattern(regexp = Constants.NAME_REGEX, message = Constants.NAME_INVALID_MESSAGE)
+  @NameConstraint
   String firstName;
 
-  @Pattern(regexp = Constants.NAME_REGEX, message = Constants.NAME_INVALID_MESSAGE)
+  @NameConstraint
   String lastName;
 }

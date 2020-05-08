@@ -1,8 +1,6 @@
 package com.lazydev.stksongbook.webapp.web.rest.errors;
 
-import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
-import com.lazydev.stksongbook.webapp.service.exception.InvalidPasswordException;
-import com.lazydev.stksongbook.webapp.service.exception.UserNotExistsException;
+import com.lazydev.stksongbook.webapp.service.exception.*;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -53,7 +51,6 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
   }
 
   @Override
-  @ExceptionHandler(MethodArgumentNotValidException.class)
   protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
                                                                 HttpStatus status, WebRequest request) {
     Error error = new Error(BAD_REQUEST);
@@ -62,6 +59,17 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
         ex.getParameter().getParameterType().getSimpleName(), ex.getMessage());
     error.setSubErrors(List.of(apiError));
     return buildResponseEntity(error);
+  }
+
+  @ExceptionHandler({ EmailAlreadyUsedException.class,
+      UsernameAlreadyUsedException.class,
+      EntityAlreadyExistsException.class,
+      FileNotFoundException.class,
+      StorageException.class })
+  protected ResponseEntity<Object> handleException(RuntimeException ex, WebRequest request) {
+    Error apiError = new Error(BAD_REQUEST);
+    apiError.setMessage(ex.getMessage());
+    return buildResponseEntity(apiError);
   }
 
   @Override
