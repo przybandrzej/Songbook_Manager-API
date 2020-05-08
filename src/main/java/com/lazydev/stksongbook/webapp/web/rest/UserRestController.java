@@ -6,7 +6,9 @@ import com.lazydev.stksongbook.webapp.service.dto.PlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserSongRatingDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm;
+import com.lazydev.stksongbook.webapp.service.exception.EmailAlreadyUsedException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
+import com.lazydev.stksongbook.webapp.service.exception.UsernameAlreadyUsedException;
 import com.lazydev.stksongbook.webapp.service.mappers.PlaylistMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.UserSongRatingMapper;
@@ -62,6 +64,12 @@ public class UserRestController {
 
   @PostMapping
   public ResponseEntity<UserDTO> register(@RequestBody @Valid RegisterNewUserForm form) {
+    if(service.findByEmailNoException(form.getEmail()).isPresent()) {
+      throw new EmailAlreadyUsedException();
+    }
+    if(service.findByUsernameNoException(form.getUsername()).isPresent()) {
+      throw new UsernameAlreadyUsedException(form.getUsername());
+    }
     User user = mapper.mapFromRegisterForm(form);
     User created = service.save(user);
     return new ResponseEntity<>(mapper.map(created), HttpStatus.CREATED);

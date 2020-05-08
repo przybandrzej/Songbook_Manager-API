@@ -5,6 +5,7 @@ import com.lazydev.stksongbook.webapp.service.TagService;
 import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.service.dto.TagDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
+import com.lazydev.stksongbook.webapp.service.exception.EntityAlreadyExistsException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.TagMapper;
@@ -58,6 +59,10 @@ public class TagRestController {
 
   @PostMapping
   public ResponseEntity<TagDTO> create(@RequestBody @Valid UniversalCreateDTO tagDto) {
+    var optional = service.findByNameNoException(tagDto.getName());
+    if(optional.isPresent()) {
+      throw new EntityAlreadyExistsException(Tag.class.getSimpleName(), optional.get().getId(), optional.get().getName());
+    }
     var tag = modelMapper.map(tagDto);
     tag.setId(Constants.DEFAULT_ID);
     var saved = service.save(tag);

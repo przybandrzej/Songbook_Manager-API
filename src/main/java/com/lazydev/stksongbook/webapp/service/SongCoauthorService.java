@@ -24,6 +24,15 @@ public class SongCoauthorService {
         .orElseThrow(() -> new EntityNotFoundException(SongCoauthor.class));
   }
 
+  public SongCoauthor findBySongIdAndAuthorIdAndFunction(Long songId, Long authorId, String function) {
+    return repository.findBySongIdAndAuthorIdAAndFunction(songId, authorId, function)
+        .orElseThrow(() -> new EntityNotFoundException(SongCoauthor.class));
+  }
+
+  public Optional<SongCoauthor> findBySongIdAndAuthorIdAndFunctionNoException(Long songId, Long authorId, String function) {
+    return repository.findBySongIdAndAuthorIdAAndFunction(songId, authorId, function);
+  }
+
   public List<SongCoauthor> findAll() {
     return repository.findAll();
   }

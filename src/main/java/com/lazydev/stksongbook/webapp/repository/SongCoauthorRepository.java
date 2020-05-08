@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface SongCoauthorRepository extends JpaRepository<SongCoauthor, Long> {
 
   Optional<SongCoauthor> findBySongIdAndAuthorId(Long songId, Long authorId);
+  Optional<SongCoauthor> findBySongIdAndAuthorIdAAndFunction(Long songId, Long authorId,String function);
   List<SongCoauthor> findBySongId(Long id);
   List<SongCoauthor> findByAuthorId(Long id);
   List<SongCoauthor> findByFunctionIgnoreCase(String function);

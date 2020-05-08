@@ -3,6 +3,7 @@ package com.lazydev.stksongbook.webapp.web.rest;
 import com.lazydev.stksongbook.webapp.data.model.UserSongRating;
 import com.lazydev.stksongbook.webapp.service.UserSongRatingService;
 import com.lazydev.stksongbook.webapp.service.dto.UserSongRatingDTO;
+import com.lazydev.stksongbook.webapp.service.exception.EntityAlreadyExistsException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.UserSongRatingMapper;
 import lombok.AllArgsConstructor;
@@ -69,6 +70,9 @@ public class UserSongRatingRestController {
 
   @PostMapping
   public ResponseEntity<UserSongRatingDTO> create(@RequestBody @Valid UserSongRatingDTO dto) {
+    if(service.findByUserIdAndSongIdNoException(dto.getUserId(), dto.getSongId()).isPresent()) {
+      throw new EntityAlreadyExistsException(UserSongRating.class.getSimpleName());
+    }
     UserSongRating user = mapper.map(dto);
     var saved = service.save(user);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.CREATED);

@@ -3,6 +3,7 @@ package com.lazydev.stksongbook.webapp.web.rest;
 import com.lazydev.stksongbook.webapp.data.model.SongCoauthor;
 import com.lazydev.stksongbook.webapp.service.SongCoauthorService;
 import com.lazydev.stksongbook.webapp.service.dto.SongCoauthorDTO;
+import com.lazydev.stksongbook.webapp.service.exception.EntityAlreadyExistsException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.SongCoauthorMapper;
 import lombok.AllArgsConstructor;
@@ -46,6 +47,10 @@ public class SongCoauthorRestController {
 
   @PostMapping
   public ResponseEntity<SongCoauthorDTO> create(@RequestBody @Valid SongCoauthorDTO songCoauthorDTO) {
+    if(songCoauthorService.findBySongIdAndAuthorIdNoException(
+        songCoauthorDTO.getSongId(), songCoauthorDTO.getAuthorId()).isPresent()) {
+      throw new EntityAlreadyExistsException(SongCoauthor.class.getSimpleName());
+    }
     SongCoauthor entity = songCoauthorMapper.map(songCoauthorDTO);
     SongCoauthor created = songCoauthorService.save(entity);
     return new ResponseEntity<>(songCoauthorMapper.map(created), HttpStatus.CREATED);
