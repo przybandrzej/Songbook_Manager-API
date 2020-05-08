@@ -25,12 +25,12 @@ public class SongCoauthorService {
   }
 
   public SongCoauthor findBySongIdAndAuthorIdAndFunction(Long songId, Long authorId, String function) {
-    return repository.findBySongIdAndAuthorIdAAndFunction(songId, authorId, function)
+    return repository.findBySongIdAndAuthorIdAndFunction(songId, authorId, function)
         .orElseThrow(() -> new EntityNotFoundException(SongCoauthor.class));
   }
 
   public Optional<SongCoauthor> findBySongIdAndAuthorIdAndFunctionNoException(Long songId, Long authorId, String function) {
-    return repository.findBySongIdAndAuthorIdAAndFunction(songId, authorId, function);
+    return repository.findBySongIdAndAuthorIdAndFunction(songId, authorId, function);
   }
 
   public List<SongCoauthor> findAll() {

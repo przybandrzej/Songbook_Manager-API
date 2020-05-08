@@ -52,8 +52,10 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
     return buildResponseEntity(error);
   }
 
+  @Override
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  protected ResponseEntity<Object> handleValidationException(MethodArgumentNotValidException ex, WebRequest request) {
+  protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
+                                                                HttpStatus status, WebRequest request) {
     Error error = new Error(BAD_REQUEST);
     error.setMessage("path " + request.getContextPath());
     ApiValidationError apiError = new ApiValidationError(ex.getParameter().getParameterName(),
