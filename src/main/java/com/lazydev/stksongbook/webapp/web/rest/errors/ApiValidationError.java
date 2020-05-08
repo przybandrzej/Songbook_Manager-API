@@ -10,6 +10,6 @@ import lombok.EqualsAndHashCode;
 class ApiValidationError extends SubError {
 
   private String parameter;
-  private String type;
+  private String rejectedValue;
   private String message;
 }

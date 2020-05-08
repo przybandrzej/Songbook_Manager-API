@@ -18,8 +18,9 @@ public class UserSongRatingDTO {
     @NotNull(message = "Song ID must be defined.")
     private final Long songId;
 
-    @NotNull
-    @DecimalMin("0.0") @DecimalMax("1.0")
+    @NotNull(message = "Rating must be defined!")
+    @DecimalMin(value = "0.0", message = "Rating must be minimum 0!")
+    @DecimalMax(value = "1.0", message = "Rating must be maximum 1!")
     private final BigDecimal rating;
 
     private UserSongRatingDTO(Long userId, Long songId, BigDecimal userRating) {

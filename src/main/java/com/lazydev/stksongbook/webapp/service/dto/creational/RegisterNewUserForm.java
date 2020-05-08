@@ -14,7 +14,7 @@ public class RegisterNewUserForm {
   @Pattern(regexp = Constants.EMAIL_REGEX, message = Constants.EMAIL_INVALID_MESSAGE)
   String email;
 
-  @Pattern(regexp = Constants.PASSWORD_REGEX, message = Constants.PASSWORD_REGEX)
+  @Pattern(regexp = Constants.PASSWORD_REGEX, message = Constants.PASSWORD_INVALID_MESSAGE)
   String password;
 
   @Pattern(regexp = Constants.USERNAME_REGEX, message = Constants.USERNAME_INVALID_MESSAGE)

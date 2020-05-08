@@ -7,6 +7,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +16,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
@@ -53,12 +56,16 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
                                                                 HttpStatus status, WebRequest request) {
-    Error error = new Error(BAD_REQUEST);
-    error.setMessage("path " + request.getContextPath());
-    ApiValidationError apiError = new ApiValidationError(ex.getParameter().getParameterName(),
-        ex.getParameter().getParameterType().getSimpleName(), ex.getMessage());
-    error.setSubErrors(List.of(apiError));
-    return buildResponseEntity(error);
+    List<SubError> errors = new ArrayList<>();
+    for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+      errors.add(new ApiValidationError(error.getField(),
+          error.getRejectedValue() == null ? "null" : error.getRejectedValue().toString(), error.getDefaultMessage()));
+    }
+    for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
+      errors.add(new ApiValidationError(error.getObjectName(), null,  error.getDefaultMessage()));
+    }
+    Error apiError = new Error(HttpStatus.BAD_REQUEST, "Validation failed", errors);
+    return buildResponseEntity(apiError);
   }
 
   @ExceptionHandler({ EmailAlreadyUsedException.class,
@@ -77,7 +84,7 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
                                                                 HttpHeaders headers, HttpStatus status,
                                                                 WebRequest request) {
     String error = "Malformed JSON request";
-    return buildResponseEntity(new Error(HttpStatus.BAD_REQUEST, error, ex));
+    return buildResponseEntity(new Error(HttpStatus.BAD_REQUEST, error));
   }
 
   private ResponseEntity<Object> buildResponseEntity(Error apiError) {

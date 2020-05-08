@@ -27,15 +27,16 @@ public class Error {
     this.status = status;
   }
 
-  public Error(HttpStatus status, Throwable ex) {
-    this();
-    this.status = status;
-    this.message = "Unexpected error";
-  }
-
-  public Error(HttpStatus status, String message, Throwable ex) {
+  public Error(HttpStatus status, String message) {
     this();
     this.status = status;
     this.message = message;
+  }
+
+  public Error(HttpStatus status, String message, List<SubError> errors) {
+    this();
+    this.status = status;
+    this.message = message;
+    this.subErrors = errors;
   }
 }
