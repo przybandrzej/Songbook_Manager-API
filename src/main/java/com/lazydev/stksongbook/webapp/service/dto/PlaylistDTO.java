@@ -1,19 +1,32 @@
 package com.lazydev.stksongbook.webapp.service.dto;
 
+import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.Set;
 
 @Getter
 @EqualsAndHashCode
 public class PlaylistDTO {
 
+    @NotNull(message = "ID must be defined.")
     private final Long id;
+
+    @Pattern(regexp = Constants.NAME_REGEX_SHORT, message = Constants.NAME_SHORT_INVALID_MESSAGE)
     private final String name;
+
+    @NotNull(message = "Owner ID must be defined.")
     private final Long ownerId;
-    private final boolean isPrivate;
+
+    @NotNull(message = "isPrivate field must be set.")
+    private final Boolean isPrivate;
+
     private final String creationTime;
+
+    @NotNull(message = "Songs list must be initialized.")
     private final Set<Long> songs;
 
     private PlaylistDTO(Long id, String name, Long ownerId, boolean isPrivate, String creationTime, Set<Long> songs) {

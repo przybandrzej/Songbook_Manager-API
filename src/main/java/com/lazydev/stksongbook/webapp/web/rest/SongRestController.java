@@ -21,9 +21,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityManager;
+import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,7 +44,11 @@ public class SongRestController {
   private TagService tagService;
 
   @GetMapping
-  public ResponseEntity<List<SongDTO>> getAll() {
+  public ResponseEntity<List<SongDTO>> getAll(@RequestParam(value = "limit", required = false) Integer limit) {
+    if(limit != null) {
+      List<SongDTO> list = service.findLimited(limit).stream().map(mapper::map).collect(Collectors.toList());
+      return new ResponseEntity<>(list, HttpStatus.OK);
+    }
     List<SongDTO> list = service.findAll().stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
@@ -99,17 +104,30 @@ public class SongRestController {
   }
 
   @PostMapping
-  public ResponseEntity<SongDTO> create(@RequestBody CreateSongDTO obj) {
+  public ResponseEntity<SongDTO> create(@RequestBody @Valid CreateSongDTO obj) {
+    var completeSong = service.save(getSong(obj));
+    return new ResponseEntity<>(mapper.map(completeSong), HttpStatus.CREATED);
+  }
 
-    var authorOpt = authorService.findByNameNoException(obj.getAuthorName());
-    Author author = null;
-    if(authorOpt.isPresent()) {
-      author = authorOpt.get();
-    } else {
-      var newAuthor = new Author(Constants.DEFAULT_ID, obj.getAuthorName(), null, null, new HashSet<>(), new HashSet<>());
-      author = authorService.save(newAuthor);
+  @PutMapping
+  public ResponseEntity<SongDTO> update(@RequestBody @Valid SongDTO obj) {
+    Optional<Song> optional = service.findByIdNoException(obj.getId());
+    if(optional.isEmpty()) {
+      throw new EntityNotFoundException(Song.class, obj.getId());
     }
+    var song = mapper.map(obj);
+    song.setCreationTime(optional.get().getCreationTime());
+    var saved = service.save(song);
+    return new ResponseEntity<>(mapper.map(saved), HttpStatus.OK);
+  }
 
+  @DeleteMapping("/id/{id}")
+  public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+    service.deleteById(id);
+    return ResponseEntity.noContent().build();
+  }
+
+  private Song getSong(CreateSongDTO obj) {
     Set<Tag> tags = new HashSet<>();
     obj.getTags().forEach(it -> {
       var tag = tagService.findByNameNoException(it);
@@ -121,44 +139,35 @@ public class SongRestController {
       }
     });
 
+    Author author = findOrCreateAuthor(obj.getAuthorName());
     var song = mapper.map(obj);
     author.addSong(song);
     song.setTags(tags);
-    var savedOnce = service.save(song);
+    var savedSong = service.save(song);
 
     obj.getCoauthors().forEach(coauthorDTO -> {
-      var opt = authorService.findByNameNoException(coauthorDTO.getAuthorName());
-      Author auth = null;
-      if(opt.isPresent()) {
-        auth = opt.get();
-      } else {
-        var newAuthor = new Author(Constants.DEFAULT_ID, coauthorDTO.getAuthorName(), null, null, new HashSet<>(), new HashSet<>());
-        auth = authorService.save(newAuthor);
-      }
+      var auth = findOrCreateAuthor(coauthorDTO.getAuthorName());
       var coauthor = new SongCoauthor();
       coauthor.setId(new SongsCoauthorsKey());
       coauthor.setAuthor(auth);
-      coauthor.setSong(savedOnce);
+      coauthor.setSong(savedSong);
       coauthor.setFunction(coauthorDTO.getFunction());
       coauthorService.save(coauthor);
     });
-    var completeSong = service.save(savedOnce);
-    return new ResponseEntity<>(mapper.map(completeSong), HttpStatus.CREATED);
+
+    return savedSong;
   }
 
-  @PutMapping
-  public ResponseEntity<SongDTO> update(@RequestBody SongDTO obj) {
-    if(service.findByIdNoException(obj.getId()).isEmpty()) {
-      throw new EntityNotFoundException(Song.class, obj.getId());
+  private Author findOrCreateAuthor(String authorName) {
+    var opt = authorService.findByNameNoException(authorName);
+    Author auth = null;
+    if(opt.isPresent()) {
+      auth = opt.get();
+    } else {
+      var newAuthor = new Author(Constants.DEFAULT_ID, authorName,
+          null, null, new HashSet<>(), new HashSet<>());
+      auth = authorService.save(newAuthor);
     }
-    var song = mapper.map(obj);
-    var saved = service.save(song);
-    return new ResponseEntity<>(mapper.map(saved), HttpStatus.OK);
-  }
-
-  @DeleteMapping("/id/{id}")
-  public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
-    service.deleteById(id);
-    return ResponseEntity.noContent().build();
+    return auth;
   }
 }

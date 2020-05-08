@@ -5,6 +5,7 @@ import com.lazydev.stksongbook.webapp.service.TagService;
 import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.service.dto.TagDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
+import com.lazydev.stksongbook.webapp.service.exception.EntityAlreadyExistsException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.TagMapper;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +30,11 @@ public class TagRestController {
   private SongMapper songMapper;
 
   @GetMapping
-  public ResponseEntity<List<TagDTO>> getAll() {
+  public ResponseEntity<List<TagDTO>> getAll(@RequestParam(value = "limit", required = false) Integer limit) {
+    if(limit != null) {
+      List<TagDTO> list = service.findLimited(limit).stream().map(modelMapper::map).collect(Collectors.toList());
+      return new ResponseEntity<>(list, HttpStatus.OK);
+    }
     List<TagDTO> list = service.findAll().stream().map(modelMapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
@@ -52,7 +58,11 @@ public class TagRestController {
   }
 
   @PostMapping
-  public ResponseEntity<TagDTO> create(@RequestBody UniversalCreateDTO tagDto) {
+  public ResponseEntity<TagDTO> create(@RequestBody @Valid UniversalCreateDTO tagDto) {
+    var optional = service.findByNameNoException(tagDto.getName());
+    if(optional.isPresent()) {
+      throw new EntityAlreadyExistsException(Tag.class.getSimpleName(), optional.get().getId(), optional.get().getName());
+    }
     var tag = modelMapper.map(tagDto);
     tag.setId(Constants.DEFAULT_ID);
     var saved = service.save(tag);
@@ -60,7 +70,7 @@ public class TagRestController {
   }
 
   @PutMapping
-  public ResponseEntity<TagDTO> update(@RequestBody TagDTO tagDto) {
+  public ResponseEntity<TagDTO> update(@RequestBody @Valid TagDTO tagDto) {
     if(service.findByIdNoException(tagDto.getId()).isEmpty()) {
       throw new EntityNotFoundException(Tag.class, tagDto.getId());
     }

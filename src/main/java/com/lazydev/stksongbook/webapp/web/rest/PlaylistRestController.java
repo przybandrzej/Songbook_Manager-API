@@ -16,7 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -62,7 +64,7 @@ public class PlaylistRestController {
   }
 
   @PostMapping
-  public ResponseEntity<PlaylistDTO> create(@RequestBody CreatePlaylistDTO dto) {
+  public ResponseEntity<PlaylistDTO> create(@RequestBody @Valid CreatePlaylistDTO dto) {
     var playlist = mapper.map(dto);
     playlist.setId(Constants.DEFAULT_ID);
     var saved = service.save(playlist);
@@ -70,11 +72,13 @@ public class PlaylistRestController {
   }
 
   @PutMapping
-  public ResponseEntity<PlaylistDTO> update(@RequestBody PlaylistDTO dto) {
-    if(service.findByIdNoException(dto.getId(), true).isEmpty()) {
+  public ResponseEntity<PlaylistDTO> update(@RequestBody @Valid PlaylistDTO dto) {
+    Optional<Playlist> optional = service.findByIdNoException(dto.getId(), true);
+    if(optional.isEmpty()) {
       throw new EntityNotFoundException(Playlist.class, dto.getId());
     }
     var playlist = mapper.map(dto);
+    playlist.setCreationTime(optional.get().getCreationTime());
     var saved = service.save(playlist);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.OK);
   }

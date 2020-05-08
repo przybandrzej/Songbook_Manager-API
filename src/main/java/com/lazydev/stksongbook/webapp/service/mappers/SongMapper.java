@@ -26,7 +26,7 @@ public interface SongMapper {
   @Mapping(target = "averageRating", expression = "java(calculateAverageRating(entity.getRatings()))")
   SongDTO map(Song entity);
 
-  @Mapping(target = "creationTime", source = "creationTime", dateFormat = "dd-MM-yyyy HH:mm:ss")
+  @Mapping(target = "creationTime", ignore = true)
   Song map(SongDTO dto);
 
   @Mapping(target = "id", ignore = true)

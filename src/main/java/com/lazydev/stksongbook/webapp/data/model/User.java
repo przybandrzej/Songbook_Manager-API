@@ -34,7 +34,7 @@ public class User {
   private Long id;
 
   /**
-   * @param login must be unique. It is used for logging in to the database and the application.
+   * @param email must be unique. It is used for logging in to the database and the application.
    */
   @Column(name = "e_mail", nullable = false, unique = true)
   private String email;

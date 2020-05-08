@@ -13,29 +13,37 @@ import java.util.Optional;
 @AllArgsConstructor
 public class CategoryService {
 
-    private CategoryRepository repository;
+  private CategoryRepository repository;
 
-    public Optional<Category> findByIdNoException(Long id) {
-        return repository.findById(id);
-    }
+  public Optional<Category> findByIdNoException(Long id) {
+    return repository.findById(id);
+  }
 
-    public Category findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(Category.class, id));
-    }
+  public Category findById(Long id) {
+    return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(Category.class, id));
+  }
 
-    public List<Category> findAll() {
-        return repository.findAll();
-    }
+  public List<Category> findAll() {
+    return repository.findAll();
+  }
 
-    public List<Category> findByName(String name) {
-        return repository.findByNameContainingIgnoreCase(name);
-    }
+  public Optional<Category> findByNameNoException(String name) {
+    return repository.findByName(name);
+  }
 
-    public Category save(Category saveAuthor) {
-        return repository.save(saveAuthor);
-    }
+  public Category findByName(String name) {
+    return repository.findByName(name).orElseThrow(() -> new EntityNotFoundException(Category.class, name));
+  }
 
-    public void deleteById(Long id) {
-        repository.deleteById(id);
-    }
+  public List<Category> findByNameFragment(String name) {
+    return repository.findByNameContainingIgnoreCase(name);
+  }
+
+  public Category save(Category saveAuthor) {
+    return repository.save(saveAuthor);
+  }
+
+  public void deleteById(Long id) {
+    repository.deleteById(id);
+  }
 }

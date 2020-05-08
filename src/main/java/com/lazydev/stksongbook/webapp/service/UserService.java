@@ -4,6 +4,7 @@ import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.repository.UserRepository;
 import com.lazydev.stksongbook.webapp.service.exception.UserNotExistsException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -53,6 +54,10 @@ public class UserService {
 
   public List<User> findAll() {
     return repository.findAll();
+  }
+
+  public List<User> findLimited(int limit) {
+    return repository.findAll(PageRequest.of(0, limit)).toList();
   }
 
   public User save(User saveUser) {

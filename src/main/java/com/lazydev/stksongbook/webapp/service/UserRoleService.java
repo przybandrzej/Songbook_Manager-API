@@ -23,8 +23,17 @@ public class UserRoleService {
     return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(UserRole.class, id));
   }
 
-  public List<UserRole> findByName(String name) {
-    return repository.findByNameContainingIgnoreCase(name);
+  public List<UserRole> findByNameFragment(String value) {
+    return repository.findByNameContainingIgnoreCase(value);
+  }
+
+  public UserRole findByName(String name) {
+    return repository.findByName(name)
+        .orElseThrow(() -> new EntityNotFoundException(UserRole.class, name));
+  }
+
+  public Optional<UserRole> findByNameNoException(String name) {
+    return repository.findByName(name);
   }
 
   public List<UserRole> findAll() {

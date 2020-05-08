@@ -26,7 +26,7 @@ public interface PlaylistMapper {
     @Mapping(target = "ownerId", source = "owner.id")
     PlaylistDTO map(Playlist entity);
 
-    @Mapping(target="creationTime", source = "creationTime", dateFormat = "dd-MM-yyyy HH:mm:ss")
+    @Mapping(target="creationTime", ignore = true)
     @Mapping(target = "songs", ignore = true)
     @Mapping(target = "owner", ignore = true)
     Playlist map(PlaylistDTO dto);
