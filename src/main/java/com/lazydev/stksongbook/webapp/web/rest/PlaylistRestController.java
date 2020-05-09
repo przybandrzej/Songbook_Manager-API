@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -90,7 +91,7 @@ public class PlaylistRestController {
   }
 
   @GetMapping("/download/{id}")
-  public ResponseEntity<Resource> downloadPlaylistPdfSongbook(@PathVariable("id") Long id) {
+  public ResponseEntity<Resource> downloadPlaylistPdfSongbook(@PathVariable("id") Long id) throws IOException {
     var playlist = service.findById(id, true);
     String fileName = pdfService.createPdfFromPlaylist(playlist);
     Resource resource = storageService.loadAsResource(fileName);
