@@ -51,8 +51,8 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler(IOException.class)
   protected ResponseEntity<Object> handleIOException(IOException ex, WebRequest request) {
-    Error error = new Error(BAD_REQUEST);
-    error.setMessage("Could not parse Json file! Internal message: " + ex.getMessage());
+    Error error = new Error(INTERNAL_SERVER_ERROR);
+    error.setMessage("Critical error occurred while working with the file! Internal message: " + ex.getMessage());
     return buildResponseEntity(error);
   }
 

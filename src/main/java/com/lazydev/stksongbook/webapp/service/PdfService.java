@@ -45,22 +45,18 @@ public class PdfService {
     this.fileSystemStorageService = service;
   }
 
-  public String createPdfFromPlaylist(Playlist playlist) {
-    try (PDDocument document = new PDDocument()) {
-      regularLato = PDType0Font.load(document, new File(RESOURCES_DIR + "/fonts/Lato2OFL/Lato-Regular.ttf"));
-      boldLato = PDType0Font.load(document, new File(RESOURCES_DIR + "/fonts/Lato2OFL/Lato-Bold.ttf"));
-      italicsLato = PDType0Font.load(document, new File(RESOURCES_DIR + "/fonts/Lato2OFL/Lato-Italic.ttf"));
-      document.addPage(getTitlePage(document, playlist));
-      document.addPage(getBlankPage());
-      createSongsPages(document, playlist);
-      setFileProperties(document, playlist);
-      File file = getFileSave(playlist);
-      document.save(file);
-      return file.getName();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return "";
+  public String createPdfFromPlaylist(Playlist playlist) throws IOException {
+    PDDocument document = new PDDocument();
+    regularLato = PDType0Font.load(document, new File(RESOURCES_DIR + "/fonts/Lato2OFL/Lato-Regular.ttf"));
+    boldLato = PDType0Font.load(document, new File(RESOURCES_DIR + "/fonts/Lato2OFL/Lato-Bold.ttf"));
+    italicsLato = PDType0Font.load(document, new File(RESOURCES_DIR + "/fonts/Lato2OFL/Lato-Italic.ttf"));
+    document.addPage(getTitlePage(document, playlist));
+    document.addPage(getBlankPage());
+    createSongsPages(document, playlist);
+    setFileProperties(document, playlist);
+    File file = getFileSave(playlist);
+    document.save(file);
+    return file.getName();
   }
 
   protected File getFileSave(Playlist playlist) {
@@ -105,7 +101,7 @@ public class PdfService {
     Point2D.Float titlePoint = addCenteredText(getTitle(playlist), boldLato, (int) fontSize, contentStream, page, titleOffset);
 
     float authorOffsetX = mediaBox.getWidth() - titlePoint.x
-        - (getStringWidth(authorString, regularLato, (int) authorFontSize) + margin/2);
+        - (getStringWidth(authorString, regularLato, (int) authorFontSize) + margin / 2);
     float authorOffsetY = margin - titlePoint.y;
     contentStream.setFont(regularLato, authorFontSize);
     contentStream.newLineAtOffset(authorOffsetX, authorOffsetY);
