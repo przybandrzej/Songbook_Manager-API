@@ -1,7 +1,7 @@
 package com.lazydev.stksongbook.webapp.service.dto;
 
 import com.lazydev.stksongbook.webapp.util.Constants;
-import com.lazydev.stksongbook.webapp.util.validators.NameConstraint;
+import com.lazydev.stksongbook.webapp.service.validators.NameConstraint;
 import lombok.Builder;
 import lombok.Value;
 
@@ -16,6 +16,7 @@ public class UserDTO {
   @NotNull(message = "ID must be defined.")
   Long id;
 
+  @NotNull(message = "Can't be null.")
   @Pattern(regexp = Constants.USERNAME_REGEX, message = Constants.USERNAME_INVALID_MESSAGE)
   String username;
 
@@ -29,5 +30,7 @@ public class UserDTO {
   String lastName;
 
   @NotNull(message = "Songs list must be initialized.")
-  Set<Long> songs;
+  Set<
+      @NotNull(message = "Can't be null.")
+          Long> songs;
 }

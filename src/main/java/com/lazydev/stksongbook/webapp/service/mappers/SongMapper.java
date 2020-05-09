@@ -6,7 +6,6 @@ import com.lazydev.stksongbook.webapp.data.model.UserSongRating;
 import com.lazydev.stksongbook.webapp.service.CategoryService;
 import com.lazydev.stksongbook.webapp.service.TagService;
 import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
-import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
 import com.lazydev.stksongbook.webapp.service.mappers.decorator.SongMapperDecorator;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.InjectionStrategy;
@@ -28,14 +27,6 @@ public interface SongMapper {
 
   @Mapping(target = "creationTime", ignore = true)
   Song map(SongDTO dto);
-
-  @Mapping(target = "id", ignore = true)
-  @Mapping(target = "creationTime", ignore = true)
-  @Mapping(target = "tags", ignore = true)
-  @Mapping(target = "category", ignore = true)
-  @Mapping(target = "author", ignore = true)
-  @Mapping(target = "coauthors", ignore = true)
-  Song map(CreateSongDTO dto);
 
   default Double calculateAverageRating(Set<UserSongRating> ratings) {
     if(ratings != null) {

@@ -1,7 +1,6 @@
-package com.lazydev.stksongbook.webapp.util;
+package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.data.model.Playlist;
-import com.lazydev.stksongbook.webapp.service.FileSystemStorageService;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -11,7 +10,7 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.util.Matrix;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.awt.geom.Point2D;
 import java.io.File;
@@ -25,8 +24,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-@Component
-public class PdfMaker {
+@Service
+public class PdfService {
 
   private static final String IMAGE_RESOURCE_DIRECTORY = "img";
   private static final String RESOURCES_DIR = "src/main/resources";
@@ -42,7 +41,7 @@ public class PdfMaker {
   private PDFont boldLato;
   private PDFont italicsLato;
 
-  public PdfMaker(FileSystemStorageService service) {
+  public PdfService(FileSystemStorageService service) {
     this.fileSystemStorageService = service;
   }
 

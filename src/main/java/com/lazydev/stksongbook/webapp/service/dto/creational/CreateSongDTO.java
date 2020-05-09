@@ -1,39 +1,47 @@
 package com.lazydev.stksongbook.webapp.service.dto.creational;
 
 import com.lazydev.stksongbook.webapp.util.Constants;
-import lombok.Builder;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.List;
 import java.util.Set;
 
-@Value
-@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateSongDTO {
 
-    @Pattern(regexp = Constants.NAME_REGEX_SHORT, message = Constants.NAME_SHORT_INVALID_MESSAGE)
-    String authorName;
+  @NotBlank(message = "Field can't be blank.")
+  @Pattern(regexp = Constants.NAME_REGEX_SHORT, message = Constants.NAME_SHORT_INVALID_MESSAGE)
+  String authorName;
 
-    @NotNull(message = "Category ID must be set.")
-    Long categoryId;
+  @NotNull(message = "Category ID must be set.")
+  Long categoryId;
 
-    @Pattern(regexp = Constants.NAME_REGEX_SHORT, message = Constants.TITLE_INVALID_MESSAGE)
-    String title;
+  @NotBlank(message = "Field can't be blank.")
+  @Pattern(regexp = Constants.NAME_REGEX_SHORT, message = Constants.TITLE_INVALID_MESSAGE)
+  String title;
 
-    @NotNull(message = "Coauthors list must be initialized.")
-    Set<CreateCoauthorDTO> coauthors;
+  @Valid
+  Set<CreateCoauthorDTO> coauthors;
 
-    @NotBlank(message = "Lyrics can't be blank.")
-    String lyrics;
+  @NotBlank(message = "Lyrics can't be blank.")
+  String lyrics;
 
-    @NotBlank(message = "Guitar tabs can't be blank.")
-    String guitarTabs;
+  @NotBlank(message = "Guitar tabs can't be blank.")
+  String guitarTabs;
 
-    String curio;
+  String curio;
 
-    @NotNull(message = "Tags list must be initialized.")
-    List<String> tags;
+  @NotNull(message = "Tags list must be initialized.")
+  List<
+      @NotBlank(message = "Field can't be blank.")
+      @Pattern(regexp = Constants.NAME_REGEX_SHORT, message = Constants.NAME_SHORT_INVALID_MESSAGE)
+          String> tags;
 }

@@ -1,6 +1,9 @@
 package com.lazydev.stksongbook.webapp.service;
 
+import com.lazydev.stksongbook.webapp.data.model.Author;
+import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.data.model.SongCoauthor;
+import com.lazydev.stksongbook.webapp.data.model.SongsCoauthorsKey;
 import com.lazydev.stksongbook.webapp.repository.SongCoauthorRepository;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -55,5 +58,14 @@ public class SongCoauthorService {
 
   public void delete(SongCoauthor songCoauthor) {
     repository.delete(songCoauthor);
+  }
+
+  public SongCoauthor findOrCreate(Song song, Author author, String function) {
+    var coauthor = new SongCoauthor();
+    coauthor.setId(new SongsCoauthorsKey());
+    coauthor.setAuthor(author);
+    coauthor.setSong(song);
+    coauthor.setFunction(function);
+    return repository.save(coauthor);
   }
 }
