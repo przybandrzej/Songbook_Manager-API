@@ -1,6 +1,6 @@
 package com.lazydev.stksongbook.webapp.service.dto;
 
-import com.lazydev.stksongbook.webapp.util.validators.CoauthorFunctionConstraint;
+import com.lazydev.stksongbook.webapp.service.validators.CoauthorFunctionConstraint;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 

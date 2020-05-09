@@ -1,4 +1,4 @@
-package com.lazydev.stksongbook.webapp.util.validators;
+package com.lazydev.stksongbook.webapp.service.validators;
 
 import com.lazydev.stksongbook.webapp.util.Constants;
 

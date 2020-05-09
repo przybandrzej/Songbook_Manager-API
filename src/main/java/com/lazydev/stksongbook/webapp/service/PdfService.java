@@ -1,4 +1,4 @@
-package com.lazydev.stksongbook.webapp.util;
+package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.data.model.Playlist;
 import com.lazydev.stksongbook.webapp.service.FileSystemStorageService;
@@ -26,7 +26,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 @Component
-public class PdfMaker {
+public class PdfService {
 
   private static final String IMAGE_RESOURCE_DIRECTORY = "img";
   private static final String RESOURCES_DIR = "src/main/resources";
@@ -42,7 +42,7 @@ public class PdfMaker {
   private PDFont boldLato;
   private PDFont italicsLato;
 
-  public PdfMaker(FileSystemStorageService service) {
+  public PdfService(FileSystemStorageService service) {
     this.fileSystemStorageService = service;
   }
 

@@ -1,7 +1,7 @@
 package com.lazydev.stksongbook.webapp.service.dto.creational;
 
 import com.lazydev.stksongbook.webapp.util.Constants;
-import com.lazydev.stksongbook.webapp.util.validators.CoauthorFunctionConstraint;
+import com.lazydev.stksongbook.webapp.service.validators.CoauthorFunctionConstraint;
 import lombok.Builder;
 import lombok.Value;
 

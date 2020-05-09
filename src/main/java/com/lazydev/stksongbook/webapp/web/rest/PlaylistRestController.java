@@ -8,7 +8,7 @@ import com.lazydev.stksongbook.webapp.service.dto.creational.CreatePlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.PlaylistMapper;
 import com.lazydev.stksongbook.webapp.util.Constants;
-import com.lazydev.stksongbook.webapp.util.PdfMaker;
+import com.lazydev.stksongbook.webapp.service.PdfService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -29,7 +29,7 @@ public class PlaylistRestController {
 
   private PlaylistService service;
   private PlaylistMapper mapper;
-  private PdfMaker pdfMaker;
+  private PdfService pdfService;
   private FileSystemStorageService storageService;
 
   @GetMapping
@@ -92,7 +92,7 @@ public class PlaylistRestController {
   @GetMapping("/download/{id}")
   public ResponseEntity<Resource> downloadPlaylistPdfSongbook(@PathVariable("id") Long id) {
     var playlist = service.findById(id, true);
-    String fileName = pdfMaker.createPdfFromPlaylist(playlist);
+    String fileName = pdfService.createPdfFromPlaylist(playlist);
     Resource resource = storageService.loadAsResource(fileName);
     return ResponseEntity.ok()
         .header(HttpHeaders.CONTENT_DISPOSITION,

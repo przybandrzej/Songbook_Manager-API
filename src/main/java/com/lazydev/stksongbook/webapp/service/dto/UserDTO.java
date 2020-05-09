@@ -1,7 +1,7 @@
 package com.lazydev.stksongbook.webapp.service.dto;
 
 import com.lazydev.stksongbook.webapp.util.Constants;
-import com.lazydev.stksongbook.webapp.util.validators.NameConstraint;
+import com.lazydev.stksongbook.webapp.service.validators.NameConstraint;
 import lombok.Builder;
 import lombok.Value;
 
