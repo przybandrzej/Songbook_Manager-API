@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Path;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +66,21 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
     }
     for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
       errors.add(new ApiValidationError(error.getObjectName(), null,  error.getDefaultMessage()));
+    }
+    Error apiError = new Error(HttpStatus.BAD_REQUEST, "Validation failed", errors);
+    return buildResponseEntity(apiError);
+  }
+
+  @ExceptionHandler(ConstraintViolationException.class)
+  protected ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex, WebRequest request) {
+    List<SubError> errors = new ArrayList<>();
+    for (ConstraintViolation<?> error : ex.getConstraintViolations()) {
+      String field = null;
+      for (Path.Node node : error.getPropertyPath()) {
+        field = node.getName();
+      }
+      errors.add(new ApiValidationError(field,
+          error.getInvalidValue() == null ? null : error.getInvalidValue().toString(), error.getMessage()));
     }
     Error apiError = new Error(HttpStatus.BAD_REQUEST, "Validation failed", errors);
     return buildResponseEntity(apiError);

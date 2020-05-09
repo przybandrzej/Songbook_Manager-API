@@ -15,6 +15,7 @@ public class PlaylistDTO {
     @NotNull(message = "ID must be defined.")
     private final Long id;
 
+    @NotNull(message = "Can't be null.")
     @Pattern(regexp = Constants.NAME_REGEX_SHORT, message = Constants.NAME_SHORT_INVALID_MESSAGE)
     private final String name;
 
@@ -27,7 +28,9 @@ public class PlaylistDTO {
     private final String creationTime;
 
     @NotNull(message = "Songs list must be initialized.")
-    private final Set<Long> songs;
+    private final Set<
+        @NotNull(message = "Can't be null.")
+            Long> songs;
 
     private PlaylistDTO(Long id, String name, Long ownerId, boolean isPrivate, String creationTime, Set<Long> songs) {
         this.id = id;

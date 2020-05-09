@@ -14,7 +14,7 @@ public class Constants {
 
   public static final String NAME_REGEX_SHORT = "^[a-zA-Z 0-9]{2,20}$";
   public static final String USERNAME_REGEX = "^[a-zA-Z0-9 _-]{4,15}$";
-  public static final String EMAIL_REGEX = "^(([^<>()[\\].,;:\\s@\"]+(.[^<>()[\\].,;:\\s@\"]+)*)|(\".+\"))@(([^<>()[\\].,;:\\s@\"]+.)+[^<>()[\\].,;:\\s@\"]{2,})$";
+  public static final String EMAIL_REGEX = "^(([^\\<\\>\\(\\)\\[\\]\\.,;:\\s@\"]+(.[^\\<\\>\\(\\)\\[\\]\\.,;:\\s@\"]+)*)|(\".+\"))@(([^\\<\\>\\(\\)\\[\\]\\.,;:\\s@\"]+.)+[^\\<\\>\\(\\)\\[\\]\\.,;:\\s@\"]{2,})$";
   public static final String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{6,40}$";
   public static final String NAME_REGEX = "^[a-z A-Z]{2,15}";
 
