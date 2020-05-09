@@ -1,10 +1,8 @@
 package com.lazydev.stksongbook.webapp.web.rest;
 
-import com.lazydev.stksongbook.webapp.data.model.*;
-import com.lazydev.stksongbook.webapp.service.AuthorService;
-import com.lazydev.stksongbook.webapp.service.SongCoauthorService;
+import com.lazydev.stksongbook.webapp.data.model.Song;
+import com.lazydev.stksongbook.webapp.service.FileSystemStorageService;
 import com.lazydev.stksongbook.webapp.service.SongService;
-import com.lazydev.stksongbook.webapp.service.TagService;
 import com.lazydev.stksongbook.webapp.service.dto.PlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
@@ -15,17 +13,16 @@ import com.lazydev.stksongbook.webapp.service.mappers.PlaylistMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.UserSongRatingMapper;
-import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.util.HashSet;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -39,9 +36,7 @@ public class SongRestController {
   private UserSongRatingMapper userSongRatingMapper;
   private UserMapper userMapper;
   private PlaylistMapper playlistMapper;
-  private AuthorService authorService;
-  private SongCoauthorService coauthorService;
-  private TagService tagService;
+  private FileSystemStorageService storageService;
 
   @GetMapping
   public ResponseEntity<List<SongDTO>> getAll(@RequestParam(value = "limit", required = false) Integer limit) {
@@ -105,7 +100,7 @@ public class SongRestController {
 
   @PostMapping
   public ResponseEntity<SongDTO> create(@RequestBody @Valid CreateSongDTO obj) {
-    var completeSong = service.save(getSong(obj));
+    var completeSong = service.createAndSaveSong(obj);
     return new ResponseEntity<>(mapper.map(completeSong), HttpStatus.CREATED);
   }
 
@@ -127,47 +122,11 @@ public class SongRestController {
     return ResponseEntity.noContent().build();
   }
 
-  private Song getSong(CreateSongDTO obj) {
-    Set<Tag> tags = new HashSet<>();
-    obj.getTags().forEach(it -> {
-      var tag = tagService.findByNameNoException(it);
-      if(tag.isPresent()) {
-        tags.add(tag.get());
-      } else {
-        Tag newTag = new Tag(Constants.DEFAULT_ID, it, new HashSet<>());
-        tags.add(tagService.save(newTag));
-      }
-    });
-
-    Author author = findOrCreateAuthor(obj.getAuthorName());
-    var song = mapper.map(obj);
-    author.addSong(song);
-    song.setTags(tags);
-    var savedSong = service.save(song);
-
-    obj.getCoauthors().forEach(coauthorDTO -> {
-      var auth = findOrCreateAuthor(coauthorDTO.getAuthorName());
-      var coauthor = new SongCoauthor();
-      coauthor.setId(new SongsCoauthorsKey());
-      coauthor.setAuthor(auth);
-      coauthor.setSong(savedSong);
-      coauthor.setFunction(coauthorDTO.getFunction());
-      coauthorService.save(coauthor);
-    });
-
-    return savedSong;
-  }
-
-  private Author findOrCreateAuthor(String authorName) {
-    var opt = authorService.findByNameNoException(authorName);
-    Author auth = null;
-    if(opt.isPresent()) {
-      auth = opt.get();
-    } else {
-      var newAuthor = new Author(Constants.DEFAULT_ID, authorName,
-          null, null, new HashSet<>(), new HashSet<>());
-      auth = authorService.save(newAuthor);
-    }
-    return auth;
+  @PostMapping("/upload")
+  public ResponseEntity<SongDTO> loadFromFile(@RequestParam("file") MultipartFile file) throws IOException {
+    String name = storageService.store(file);
+    CreateSongDTO dto = service.readSongFromFile(name);
+    Song song = service.createAndSaveSong(dto);
+    return new ResponseEntity<>(mapper.map(song), HttpStatus.OK);
   }
 }

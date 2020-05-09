@@ -14,6 +14,7 @@ public class AuthorDTO {
     @NotNull(message = "ID must be defined.")
     private final Long id;
 
+    @NotNull(message = "Can't be null.")
     @Pattern(regexp = Constants.NAME_REGEX_SHORT, message = Constants.NAME_SHORT_INVALID_MESSAGE)
     private final String name;
 
