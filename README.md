@@ -1,8 +1,8 @@
-# Songbook Manager
+# Songbook Manager Service API
 
 ***current version: 1.2.0***
 
-It is a server side application (REST API) that lets the users manage songs in a songbook, manage accounts, playlists, own small songbooks and singing events.
+It is a server side application (RESTful API) that lets the users manage songs in a songbook, manage accounts, playlists, own small songbooks and singing events.
 
 ### The idea
 
@@ -17,16 +17,16 @@ There will be two web clients of this application in the near future. One create
 
 ### Mobile client
 
-After this application I will create an Android app that will be connected to this server and allow to explore it from Android devices and provide more features like `group singing` where everyone connects to one person and they can display the same page on all phones.
+After this application is finished I will create an Android app that will connect to this API and allow to explore it from Android devices and provide more features like `group singing` where everyone connects to one person and they can display the same page on all phones.
 
 ## Features
 * REST API
 * Browse a huge database of guitar songs' lyrics and guitar tabs
-* Add new songs even from a file
 * Create your own library of your favorite songs
 * Create a playlist for every occassion
 * Create a printable songbook out of any playlist
-* see all upcoming and past singing events and come to one!
+* Add new songs even from a file (json file)
+* see all upcoming and past singing events and come to one! **<Not implemented yet>**
 
 ## Getting Started
  * The API on Heroku: https://stk-songbook.herokuapp.com/
@@ -43,10 +43,11 @@ Full documentation is available on the server (the main page redirects directly 
   * [Spring Security]()
   * [Lombok]()
   * [MapStruct]()
+  * [PDF Box]()
 * [PostgreSQL]()
 * [Heroku]()
 * [Swagger]()
 
 ## Author
 
-* **Andrzej Przybysz** - [BrieflyClear](https://github.com/BirieflyClear)
+* **Andrzej Przybysz** - [BrieflyClear](https://github.com/przybandrzej)
