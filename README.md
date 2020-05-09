@@ -35,6 +35,9 @@ After this application is finished I will create an Android app that will connec
 
 Full documentation is available on the server (the main page redirects directly to the documentation).
 
+### Wiki
+
+Feel free to read [Wiki](https://github.com/przybandrzej/Songbook_Manager-API/wiki) articles. You can find more useful information there. 
 
 ## Built With
 * [Java 13]()
