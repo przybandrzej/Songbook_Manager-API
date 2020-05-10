@@ -28,8 +28,8 @@ public class CreateSongDTO {
   @Pattern(regexp = Constants.NAME_REGEX_SHORT, message = Constants.TITLE_INVALID_MESSAGE)
   String title;
 
-  @Valid
-  Set<CreateCoauthorDTO> coauthors;
+  @NotNull(message = "Coauthors list must be initialized.")
+  Set<@Valid CreateCoauthorDTO> coauthors;
 
   @NotBlank(message = "Lyrics can't be blank.")
   String lyrics;
