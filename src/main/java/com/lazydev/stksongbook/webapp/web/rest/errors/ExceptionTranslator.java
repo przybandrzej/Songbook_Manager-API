@@ -90,7 +90,8 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
       UsernameAlreadyUsedException.class,
       EntityAlreadyExistsException.class,
       FileNotFoundException.class,
-      StorageException.class })
+      StorageException.class,
+      ParameterNotDefinedException.class })
   protected ResponseEntity<Object> handleException(RuntimeException ex, WebRequest request) {
     Error apiError = new Error(BAD_REQUEST);
     apiError.setMessage(ex.getMessage());
