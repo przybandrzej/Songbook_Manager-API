@@ -1,6 +1,6 @@
 # Songbook Manager Service API
 
-***current version: 1.2.1***
+***current version: 1.2.2***
 
 It is a server side application (RESTful API) that lets the users manage songs in a songbook, manage accounts, playlists, own small songbooks and singing events.
 
