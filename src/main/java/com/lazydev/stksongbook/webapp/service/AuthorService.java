@@ -22,7 +22,7 @@ public class AuthorService {
     return authorRepository.findAll();
   }
 
-  public List<Author> findLimited(int limit) {
+  public List<Author> findAll(int limit) {
     return authorRepository.findAll(PageRequest.of(0, limit)).toList();
   }
 
@@ -36,6 +36,10 @@ public class AuthorService {
 
   public List<Author> findByNameFragment(String name) {
     return authorRepository.findByNameContainingIgnoreCase(name);
+  }
+
+  public List<Author> findByNameFragment(String name, int limit) {
+    return authorRepository.findByNameContainingIgnoreCase(name, PageRequest.of(0, limit)).toList();
   }
 
   public Optional<Author> findByNameNoException(String name) {

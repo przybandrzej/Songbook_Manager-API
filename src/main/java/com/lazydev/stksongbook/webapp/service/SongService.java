@@ -39,7 +39,7 @@ public class SongService {
     return repository.findAll();
   }
 
-  public List<Song> findLimited(int limit) {
+  public List<Song> findAll(int limit) {
     return repository.findAll(PageRequest.of(0, limit)).toList();
   }
 
@@ -59,20 +59,40 @@ public class SongService {
     return repository.findByTitleContainingIgnoreCase(val);
   }
 
+  public List<Song> findByTitleContains(String val, int limit) {
+    return repository.findByTitleContainingIgnoreCase(val, PageRequest.of(0, limit)).toList();
+  }
+
   public List<Song> findByLyricsContains(String val) {
     return repository.findByLyricsContainingIgnoreCase(val);
+  }
+
+  public List<Song> findByLyricsContains(String val, int limit) {
+    return repository.findByLyricsContainingIgnoreCase(val, PageRequest.of(0, limit)).toList();
   }
 
   public List<Song> findByAuthorId(Long authorId) {
     return repository.findByAuthorId(authorId);
   }
 
+  public List<Song> findByAuthorId(Long authorId, int limit) {
+    return repository.findByAuthorId(authorId, PageRequest.of(0, limit)).toList();
+  }
+
   public List<Song> findByCategoryId(Long id) {
     return repository.findByCategoryId(id);
   }
 
+  public List<Song> findByCategoryId(Long id, int limit) {
+    return repository.findByCategoryId(id, PageRequest.of(0, limit)).toList();
+  }
+
   public List<Song> findByTagId(Long id) {
     return repository.findByTagsId(id);
+  }
+
+  public List<Song> findByRating(Double val) {
+    return repository.findByRatings(val);
   }
 
   public List<Song> findByRatingEqualGreater(Double val) {
