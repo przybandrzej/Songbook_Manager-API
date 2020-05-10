@@ -3,6 +3,7 @@ package com.lazydev.stksongbook.webapp.repository;
 import com.lazydev.stksongbook.webapp.data.model.Song;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,18 +16,18 @@ public interface SongRepository extends JpaRepository<Song, Long> {
   List<Song> findByTitleIgnoreCase(String title);
 
   List<Song> findByTitleContainingIgnoreCase(String text);
-  Page<Song> findByTitleContainingIgnoreCase(String text, PageRequest req);
+  Page<Song> findByTitleContainingIgnoreCase(String text, Pageable req);
 
   List<Song> findByLyricsContainingIgnoreCase(String text);
-  Page<Song> findByLyricsContainingIgnoreCase(String text, PageRequest req);
+  Page<Song> findByLyricsContainingIgnoreCase(String text, Pageable req);
 
   List<Song> findByCategoryId(Long categoryId);
-  Page<Song> findByCategoryId(Long categoryId, PageRequest req);
+  Page<Song> findByCategoryId(Long categoryId, Pageable req);
 
   List<Song> findByTagsId(Long tagId);
 
   List<Song> findByAuthorId(Long authorId);
-  Page<Song> findByAuthorId(Long authorId, PageRequest req);
+  Page<Song> findByAuthorId(Long authorId, Pageable req);
 
   List<Song> findByPlaylistsIdAndPlaylistsIsPrivate(Long authorId, boolean isPrivate);
 
