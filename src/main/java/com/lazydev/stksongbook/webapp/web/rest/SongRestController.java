@@ -9,6 +9,7 @@ import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserSongRatingDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
+import com.lazydev.stksongbook.webapp.service.exception.ParameterNotDefinedException;
 import com.lazydev.stksongbook.webapp.service.mappers.PlaylistMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
@@ -41,7 +42,7 @@ public class SongRestController {
   @GetMapping
   public ResponseEntity<List<SongDTO>> getAll(@RequestParam(value = "limit", required = false) Integer limit) {
     if(limit != null) {
-      List<SongDTO> list = service.findLimited(limit).stream().map(mapper::map).collect(Collectors.toList());
+      List<SongDTO> list = service.findAll(limit).stream().map(mapper::map).collect(Collectors.toList());
       return new ResponseEntity<>(list, HttpStatus.OK);
     }
     List<SongDTO> list = service.findAll().stream().map(mapper::map).collect(Collectors.toList());
@@ -54,19 +55,34 @@ public class SongRestController {
   }
 
   @GetMapping("/title/{title}")
-  public ResponseEntity<List<SongDTO>> getByTitle(@PathVariable("title") String title) {
+  public ResponseEntity<List<SongDTO>> getByTitleFragment(@PathVariable("title") String title,
+                                                          @RequestParam(value = "limit", required = false) Integer limit) {
+    if(limit != null) {
+      List<SongDTO> list = service.findByTitleContains(title, limit).stream().map(mapper::map).collect(Collectors.toList());
+      return new ResponseEntity<>(list, HttpStatus.OK);
+    }
     List<SongDTO> list = service.findByTitleContains(title).stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @GetMapping("/lyrics_fragment/{value}")
-  public ResponseEntity<List<SongDTO>> getByLyricsFragment(@PathVariable("value") String value) {
+  public ResponseEntity<List<SongDTO>> getByLyricsFragment(@PathVariable("value") String value,
+                                                           @RequestParam(value = "limit", required = false) Integer limit) {
+    if(limit != null) {
+      List<SongDTO> list = service.findByLyricsContains(value, limit).stream().map(mapper::map).collect(Collectors.toList());
+      return new ResponseEntity<>(list, HttpStatus.OK);
+    }
     List<SongDTO> list = service.findByLyricsContains(value).stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @GetMapping("/category/{categoryId}")
-  public ResponseEntity<List<SongDTO>> getByCategory(@PathVariable("categoryId") Long id) {
+  public ResponseEntity<List<SongDTO>> getByCategory(@PathVariable("categoryId") Long id,
+                                                     @RequestParam(value = "limit", required = false) Integer limit) {
+    if(limit != null) {
+      List<SongDTO> list = service.findByCategoryId(id, limit).stream().map(mapper::map).collect(Collectors.toList());
+      return new ResponseEntity<>(list, HttpStatus.OK);
+    }
     List<SongDTO> list = service.findByCategoryId(id).stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
@@ -75,6 +91,27 @@ public class SongRestController {
   public ResponseEntity<List<SongDTO>> getByTag(@PathVariable("tagId") Long id) {
     List<SongDTO> list = service.findByTagId(id).stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
+  }
+
+  @GetMapping("/rating")
+  public ResponseEntity<List<SongDTO>> getByRating(
+      @RequestParam(value = "greaterThanEqual", required = false) Double greaterValue,
+      @RequestParam(value = "lessThanEqual", required = false) Double lessValue,
+      @RequestParam(value = "equal", required = false) Double value) {
+    List<Song> list;
+    if(greaterValue != null) {
+      list = service.findByRatingEqualGreater(greaterValue);
+    } else if(lessValue != null) {
+      list = service.findByRatingEqualLess(lessValue);
+    } else if(value != null) {
+      list = service.findByRating(value);
+    } else {
+      throw new ParameterNotDefinedException("rating");
+    }
+    List<SongDTO> dtos = list.stream()
+        .map(mapper::map)
+        .collect(Collectors.toList());
+    return new ResponseEntity<>(dtos, HttpStatus.OK);
   }
 
   @GetMapping("/id/{id}/ratings")

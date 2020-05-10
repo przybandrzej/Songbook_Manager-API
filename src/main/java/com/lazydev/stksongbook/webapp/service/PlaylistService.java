@@ -4,6 +4,7 @@ import com.lazydev.stksongbook.webapp.data.model.Playlist;
 import com.lazydev.stksongbook.webapp.repository.PlaylistRepository;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,11 +31,18 @@ public class PlaylistService {
     return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(Playlist.class, id));
   }
 
-  public List<Playlist> findByName(String name, boolean includePrivate) {
+  public List<Playlist> findByNameFragment(String name, boolean includePrivate) {
     if(!includePrivate) {
       return repository.findByNameContainingIgnoreCaseAndIsPrivate(name, false);
     }
     return repository.findByNameContainingIgnoreCase(name);
+  }
+
+  public List<Playlist> findByNameFragment(String name, boolean includePrivate, int limit) {
+    if(!includePrivate) {
+      return repository.findByNameContainingIgnoreCaseAndIsPrivate(name, false, PageRequest.of(0, limit)).toList();
+    }
+    return repository.findByNameContainingIgnoreCase(name, PageRequest.of(0, limit)).toList();
   }
 
   public List<Playlist> findByOwnerId(Long id, boolean includePrivate) {
@@ -56,6 +64,13 @@ public class PlaylistService {
       return repository.findByIsPrivate(false);
     }
     return repository.findAll();
+  }
+
+  public List<Playlist> findAll(boolean includePrivate, int limit) {
+    if(!includePrivate) {
+      return repository.findByIsPrivate(false, PageRequest.of(0, limit)).toList();
+    }
+    return repository.findAll(PageRequest.of(0, limit)).toList();
   }
 
   public Playlist save(Playlist saveAuthor) {

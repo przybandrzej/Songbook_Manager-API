@@ -31,7 +31,7 @@ public class AuthorRestController {
   @GetMapping
   public ResponseEntity<List<AuthorDTO>> getAll(@RequestParam(value = "limit", required = false) Integer limit) {
     if(limit != null) {
-      List<AuthorDTO> list = service.findLimited(limit).stream().map(mapper::map).collect(Collectors.toList());
+      List<AuthorDTO> list = service.findAll(limit).stream().map(mapper::map).collect(Collectors.toList());
       return new ResponseEntity<>(list, HttpStatus.OK);
     }
     List<AuthorDTO> list = service.findAll().stream().map(mapper::map).collect(Collectors.toList());
@@ -44,7 +44,12 @@ public class AuthorRestController {
   }
 
   @GetMapping("/name/{name}")
-  public ResponseEntity<List<AuthorDTO>> getByName(@PathVariable("name") String name) {
+  public ResponseEntity<List<AuthorDTO>> getByNameFragment(@PathVariable("name") String name,
+                                                           @RequestParam(value = "limit", required = false) Integer limit) {
+    if(limit != null) {
+      List<AuthorDTO> list = service.findByNameFragment(name, limit).stream().map(mapper::map).collect(Collectors.toList());
+      return new ResponseEntity<>(list, HttpStatus.OK);
+    }
     List<AuthorDTO> list = service.findByNameFragment(name).stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
