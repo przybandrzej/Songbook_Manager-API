@@ -2,6 +2,7 @@ package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.data.model.Author;
 import com.lazydev.stksongbook.webapp.repository.AuthorRepository;
+import com.lazydev.stksongbook.webapp.service.exception.CannotDeleteEntityException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
@@ -55,6 +56,10 @@ public class AuthorService {
   }
 
   public void deleteById(Long id) {
+    var author = findById(id);
+    if(!author.getSongs().isEmpty()) {
+      throw new CannotDeleteEntityException(Author.class.getSimpleName(), "There are songs belonging to this author.");
+    }
     authorRepository.deleteById(id);
   }
 

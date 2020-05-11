@@ -6,6 +6,7 @@ import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.data.model.Tag;
 import com.lazydev.stksongbook.webapp.repository.SongRepository;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
+import com.lazydev.stksongbook.webapp.service.exception.CannotDeleteEntityException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
@@ -34,6 +35,7 @@ public class SongService {
   private SongCoauthorService coauthorService;
   private CategoryService categoryService;
   private FileSystemStorageService storageService;
+  private UserSongRatingService ratingService;
 
   public List<Song> findAll() {
     return repository.findAll();
@@ -116,6 +118,11 @@ public class SongService {
   }
 
   public void deleteById(Long id) {
+    var song = findById(id);
+    song.getCoauthors().forEach(it -> coauthorService.delete(it));
+    song.getPlaylists().forEach(it -> it.removeSong(song));
+    song.getUsersSongs().forEach(it -> it.removeSong(song));
+    song.getRatings().forEach(it -> ratingService.delete(it));
     repository.deleteById(id);
   }
 
