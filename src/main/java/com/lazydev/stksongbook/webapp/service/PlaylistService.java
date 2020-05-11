@@ -78,6 +78,7 @@ public class PlaylistService {
   }
 
   public void deleteById(Long id) {
+    findById(id, true);
     repository.deleteById(id);
   }
 }

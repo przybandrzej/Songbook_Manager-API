@@ -1,7 +1,9 @@
 package com.lazydev.stksongbook.webapp.service;
 
+import com.lazydev.stksongbook.webapp.data.model.Author;
 import com.lazydev.stksongbook.webapp.repository.CategoryRepository;
 import com.lazydev.stksongbook.webapp.data.model.Category;
+import com.lazydev.stksongbook.webapp.service.exception.CannotDeleteEntityException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,6 +46,10 @@ public class CategoryService {
   }
 
   public void deleteById(Long id) {
+    var category = findById(id);
+    if(!category.getSongs().isEmpty()) {
+      throw new CannotDeleteEntityException(Category.class.getSimpleName(), "There are songs belonging to this category.");
+    }
     repository.deleteById(id);
   }
 }

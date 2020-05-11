@@ -108,6 +108,10 @@ public class Song {
     }
   }
 
+  public void removeTag(Tag tag) {
+    this.tags.remove(tag);
+  }
+
   public void addCoauthor(SongCoauthor coauthor) {
     this.coauthors.add(coauthor);
   }
