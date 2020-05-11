@@ -32,6 +32,7 @@ public abstract class PlaylistMapperDecorator implements PlaylistMapper {
     Set<Song> songs = new HashSet<>();
     dto.getSongs().forEach(s -> songs.add(songService.findById(s)));
     playlist.setSongs(songs);
+    playlist.setPrivate(dto.getIsPrivate());
     return playlist;
   }
 
