@@ -80,8 +80,12 @@ public class User {
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<UserSongRating> userRatings;
 
-  @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "owner", orphanRemoval = true)
   private Set<Playlist> playlists;
+
+  public boolean removeSong(Song song) {
+    return songs.remove(song);
+  }
 
   /**
    * @param addedSongsCount counts songs added to the database by the user. New users have it automatically set to 0

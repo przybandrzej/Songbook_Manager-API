@@ -15,6 +15,7 @@ import java.util.Optional;
 public class UserService {
 
   private UserRepository repository;
+  private PlaylistService playlistService;
 
   public Optional<User> findByIdNoException(Long id) {
     return repository.findById(id);
@@ -65,6 +66,8 @@ public class UserService {
   }
 
   public void deleteById(Long id) {
+    var user = findById(id);
+    user.getPlaylists().forEach(it -> playlistService.deleteById(it.getId()));
     repository.deleteById(id);
   }
 }

@@ -51,6 +51,8 @@ public class TagService {
   }
 
   public void deleteById(Long id) {
+    var tag = findById(id);
+    tag.getSongs().forEach(it -> it.removeTag(tag));
     repository.deleteById(id);
   }
 

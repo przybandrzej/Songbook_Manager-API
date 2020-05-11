@@ -2,6 +2,7 @@ package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.data.model.UserRole;
 import com.lazydev.stksongbook.webapp.repository.UserRoleRepository;
+import com.lazydev.stksongbook.webapp.service.exception.CannotDeleteEntityException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,10 @@ public class UserRoleService {
   }
 
   public void deleteById(Long id) {
+    var role = findById(id);
+    if(!role.getUsers().isEmpty()) {
+      throw new CannotDeleteEntityException(UserRole.class.getSimpleName(), "There are users belonging to this role.");
+    }
     repository.deleteById(id);
   }
 }
