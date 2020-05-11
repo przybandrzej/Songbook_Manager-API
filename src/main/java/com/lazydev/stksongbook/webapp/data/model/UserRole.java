@@ -37,7 +37,7 @@ public class UserRole {
   @Column(name = "name", nullable = false, unique = true)
   private String name;
 
-  @OneToMany(mappedBy = "userRole", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  @OneToMany(mappedBy = "userRole", orphanRemoval = true)
   private Set<User> users;
 
   //TODO add some kind of permissions

@@ -53,6 +53,7 @@ public class UserSongRatingService {
   }
 
   public void delete(UserSongRating obj) {
+    findByUserIdAndSongId(obj.getUser().getId(), obj.getSong().getId());
     repository.delete(obj);
   }
 }
