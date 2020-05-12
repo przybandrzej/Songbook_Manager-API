@@ -1,9 +1,9 @@
 package com.lazydev.stksongbook.webapp.service.dto.creational;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.lazydev.stksongbook.webapp.util.Constants;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -12,9 +12,9 @@ import javax.validation.constraints.Pattern;
 import java.util.List;
 import java.util.Set;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Value
+@JsonDeserialize(builder = CreateSongDTO.Builder.class)
+@Builder(builderClassName = "Builder", toBuilder = true)
 public class CreateSongDTO {
 
   @NotBlank(message = "Field can't be blank.")
@@ -44,4 +44,8 @@ public class CreateSongDTO {
       @NotBlank(message = "Field can't be blank.")
       @Pattern(regexp = Constants.NAME_REGEX_SHORT, message = Constants.NAME_SHORT_INVALID_MESSAGE)
           String> tags;
+
+  @JsonPOJOBuilder(withPrefix = "")
+  public static class Builder {
+  }
 }

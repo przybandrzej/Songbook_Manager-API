@@ -15,7 +15,6 @@ import java.io.InputStream;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
-@RunWith(MockitoJUnitRunner.class)
 class FileSystemStorageServiceTest {
 
   private FileSystemStorageService storageService;

@@ -1,17 +1,17 @@
 package com.lazydev.stksongbook.webapp.service.dto.creational;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.lazydev.stksongbook.webapp.service.validators.CoauthorFunctionConstraint;
 import com.lazydev.stksongbook.webapp.util.Constants;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Value
+@JsonDeserialize(builder = CreateCoauthorDTO.Builder.class)
+@Builder(builderClassName = "Builder", toBuilder = true)
 public class CreateCoauthorDTO {
 
   @NotBlank(message = "Field can't be blank.")
@@ -20,4 +20,8 @@ public class CreateCoauthorDTO {
 
   @CoauthorFunctionConstraint
   String function;
+
+  @JsonPOJOBuilder(withPrefix = "")
+  public static class Builder {
+  }
 }

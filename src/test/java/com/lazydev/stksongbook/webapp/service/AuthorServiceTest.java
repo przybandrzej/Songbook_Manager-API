@@ -5,14 +5,12 @@ import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.repository.AuthorRepository;
 import com.lazydev.stksongbook.webapp.service.exception.CannotDeleteEntityException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
-import com.lazydev.stksongbook.webapp.util.Constants;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.context.annotation.EnableLoadTimeWeaving;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -20,19 +18,20 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 class AuthorServiceTest {
 
   @Mock
   AuthorRepository repository;
 
   @InjectMocks
-  AuthorService service;
+  AuthorService service = new AuthorService(repository);
 
   @Test
   void findById() {
     Mockito.when(repository.findById(2L)).thenReturn(Optional.empty());
-    Mockito.when(repository.findById(1L)).thenReturn(Optional.of(new Author(1L, "Andrew", null, null, new HashSet<>(), new HashSet<>())));
+    Mockito.when(repository.findById(1L)).thenReturn(Optional.of(
+        new Author(1L, "Andrew", null, null, new HashSet<>(), new HashSet<>())));
 
     Author author = service.findById(1L);
     assertNotNull(author);
@@ -45,7 +44,8 @@ class AuthorServiceTest {
   @Test
   void findByName() {
     Mockito.when(repository.findByName("John")).thenReturn(Optional.empty());
-    Mockito.when(repository.findByName("Andrew")).thenReturn(Optional.of(new Author(1L, "Andrew", null, null, new HashSet<>(), new HashSet<>())));
+    Mockito.when(repository.findByName("Andrew")).thenReturn(Optional.of(
+        new Author(1L, "Andrew", null, null, new HashSet<>(), new HashSet<>())));
 
     Author author = service.findByName("Andrew");
     assertNotNull(author);
@@ -56,20 +56,20 @@ class AuthorServiceTest {
 
   @Test
   void findOrCreateAuthor() {
+    Author found = new Author(1L, "Andrew", null, null, new HashSet<>(), new HashSet<>());
+    Author created = new Author(2L, "John", null, null, new HashSet<>(), new HashSet<>());
     Mockito.when(repository.findByName("John")).thenReturn(Optional.empty());
-    Mockito.when(repository.findByName("Andrew")).thenReturn(Optional.of(new Author(1L, "Andrew", null, null, new HashSet<>(), new HashSet<>())));
-    Mockito.when(repository.save(new Author(Constants.DEFAULT_ID, "John",
-            null, null, new HashSet<>(), new HashSet<>()))).thenReturn(new Author(2L, "John",
-        null, null, new HashSet<>(), new HashSet<>()));
+    Mockito.when(repository.findByName("Andrew")).thenReturn(Optional.of(found));
+    Mockito.when(repository.save(new Author(0L, "John",
+            null, null, new HashSet<>(), new HashSet<>()))).thenReturn(created);
 
-    Author author = service.findByName("Andrew");
+    Author author = service.findOrCreateAuthor("Andrew");
     assertNotNull(author);
-    assertEquals(1L, author.getId());
+    assertEquals(found, author);
 
-    Author author2 = service.findByName("John");
-    assertNotNull(author2);
-    assertEquals(2L, author2.getId());
-    assertEquals("John", author2.getName());
+    Author author1 = service.findOrCreateAuthor("John");
+    assertNotNull(author1);
+    assertEquals(created, author1);
   }
 
   @Test
