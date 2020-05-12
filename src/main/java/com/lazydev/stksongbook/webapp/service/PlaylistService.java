@@ -73,8 +73,8 @@ public class PlaylistService {
     return repository.findAll(PageRequest.of(0, limit)).toList();
   }
 
-  public Playlist save(Playlist saveAuthor) {
-    return repository.save(saveAuthor);
+  public Playlist save(Playlist savePlaylist) {
+    return repository.save(savePlaylist);
   }
 
   public void deleteById(Long id) {
