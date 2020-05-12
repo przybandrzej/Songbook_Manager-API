@@ -1,8 +1,7 @@
 package com.lazydev.stksongbook.webapp.service;
 
-import com.lazydev.stksongbook.webapp.data.model.Author;
-import com.lazydev.stksongbook.webapp.repository.CategoryRepository;
 import com.lazydev.stksongbook.webapp.data.model.Category;
+import com.lazydev.stksongbook.webapp.repository.CategoryRepository;
 import com.lazydev.stksongbook.webapp.service.exception.CannotDeleteEntityException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;

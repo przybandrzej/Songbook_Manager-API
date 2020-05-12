@@ -20,6 +20,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class AuthorServiceTest {
+  /**
+   * Tests for all methods might not make sense since most of them is just a call to the JpaRepository.
+   * The following tested methods are the only that required tests.
+   */
 
   @Mock
   AuthorRepository repository;
@@ -29,27 +33,26 @@ class AuthorServiceTest {
 
   @Test
   void findById() {
+    Author author = new Author(1L, "Andrew", null, null, new HashSet<>(), new HashSet<>());
     Mockito.when(repository.findById(2L)).thenReturn(Optional.empty());
-    Mockito.when(repository.findById(1L)).thenReturn(Optional.of(
-        new Author(1L, "Andrew", null, null, new HashSet<>(), new HashSet<>())));
+    Mockito.when(repository.findById(1L)).thenReturn(Optional.of(author));
 
-    Author author = service.findById(1L);
-    assertNotNull(author);
-    assertEquals(1L, author.getId());
-    assertEquals("Andrew", author.getName());
+    assertDoesNotThrow(() -> service.findById(1L));
+    assertNotNull(service.findById(1L));
+    assertEquals(author, service.findById(1L));
 
     assertThrows(EntityNotFoundException.class, () -> service.findById(2L));
   }
 
   @Test
   void findByName() {
+    Author author = new Author(1L, "Andrew", null, null, new HashSet<>(), new HashSet<>());
     Mockito.when(repository.findByName("John")).thenReturn(Optional.empty());
-    Mockito.when(repository.findByName("Andrew")).thenReturn(Optional.of(
-        new Author(1L, "Andrew", null, null, new HashSet<>(), new HashSet<>())));
+    Mockito.when(repository.findByName("Andrew")).thenReturn(Optional.of(author));
 
-    Author author = service.findByName("Andrew");
-    assertNotNull(author);
-    assertEquals(1L, author.getId());
+    assertDoesNotThrow(() -> service.findByName("Andrew"));
+    assertNotNull(service.findByName("Andrew"));
+    assertEquals(author, service.findByName("Andrew"));
 
     assertThrows(EntityNotFoundException.class, () -> service.findByName("John"));
   }
@@ -63,13 +66,13 @@ class AuthorServiceTest {
     Mockito.when(repository.save(new Author(0L, "John",
             null, null, new HashSet<>(), new HashSet<>()))).thenReturn(created);
 
-    Author author = service.findOrCreateAuthor("Andrew");
-    assertNotNull(author);
-    assertEquals(found, author);
+    assertDoesNotThrow(() -> service.findOrCreateAuthor("Andrew"));
+    assertNotNull(service.findOrCreateAuthor("Andrew"));
+    assertEquals(found, service.findOrCreateAuthor("Andrew"));
 
-    Author author1 = service.findOrCreateAuthor("John");
-    assertNotNull(author1);
-    assertEquals(created, author1);
+    assertDoesNotThrow(() -> service.findOrCreateAuthor("John"));
+    assertNotNull(service.findOrCreateAuthor("John"));
+    assertEquals(created, service.findOrCreateAuthor("John"));
   }
 
   @Test
