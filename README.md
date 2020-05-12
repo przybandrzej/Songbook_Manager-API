@@ -1,6 +1,6 @@
 # Songbook Manager Service API
 
-![tests & package CI](https://github.com/przybandrzej/Songbook_Manager-API/workflows/maven%20CI/badge.svg)
+![tests & package](https://github.com/przybandrzej/Songbook_Manager-API/workflows/tests%20&%20package/badge.svg?branch=master)
 
 ***current version: 1.2.5***
 
