@@ -1,5 +1,7 @@
 # Songbook Manager Service API
 
+![tests & package CI](https://github.com/przybandrzej/Songbook_Manager-API/workflows/maven%20CI/badge.svg)
+
 ***current version: 1.2.5***
 
 It is a server side application (RESTful API) that lets the users manage songs in a songbook, manage accounts, playlists, own small songbooks and singing events.
