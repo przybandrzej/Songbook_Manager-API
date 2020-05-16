@@ -1,5 +1,6 @@
 package com.lazydev.stksongbook.webapp.service.mappers.decorator;
 
+import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.data.model.SongCoauthor;
 import com.lazydev.stksongbook.webapp.data.model.SongsCoauthorsKey;
 import com.lazydev.stksongbook.webapp.service.AuthorService;
@@ -24,6 +25,7 @@ public abstract class SongCoauthorMapperDecorator implements SongCoauthorMapper 
   @Override
   public SongCoauthor map(SongCoauthorDTO dto) {
     var songAuthor = delegate.map(dto);
+    songAuthor.setId(new SongsCoauthorsKey());
     songAuthor.setSong(songService.findById(dto.getSongId()));
     songAuthor.setAuthor(authorService.findById(dto.getAuthorId()));
     songAuthor.setId(new SongsCoauthorsKey(dto.getSongId(), dto.getAuthorId()));
