@@ -132,6 +132,7 @@ class SongMapperTest {
     song.setTags(new HashSet<>());
     song.setGuitarTabs("ddddddddd");
     song.setLyrics("dasdafsgsdg gfdasgsd");
+    song.setRatings(new HashSet<>());
 
     Author author = new Author();
     author.setId(3L);
@@ -174,15 +175,19 @@ class SongMapperTest {
     song.addTag(getTag());
 
     UserSongRating rating = new UserSongRating();
+    rating.setId(new UsersSongsRatingsKey());
     rating.setRating(0.9);
     User user = new User();
     user.setId(1L);
+    user.setUserRatings(new HashSet<>());
     rating.setUser(user);
     rating.setSong(song);
 
     UserSongRating rating2 = new UserSongRating();
     rating2.setRating(0.8);
+    rating2.setId(new UsersSongsRatingsKey());
     User user2 = new User();
+    user2.setUserRatings(new HashSet<>());
     user2.setId(2L);
     rating2.setUser(user2);
     rating2.setSong(song);
