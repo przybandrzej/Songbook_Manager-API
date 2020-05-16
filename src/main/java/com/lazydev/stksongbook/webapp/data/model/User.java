@@ -87,6 +87,14 @@ public class User {
     return songs.remove(song);
   }
 
+  public boolean addPlaylist(Playlist playlist) {
+    if(this.playlists.add(playlist)) {
+      playlist.setOwner(this);
+      return true;
+    }
+    return false;
+  }
+
   /**
    * @param addedSongsCount counts songs added to the database by the user. New users have it automatically set to 0
    */

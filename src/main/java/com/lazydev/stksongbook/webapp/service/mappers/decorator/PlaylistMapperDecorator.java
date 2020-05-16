@@ -47,6 +47,7 @@ public abstract class PlaylistMapperDecorator implements PlaylistMapper {
     playlist.setSongs(songs);
     playlist.setId(Constants.DEFAULT_ID);
     playlist.setCreationTime(LocalDateTime.now());
+    playlist.setPrivate(dto.getIsPrivate());
     return playlist;
   }
 }
