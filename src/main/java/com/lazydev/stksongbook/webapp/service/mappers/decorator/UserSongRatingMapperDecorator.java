@@ -24,9 +24,9 @@ public abstract class UserSongRatingMapperDecorator implements UserSongRatingMap
   @Override
   public UserSongRating map(UserSongRatingDTO dto) {
     var entity = delegate.map(dto);
+    entity.setId(new UsersSongsRatingsKey());
     entity.setSong(songService.findById(dto.getSongId()));
     entity.setUser(userService.findById(dto.getUserId()));
-    entity.setId(new UsersSongsRatingsKey(dto.getUserId(), dto.getSongId()));
     return entity;
   }
 }
