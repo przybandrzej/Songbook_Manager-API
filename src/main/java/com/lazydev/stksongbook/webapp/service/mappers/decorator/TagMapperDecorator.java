@@ -6,11 +6,13 @@ import com.lazydev.stksongbook.webapp.service.dto.TagDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
 import com.lazydev.stksongbook.webapp.service.mappers.TagMapper;
 import com.lazydev.stksongbook.webapp.util.Constants;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.HashSet;
 
+@Setter
 public abstract class TagMapperDecorator implements TagMapper {
 
   @Autowired
