@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-@SpringBootTest(classes = { StkSongbookApplication.class, AuthorMapperImpl.class })
+@SpringBootTest(classes = {StkSongbookApplication.class, AuthorMapperImpl.class})
 class AuthorMapperTest {
 
   @Mock
