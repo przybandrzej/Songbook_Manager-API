@@ -3,6 +3,7 @@ package com.lazydev.stksongbook.webapp.service;
 import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.data.model.UserSongRating;
+import com.lazydev.stksongbook.webapp.data.model.UsersSongsRatingsKey;
 import com.lazydev.stksongbook.webapp.repository.UserSongRatingRepository;
 import com.lazydev.stksongbook.webapp.service.exception.CannotDeleteEntityException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
@@ -36,9 +37,12 @@ class UserSongRatingServiceTest {
   void findByUserIdAndSongIdNoException() {
     User user = new User();
     user.setId(1L);
+    user.setUserRatings(new HashSet<>());
     Song song = new Song();
     song.setId(1L);
+    song.setRatings(new HashSet<>());
     UserSongRating rating = new UserSongRating();
+    rating.setId(new UsersSongsRatingsKey());
     rating.setSong(song);
     rating.setUser(user);
     rating.setRating(0.9);
@@ -62,9 +66,12 @@ class UserSongRatingServiceTest {
   private UserSongRating getSample(long songid, long userid) {
     User user = new User();
     user.setId(userid);
+    user.setUserRatings(new HashSet<>());
     Song song = new Song();
     song.setId(songid);
+    song.setRatings(new HashSet<>());
     UserSongRating rating = new UserSongRating();
+    rating.setId(new UsersSongsRatingsKey());
     rating.setSong(song);
     rating.setUser(user);
     rating.setRating(0.9);
