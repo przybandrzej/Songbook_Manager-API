@@ -115,4 +115,8 @@ public class Song {
   public void addCoauthor(SongCoauthor coauthor) {
     this.coauthors.add(coauthor);
   }
+
+  public boolean addRating(UserSongRating rating) {
+    return this.ratings.add(rating);
+  }
 }

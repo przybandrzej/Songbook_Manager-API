@@ -95,6 +95,10 @@ public class User {
     return false;
   }
 
+  public boolean addRating(UserSongRating rating) {
+    return this.userRatings.add(rating);
+  }
+
   /**
    * @param addedSongsCount counts songs added to the database by the user. New users have it automatically set to 0
    */
