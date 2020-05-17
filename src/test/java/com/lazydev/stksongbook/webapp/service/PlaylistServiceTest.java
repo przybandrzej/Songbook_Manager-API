@@ -85,6 +85,7 @@ class PlaylistServiceTest {
     Song song = new Song();
     song.setId(1L);
     song.setTitle("testing song 1 title");
+    song.setPlaylists(new HashSet<>());
     Author author = new Author();
     author.setId(1L);
     author.setName("song author");

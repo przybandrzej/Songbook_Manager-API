@@ -121,6 +121,7 @@ class PlaylistRestControllerTest {
     Author author = new Author();
     author.setName("song author");
     song.setAuthor(author);
+    song.setPlaylists(new HashSet<>());
     song.setLyrics("Lorem ipsum dolor sit amet, \nconsectetur adipiscing elit, \nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \nUt enim ad minim veniam, \nquis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \nDuis aute irure dolor in reprehenderit \nin voluptate velit esse cillum dolore eu fugiat nulla pariatur. \nExcepteur sint occaecat cupidatat non proident, \nsunt in culpa qui officia deserunt mollit anim id est laborum.");
     song.setGuitarTabs("sample tabs");
     playlist.addSong(song);

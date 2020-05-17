@@ -50,6 +50,7 @@ class PdfServiceTest {
     song.setId(1L);
     song.setTitle("Title tes");
     song.setLyrics("dfjaskfnsjgf fsdfjiodsgf fgsdfjisdifg ");
+    song.setPlaylists(new HashSet<>());
     Author author = new Author();
     author.setId(1L);
     author.setName("Author Name");

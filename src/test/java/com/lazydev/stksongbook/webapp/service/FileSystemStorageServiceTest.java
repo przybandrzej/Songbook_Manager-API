@@ -38,9 +38,9 @@ class FileSystemStorageServiceTest {
 
   @Test
   public void loadAll() {
-    assertEquals(1, storageService.loadAll().count());
+    assertEquals(2, storageService.loadAll().count());
     assertTrue(storageService.loadAll().findFirst().isPresent());
-    assertEquals("test_file.txt", storageService.loadAll().findFirst().get().getFileName().toString());
+    assertTrue(storageService.loadAll().anyMatch(it -> it.getFileName().toString().equals("test_file.txt")));
   }
 
   @Test
