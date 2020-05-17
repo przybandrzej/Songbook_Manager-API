@@ -3,7 +3,8 @@ package com.lazydev.stksongbook.webapp.service.dto.creational;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.lazydev.stksongbook.webapp.util.Constants;
-import lombok.*;
+import lombok.Builder;
+import lombok.Value;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;

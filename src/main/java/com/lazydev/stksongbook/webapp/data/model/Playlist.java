@@ -70,6 +70,7 @@ public class Playlist {
 
   public void addSong(Song song) {
     songs.add(song);
+    song.addPlaylist(this);
   }
 
   public boolean removeSong(Song song) {

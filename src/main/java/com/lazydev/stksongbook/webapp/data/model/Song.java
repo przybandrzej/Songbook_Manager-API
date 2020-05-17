@@ -102,6 +102,11 @@ public class Song {
     category.addSong(this);
   }
 
+  public void removeCategory() {
+    category.removeSong(this);
+    this.category = null;
+  }
+
   public void addTag(Tag tag) {
     if(this.tags.add(tag)) {
       tag.addSong(this);
@@ -110,6 +115,7 @@ public class Song {
 
   public void removeTag(Tag tag) {
     this.tags.remove(tag);
+    tag.removeSong(this);
   }
 
   public void addCoauthor(SongCoauthor coauthor) {
@@ -118,5 +124,17 @@ public class Song {
 
   public boolean addRating(UserSongRating rating) {
     return this.ratings.add(rating);
+  }
+
+  public boolean addUser(User user) {
+    return this.usersSongs.add(user);
+  }
+
+  public boolean addPlaylist(Playlist playlist) {
+    return this.playlists.add(playlist);
+  }
+
+  public void removeCoauthor(SongCoauthor coauthor) {
+    this.coauthors.remove(coauthor);
   }
 }

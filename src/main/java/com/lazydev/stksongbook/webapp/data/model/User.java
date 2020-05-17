@@ -99,6 +99,14 @@ public class User {
     return this.userRatings.add(rating);
   }
 
+  public boolean addSong(Song song) {
+    if(this.songs.add(song)) {
+      song.addUser(this);
+      return true;
+    }
+    return false;
+  }
+
   /**
    * @param addedSongsCount counts songs added to the database by the user. New users have it automatically set to 0
    */
