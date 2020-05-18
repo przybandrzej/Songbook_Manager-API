@@ -88,16 +88,16 @@ class PlaylistRestControllerTest {
 
   @Test
   void testUpdate() throws Exception {
-    PlaylistDTO validDto = mockMap(getSamplePrivatePlaylist());
+    Playlist playlist = getSamplePrivatePlaylist();
+    PlaylistDTO validDto = mockMap(playlist);
     PlaylistDTO invalidDto = PlaylistDTO.builder().isPrivate(true).name("test playlist").ownerId(1L).songs(Set.of(1L, 2L, 3L)).id(2L).create();
     given(service.findByIdNoException(1L, true)).willReturn(Optional.of(getSamplePrivatePlaylist()));
     given(service.findByIdNoException(2L, true)).willReturn(Optional.empty());
 
     given(mapper.map(validDto)).willReturn(getSamplePrivatePlaylist());
-    Playlist validSaved = mockSaved(getSamplePrivatePlaylist(), 1L);
-    given(service.save(getSamplePrivatePlaylist())).willReturn(validSaved);
-    PlaylistDTO dto = mockMap(validSaved);
-    given(mapper.map(validSaved)).willReturn(dto);
+    given(service.save(getSamplePrivatePlaylist())).willReturn(playlist);
+    PlaylistDTO dto = mockMap(playlist);
+    given(mapper.map(playlist)).willReturn(dto);
 
     mockMvc.perform(MockMvcRequestBuilders.put(endpoint).contentType(MediaType.APPLICATION_JSON)
         .content(new ObjectMapper().writeValueAsString(invalidDto)))

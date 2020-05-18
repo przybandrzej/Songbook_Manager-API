@@ -107,6 +107,16 @@ public class User {
     return false;
   }
 
+  public void setUserRole(UserRole role) {
+    this.userRole = role;
+    role.addUser(this);
+  }
+
+  public void removeUserRole(UserRole role) {
+    role.removeUser(this);
+    this.userRole = null;
+  }
+
   /**
    * @param addedSongsCount counts songs added to the database by the user. New users have it automatically set to 0
    */

@@ -101,7 +101,6 @@ class TagRestControllerTest {
     given(tagService.findByIdNoException(1L)).willReturn(Optional.of(map(dto)));
     given(tagService.save(any(Tag.class))).willAnswer(it -> {
       Tag a = it.getArgument(0);
-      a.setId(2L);
       return a;
     });
     given(mapper.map(any(TagDTO.class))).willAnswer(it -> {
@@ -113,14 +112,10 @@ class TagRestControllerTest {
       return map(a);
     });
 
-    Tag saved = map(dto);
-    saved.setId(2L);
-    TagDTO returned = map(saved);
-
     mockMvc.perform(MockMvcRequestBuilders.put(BASE_URL).contentType(MediaType.APPLICATION_JSON)
         .content(new ObjectMapper().writeValueAsString(dto)))
         .andExpect(status().isOk())
-        .andExpect(content().json(convertObjectToJsonString(returned)));
+        .andExpect(content().json(convertObjectToJsonString(dto)));
     mockMvc.perform(MockMvcRequestBuilders.put(BASE_URL)
         .contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(dto1)))
         .andExpect(status().isBadRequest());

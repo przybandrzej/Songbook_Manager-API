@@ -66,10 +66,9 @@ class CategoryRestControllerTest {
 
     Category validMapped = mockMap(validDto);
     given(mapper.map(validDto)).willReturn(validMapped);
-    Category validSaved = mockSaved(validMapped, 1L);
-    given(service.save(validMapped)).willReturn(validSaved);
-    CategoryDTO dto = mockMap(validSaved);
-    given(mapper.map(validSaved)).willReturn(dto);
+    given(service.save(validMapped)).willReturn(validMapped);
+    CategoryDTO dto = mockMap(validMapped);
+    given(mapper.map(validMapped)).willReturn(dto);
 
     mockMvc.perform(MockMvcRequestBuilders.post(endpoint).contentType(MediaType.APPLICATION_JSON)
         .content(new ObjectMapper().writeValueAsString(validDto)))

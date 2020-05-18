@@ -101,7 +101,6 @@ class UserRoleRestControllerTest {
     given(userRoleService.findByIdNoException(1L)).willReturn(Optional.of(map(dto)));
     given(userRoleService.save(any(UserRole.class))).willAnswer(it -> {
       UserRole a = it.getArgument(0);
-      a.setId(2L);
       return a;
     });
     given(mapper.map(any(UserRoleDTO.class))).willAnswer(it -> {
@@ -113,14 +112,10 @@ class UserRoleRestControllerTest {
       return map(a);
     });
 
-    UserRole saved = map(dto);
-    saved.setId(2L);
-    UserRoleDTO returned = map(saved);
-
     mockMvc.perform(MockMvcRequestBuilders.put(BASE_URL).contentType(MediaType.APPLICATION_JSON)
         .content(new ObjectMapper().writeValueAsString(dto)))
         .andExpect(status().isOk())
-        .andExpect(content().json(convertObjectToJsonString(returned)));
+        .andExpect(content().json(convertObjectToJsonString(dto)));
     mockMvc.perform(MockMvcRequestBuilders.put(BASE_URL)
         .contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(dto1)))
         .andExpect(status().isBadRequest());

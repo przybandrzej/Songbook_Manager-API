@@ -138,6 +138,11 @@ class UserMapperTest {
     RegisterNewUserForm dto = RegisterNewUserForm.builder().email("a@a.pl").firstName("First")
         .lastName("Last").password("password").username("username").build();
 
+    UserRole role = new UserRole();
+    role.setName("user");
+    role.setId(3L);
+    role.setUsers(new HashSet<>());
+    given(userRoleService.findById(Constants.CONST_USER_ID)).willReturn(role);
     User user = mapper.mapFromRegisterForm(dto);
 
     assertEquals(dto.getUsername(), user.getUsername());
