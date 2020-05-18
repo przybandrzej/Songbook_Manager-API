@@ -35,7 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
-//@SpringBootTest(webEnvironment  = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AuthorRestControllerTest {
 
   private static final String BASE_URL = "/api/authors";

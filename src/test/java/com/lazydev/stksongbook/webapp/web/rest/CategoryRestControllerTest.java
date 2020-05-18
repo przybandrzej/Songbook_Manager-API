@@ -20,6 +20,7 @@ import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.CategoryMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.PlaylistMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
+import com.lazydev.stksongbook.webapp.web.rest.errors.ExceptionTranslator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -61,11 +62,11 @@ class CategoryRestControllerTest {
     mapper = mock(CategoryMapper.class);
     SongMapper songMapper = mock(SongMapper.class);
     controller = new CategoryRestController(service, mapper, songMapper);
-    mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+    mockMvc = MockMvcBuilders.standaloneSetup(controller).setControllerAdvice(ExceptionTranslator.class).build();
   }
 
   @Test
-  void create() throws Exception {
+  void testCreate() throws Exception {
     UniversalCreateDTO validDto = UniversalCreateDTO.builder().name("test cat").id(1L).build();
     UniversalCreateDTO validDto2 = UniversalCreateDTO.builder().name("test cat2").id(null).build();
     UniversalCreateDTO invalidDto = UniversalCreateDTO.builder().name("").id(1L).build();
@@ -101,24 +102,22 @@ class CategoryRestControllerTest {
         .content(new ObjectMapper().writeValueAsString(validDto2)))
         .andExpect(status().isCreated())
         .andExpect(content().json(convertObjectToJsonString(dto2)));
-
     mockMvc.perform(MockMvcRequestBuilders.post(endpoint).contentType(MediaType.APPLICATION_JSON)
         .content(new ObjectMapper().writeValueAsString(invalidDto)))
         .andExpect(status().isBadRequest());
-
     mockMvc.perform(MockMvcRequestBuilders.post(endpoint).contentType(MediaType.APPLICATION_JSON)
         .content(new ObjectMapper().writeValueAsString(invalidDto2)))
         .andExpect(status().isBadRequest());
-
     mockMvc.perform(MockMvcRequestBuilders.post(endpoint).contentType(MediaType.APPLICATION_JSON)
         .content(new ObjectMapper().writeValueAsString(invalidDto3)))
         .andExpect(status().isBadRequest());
-
-    assertThrows(EntityAlreadyExistsException.class, () -> controller.create(invalidDto4));
+    mockMvc.perform(MockMvcRequestBuilders.post(endpoint).contentType(MediaType.APPLICATION_JSON)
+        .content(new ObjectMapper().writeValueAsString(invalidDto4)))
+        .andExpect(status().isBadRequest());
   }
 
   @Test
-  void update() {
+  void update() throws Exception {
     CategoryDTO validDto = mockMap(getSampleCategory());
     CategoryDTO invalidDto = CategoryDTO.builder().name("test invalid").id(2L).create();
     given(service.findByIdNoException(1L)).willReturn(Optional.of(getSampleCategory()));
@@ -130,8 +129,13 @@ class CategoryRestControllerTest {
     CategoryDTO dto = mockMap(validSaved);
     given(mapper.map(validSaved)).willReturn(dto);
 
-    assertEquals(HttpStatus.OK, controller.update(validDto).getStatusCode());
-    assertThrows(EntityNotFoundException.class, () -> controller.update(invalidDto));
+    mockMvc.perform(MockMvcRequestBuilders.put(endpoint).contentType(MediaType.APPLICATION_JSON)
+        .content(new ObjectMapper().writeValueAsString(validDto)))
+        .andExpect(status().isOk())
+        .andExpect(content().json(convertObjectToJsonString(validDto)));
+    mockMvc.perform(MockMvcRequestBuilders.put(endpoint).contentType(MediaType.APPLICATION_JSON)
+        .content(new ObjectMapper().writeValueAsString(invalidDto)))
+        .andExpect(status().isNotFound());
   }
 
   private Category getSampleCategory() {
