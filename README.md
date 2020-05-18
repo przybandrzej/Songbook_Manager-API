@@ -2,7 +2,7 @@
 
 ![tests & package](https://github.com/przybandrzej/Songbook_Manager-API/workflows/tests%20&%20package/badge.svg?branch=master)
 
-***current version: 1.2.5***
+***current version: 1.5.0***
 
 It is a server side application (RESTful API) that lets the users manage songs in a songbook, manage accounts, playlists, own small songbooks and singing events.
 
