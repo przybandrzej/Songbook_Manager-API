@@ -147,7 +147,6 @@ public class SongService {
     Author author = authorService.findOrCreateAuthor(obj.getAuthorName());
 
     author.addSong(song);
-    //song.setTags(tags);
     tags.forEach(song::addTag);
     var savedSong = repository.save(song);
 
