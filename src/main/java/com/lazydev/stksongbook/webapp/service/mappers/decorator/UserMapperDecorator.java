@@ -6,12 +6,14 @@ import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm
 import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
 import com.lazydev.stksongbook.webapp.util.Constants;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
+@Setter
 public abstract class UserMapperDecorator implements UserMapper {
 
   @Autowired

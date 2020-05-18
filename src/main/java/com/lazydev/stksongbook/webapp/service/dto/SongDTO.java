@@ -1,9 +1,9 @@
 package com.lazydev.stksongbook.webapp.service.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.Value;
 
 import javax.validation.Valid;
@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Set;
 
 @Value
-@Builder
+@JsonDeserialize(builder = SongDTO.Builder.class)
+@Builder(builderClassName = "Builder", toBuilder = true)
 public class SongDTO {
 
   @NotNull(message = "ID must be defined.")
@@ -47,4 +48,8 @@ public class SongDTO {
 
   @NotNull(message = "Tags list must be initialized.")
   List<@Valid TagDTO> tags;
+
+  @JsonPOJOBuilder(withPrefix = "")
+  public static class Builder {
+  }
 }

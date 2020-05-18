@@ -1,5 +1,7 @@
 package com.lazydev.stksongbook.webapp.service.dto.creational;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import com.lazydev.stksongbook.webapp.service.validators.NameConstraint;
 import lombok.Builder;
@@ -9,7 +11,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Value
-@Builder
+@JsonDeserialize(builder = RegisterNewUserForm.Builder.class)
+@Builder(builderClassName = "Builder", toBuilder = true)
 public class RegisterNewUserForm {
 
   @NotNull(message = "Can't be null.")
@@ -29,4 +32,8 @@ public class RegisterNewUserForm {
 
   @NameConstraint
   String lastName;
+
+  @JsonPOJOBuilder(withPrefix = "")
+  public static class Builder {
+  }
 }

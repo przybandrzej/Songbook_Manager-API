@@ -6,7 +6,6 @@ import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.data.model.Tag;
 import com.lazydev.stksongbook.webapp.repository.SongRepository;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
-import com.lazydev.stksongbook.webapp.service.exception.CannotDeleteEntityException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
@@ -123,6 +122,8 @@ public class SongService {
     song.getPlaylists().forEach(it -> it.removeSong(song));
     song.getUsersSongs().forEach(it -> it.removeSong(song));
     song.getRatings().forEach(it -> ratingService.delete(it));
+    song.getTags().forEach(song::removeTag);
+    song.removeCategory();
     repository.deleteById(id);
   }
 
@@ -146,7 +147,7 @@ public class SongService {
     Author author = authorService.findOrCreateAuthor(obj.getAuthorName());
 
     author.addSong(song);
-    song.setTags(tags);
+    tags.forEach(song::addTag);
     var savedSong = repository.save(song);
 
     obj.getCoauthors().forEach(coauthorDTO -> {

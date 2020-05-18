@@ -4,14 +4,15 @@ import com.lazydev.stksongbook.webapp.data.model.Category;
 import com.lazydev.stksongbook.webapp.service.SongService;
 import com.lazydev.stksongbook.webapp.service.dto.CategoryDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
-import com.lazydev.stksongbook.webapp.service.mappers.AuthorMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.CategoryMapper;
 import com.lazydev.stksongbook.webapp.util.Constants;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.HashSet;
 
+@Setter
 public abstract class CategoryMapperDecorator implements CategoryMapper {
 
   @Autowired

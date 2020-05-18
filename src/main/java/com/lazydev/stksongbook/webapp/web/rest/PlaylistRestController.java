@@ -8,7 +8,6 @@ import com.lazydev.stksongbook.webapp.service.dto.PlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreatePlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.PlaylistMapper;
-import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -77,7 +76,6 @@ public class PlaylistRestController {
   @PostMapping
   public ResponseEntity<PlaylistDTO> create(@RequestBody @Valid CreatePlaylistDTO dto) {
     var playlist = mapper.map(dto);
-    playlist.setId(Constants.DEFAULT_ID);
     var saved = service.save(playlist);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.CREATED);
   }

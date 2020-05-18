@@ -1,5 +1,7 @@
 package com.lazydev.stksongbook.webapp.service.dto.creational;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.Builder;
 import lombok.Value;
@@ -10,7 +12,8 @@ import javax.validation.constraints.Pattern;
 import java.util.Set;
 
 @Value
-@Builder
+@JsonDeserialize(builder = CreatePlaylistDTO.Builder.class)
+@Builder(builderClassName = "Builder", toBuilder = true)
 public class CreatePlaylistDTO {
 
   @NotBlank(message = "Field can't be blank.")
@@ -27,4 +30,8 @@ public class CreatePlaylistDTO {
   Set<
       @NotNull(message = "Field can't be null.")
       Long> songs;
+
+  @JsonPOJOBuilder(withPrefix = "")
+  public static class Builder {
+  }
 }

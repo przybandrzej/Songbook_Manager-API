@@ -44,4 +44,8 @@ public class Tag {
   public boolean addSong(Song song) {
     return this.songs.add(song);
   }
+
+  public boolean removeSong(Song song) {
+    return this.songs.remove(song);
+  }
 }
