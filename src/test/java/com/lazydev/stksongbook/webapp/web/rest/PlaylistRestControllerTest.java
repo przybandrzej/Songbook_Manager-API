@@ -3,10 +3,7 @@ package com.lazydev.stksongbook.webapp.web.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.lazydev.stksongbook.webapp.data.model.Author;
-import com.lazydev.stksongbook.webapp.data.model.Playlist;
-import com.lazydev.stksongbook.webapp.data.model.Song;
-import com.lazydev.stksongbook.webapp.data.model.User;
+import com.lazydev.stksongbook.webapp.data.model.*;
 import com.lazydev.stksongbook.webapp.service.FileSystemStorageService;
 import com.lazydev.stksongbook.webapp.service.PdfService;
 import com.lazydev.stksongbook.webapp.service.PlaylistService;
@@ -25,13 +22,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.mock;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -63,7 +59,7 @@ class PlaylistRestControllerTest {
   }
 
   @Test
-  void create() throws Exception {
+  void testCreate() throws Exception {
     CreatePlaylistDTO validDto = CreatePlaylistDTO.builder().isPrivate(true).name("test playlist").ownerId(1L).songs(Set.of(1L, 2L, 3L)).build();
     CreatePlaylistDTO invalidDto = CreatePlaylistDTO.builder().isPrivate(true).name("test playlist").ownerId(1L).songs(null).build();
     CreatePlaylistDTO invalidDto2 = CreatePlaylistDTO.builder().isPrivate(true).name("t").ownerId(1L).songs(Set.of(1L, 2L, 3L)).build();
@@ -92,7 +88,7 @@ class PlaylistRestControllerTest {
   }
 
   @Test
-  void update() {
+  void testUpdate() throws Exception {
     PlaylistDTO validDto = mockMap(getSamplePrivatePlaylist());
     PlaylistDTO invalidDto = PlaylistDTO.builder().isPrivate(true).name("test playlist").ownerId(1L).songs(Set.of(1L, 2L, 3L)).id(2L).create();
     given(service.findByIdNoException(1L, true)).willReturn(Optional.of(getSamplePrivatePlaylist()));
@@ -104,21 +100,47 @@ class PlaylistRestControllerTest {
     PlaylistDTO dto = mockMap(validSaved);
     given(mapper.map(validSaved)).willReturn(dto);
 
-    assertEquals(HttpStatus.OK, controller.update(validDto).getStatusCode());
-    assertThrows(EntityNotFoundException.class, () -> controller.update(invalidDto));
+    mockMvc.perform(MockMvcRequestBuilders.put(endpoint).contentType(MediaType.APPLICATION_JSON)
+        .content(new ObjectMapper().writeValueAsString(invalidDto)))
+        .andExpect(status().isNotFound());
+    mockMvc.perform(MockMvcRequestBuilders.put(endpoint).contentType(MediaType.APPLICATION_JSON)
+        .content(new ObjectMapper().writeValueAsString(validDto)))
+        .andDo(mvcResult -> System.out.println(mvcResult.getResponse().getStatus()))
+        .andExpect(status().isOk())
+        .andExpect(content().json(convertObjectToJsonString(dto)));
+  }
+
+  @Test
+  void testGetById() throws Exception {
+    Playlist publicPlaylist = getSamplePublicPlaylist();
+    Playlist privatePlaylist = getSamplePrivatePlaylist();
+    privatePlaylist.setId(2L);
+    given(service.findById(1L, true)).willReturn(publicPlaylist);
+    given(service.findById(2L, false)).willThrow(EntityNotFoundException.class);
+    given(mapper.map(any(Playlist.class))).willAnswer(it -> {
+      Playlist a = it.getArgument(0);
+      return mockMap(a);
+    });
+
+    mockMvc.perform(MockMvcRequestBuilders.get(endpoint + "/id/2"))
+        .andExpect(status().isNotFound());
+    mockMvc.perform(MockMvcRequestBuilders.get(endpoint + "/id/1").param("include_private", "true"))
+        .andExpect(status().isOk())
+        .andExpect(content().json(convertObjectToJsonString(mockMap(publicPlaylist))));
   }
 
   private Playlist getSamplePrivatePlaylist() {
     Playlist playlist = new Playlist();
     playlist.setId(1L);
-    playlist.setName("testing playlist title");
+    playlist.setName("testing play");
     User user = new User();
     user.setUsername("playlist owner");
+    user.setId(1L);
     playlist.setOwner(user);
     playlist.setSongs(new HashSet<>());
     Song song = new Song();
     song.setId(1L);
-    song.setTitle("testing song 1 title");
+    song.setTitle("testing song");
     Author author = new Author();
     author.setName("song author");
     song.setAuthor(author);

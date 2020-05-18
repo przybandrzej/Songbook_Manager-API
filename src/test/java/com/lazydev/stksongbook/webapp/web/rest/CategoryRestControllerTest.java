@@ -4,39 +4,28 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.lazydev.stksongbook.webapp.data.model.Category;
-import com.lazydev.stksongbook.webapp.data.model.Playlist;
-import com.lazydev.stksongbook.webapp.data.model.Song;
-import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.service.CategoryService;
-import com.lazydev.stksongbook.webapp.service.FileSystemStorageService;
-import com.lazydev.stksongbook.webapp.service.PdfService;
-import com.lazydev.stksongbook.webapp.service.PlaylistService;
 import com.lazydev.stksongbook.webapp.service.dto.CategoryDTO;
-import com.lazydev.stksongbook.webapp.service.dto.PlaylistDTO;
-import com.lazydev.stksongbook.webapp.service.dto.creational.CreatePlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
-import com.lazydev.stksongbook.webapp.service.exception.EntityAlreadyExistsException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.CategoryMapper;
-import com.lazydev.stksongbook.webapp.service.mappers.PlaylistMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
 import com.lazydev.stksongbook.webapp.web.rest.errors.ExceptionTranslator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -117,7 +106,7 @@ class CategoryRestControllerTest {
   }
 
   @Test
-  void update() throws Exception {
+  void testUpdate() throws Exception {
     CategoryDTO validDto = mockMap(getSampleCategory());
     CategoryDTO invalidDto = CategoryDTO.builder().name("test invalid").id(2L).create();
     given(service.findByIdNoException(1L)).willReturn(Optional.of(getSampleCategory()));
@@ -135,6 +124,31 @@ class CategoryRestControllerTest {
         .andExpect(content().json(convertObjectToJsonString(validDto)));
     mockMvc.perform(MockMvcRequestBuilders.put(endpoint).contentType(MediaType.APPLICATION_JSON)
         .content(new ObjectMapper().writeValueAsString(invalidDto)))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  void testGetById() throws Exception {
+    List<Category> list = new ArrayList<>();
+    given(service.findById(1L)).willAnswer(i -> {
+      Long id = i.getArgument(0);
+      Category category = new Category();
+      category.setId(1L);
+      category.setName("dummy name");
+      category.setSongs(new HashSet<>());
+      list.add(category);
+      return category;
+    });
+    given(service.findById(2L)).willThrow(EntityNotFoundException.class);
+    given(mapper.map(any(Category.class))).willAnswer(it -> {
+      Category a = it.getArgument(0);
+      return mockMap(a);
+    });
+
+    mockMvc.perform(MockMvcRequestBuilders.get(endpoint + "/id/1"))
+        .andExpect(status().isOk())
+        .andExpect(content().json(convertObjectToJsonString(mockMap(list.get(0)))));
+    mockMvc.perform(MockMvcRequestBuilders.get(endpoint + "/id/2"))
         .andExpect(status().isNotFound());
   }
 
