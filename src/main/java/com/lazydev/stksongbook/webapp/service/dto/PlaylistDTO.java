@@ -1,6 +1,10 @@
 package com.lazydev.stksongbook.webapp.service.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.lazydev.stksongbook.webapp.service.dto.creational.CreatePlaylistDTO;
 import com.lazydev.stksongbook.webapp.util.Constants;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -10,6 +14,8 @@ import java.util.Set;
 
 @Getter
 @EqualsAndHashCode
+@JsonDeserialize(builder = PlaylistDTO.Builder.class)
+@Builder(builderClassName = "Builder", toBuilder = true)
 public class PlaylistDTO {
 
     @NotNull(message = "ID must be defined.")
@@ -45,6 +51,7 @@ public class PlaylistDTO {
         return new PlaylistDTO.Builder();
     }
 
+    @JsonPOJOBuilder(withPrefix = "")
     public static final class Builder {
         private Long id;
         private String name;

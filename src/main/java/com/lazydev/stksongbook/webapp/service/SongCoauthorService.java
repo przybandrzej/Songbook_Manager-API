@@ -58,6 +58,8 @@ public class SongCoauthorService {
 
   public void delete(SongCoauthor songCoauthor) {
     findBySongIdAndAuthorIdAndFunction(songCoauthor.getSong().getId(), songCoauthor.getAuthor().getId(), songCoauthor.getFunction());
+    songCoauthor.getSong().removeCoauthor(songCoauthor);
+    songCoauthor.getAuthor().removeCoauthor(songCoauthor);
     repository.delete(songCoauthor);
   }
 

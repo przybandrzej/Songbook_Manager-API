@@ -1,5 +1,7 @@
 package com.lazydev.stksongbook.webapp.service.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import com.lazydev.stksongbook.webapp.service.validators.NameConstraint;
 import lombok.Builder;
@@ -10,7 +12,8 @@ import javax.validation.constraints.Pattern;
 import java.util.Set;
 
 @Value
-@Builder
+@JsonDeserialize(builder = UserDTO.Builder.class)
+@Builder(builderClassName = "Builder", toBuilder = true)
 public class UserDTO {
 
   @NotNull(message = "ID must be defined.")
@@ -33,4 +36,8 @@ public class UserDTO {
   Set<
       @NotNull(message = "Can't be null.")
           Long> songs;
+
+  @JsonPOJOBuilder(withPrefix = "")
+  public static class Builder {
+  }
 }

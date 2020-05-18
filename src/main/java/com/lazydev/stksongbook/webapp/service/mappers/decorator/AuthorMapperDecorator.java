@@ -7,11 +7,16 @@ import com.lazydev.stksongbook.webapp.service.dto.AuthorDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
 import com.lazydev.stksongbook.webapp.service.mappers.AuthorMapper;
 import com.lazydev.stksongbook.webapp.util.Constants;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.HashSet;
 
+@Setter
 public abstract class AuthorMapperDecorator implements AuthorMapper {
 
   @Autowired

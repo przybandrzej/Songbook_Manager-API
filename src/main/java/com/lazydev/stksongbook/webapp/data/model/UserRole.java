@@ -40,5 +40,13 @@ public class UserRole {
   @OneToMany(mappedBy = "userRole", orphanRemoval = true)
   private Set<User> users;
 
+  public boolean addUser(User user) {
+    return this.users.add(user);
+  }
+
+  public boolean removeUser(User user) {
+    return this.users.remove(user);
+  }
+
   //TODO add some kind of permissions
 }

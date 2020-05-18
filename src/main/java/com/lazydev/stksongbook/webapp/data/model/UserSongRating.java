@@ -31,4 +31,16 @@ public class UserSongRating {
 
   @Column(name = "rating", nullable = false)
   private Double rating;
+
+  public void setUser(User user) {
+    this.user = user;
+    user.addRating(this);
+    this.id.setUserId(user.getId());
+  }
+
+  public void setSong(Song song) {
+    this.song = song;
+    song.addRating(this);
+    this.id.setSongId(song.getId());
+  }
 }

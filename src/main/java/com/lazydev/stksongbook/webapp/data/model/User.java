@@ -87,6 +87,36 @@ public class User {
     return songs.remove(song);
   }
 
+  public boolean addPlaylist(Playlist playlist) {
+    if(this.playlists.add(playlist)) {
+      playlist.setOwner(this);
+      return true;
+    }
+    return false;
+  }
+
+  public boolean addRating(UserSongRating rating) {
+    return this.userRatings.add(rating);
+  }
+
+  public boolean addSong(Song song) {
+    if(this.songs.add(song)) {
+      song.addUser(this);
+      return true;
+    }
+    return false;
+  }
+
+  public void setUserRole(UserRole role) {
+    this.userRole = role;
+    role.addUser(this);
+  }
+
+  public void removeUserRole(UserRole role) {
+    role.removeUser(this);
+    this.userRole = null;
+  }
+
   /**
    * @param addedSongsCount counts songs added to the database by the user. New users have it automatically set to 0
    */
