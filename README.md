@@ -49,6 +49,8 @@ Feel free to read [Wiki](https://github.com/przybandrzej/Songbook_Manager-API/wi
   * [Lombok]()
   * [MapStruct]()
   * [PDF Box]()
+  * [Junit 5]()
+  * [Mockito]()
 * [PostgreSQL]()
 * [Heroku]()
 * [Swagger]()
