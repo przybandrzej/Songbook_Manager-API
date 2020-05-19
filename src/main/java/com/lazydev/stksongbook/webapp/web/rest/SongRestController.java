@@ -49,6 +49,12 @@ public class SongRestController {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
+  @GetMapping("/latest")
+  public ResponseEntity<List<SongDTO>> getLatest(@RequestParam(value = "limit") Integer limit) {
+    List<SongDTO> list = service.findLatestLimited(limit).stream().map(mapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
+  }
+
   @GetMapping("/id/{id}")
   public ResponseEntity<SongDTO> getById(@PathVariable("id") Long id) {
     return new ResponseEntity<>(mapper.map(service.findById(id)), HttpStatus.OK);

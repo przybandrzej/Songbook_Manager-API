@@ -9,7 +9,9 @@ import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -160,5 +162,9 @@ public class SongService {
   public CreateSongDTO readSongFromFile(String fileName) throws IOException {
     return new ObjectMapper().readValue(
         storageService.getLocation().resolve(fileName).toUri().toURL(), CreateSongDTO.class);
+  }
+
+  public List<Song> findLatestLimited(int limit) {
+    return repository.findAll(PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "creationTime"))).toList();
   }
 }
