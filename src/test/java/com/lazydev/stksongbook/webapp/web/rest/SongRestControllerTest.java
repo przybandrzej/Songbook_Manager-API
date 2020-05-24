@@ -356,7 +356,7 @@ class SongRestControllerTest {
   private CreateSongDTO getDtoFromFile() {
     CreateCoauthorDTO dto1 = CreateCoauthorDTO.builder().authorName("Generalo").function("muzyka").build();
     CreateCoauthorDTO dto2 = CreateCoauthorDTO.builder().authorName("Andrzej").function("tekst").build();
-    return CreateSongDTO.builder().authorName("Ziutek").categoryId(1L).curio(null).guitarTabs("ABBA CD E F").lyrics("fjdksnfldsfnsdjklfndkl;sfndsl;kfndkls\ndsavdgsvbhaj")
+    return CreateSongDTO.builder().authorName("Ziutek").categoryId(1L).trivia(null).guitarTabs("ABBA CD E F").lyrics("fjdksnfldsfnsdjklfndkl;sfndsl;kfndkls\ndsavdgsvbhaj")
         .tags(List.of("tag1", "tag2", "tag4")).title("sample title").coauthors(Set.of(dto1, dto2)).build();
   }
 }

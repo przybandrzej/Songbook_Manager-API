@@ -71,7 +71,7 @@ class SongMapperTest {
     assertEquals(song.getCategory().getId(), dto.getCategory().getId());
     assertEquals(song.getCategory().getName(), dto.getCategory().getName());
     assertEquals(song.getLyrics(), dto.getLyrics());
-    assertEquals(song.getCurio(), dto.getCurio());
+    assertEquals(song.getTrivia(), dto.getTrivia());
     assertEquals(song.getTags().size(), dto.getTags().size());
     assertEquals(song.getCoauthors().size(), dto.getCoauthors().size());
     assertEquals(song.getGuitarTabs(), dto.getGuitarTabs());
@@ -93,7 +93,7 @@ class SongMapperTest {
     coauthorDTOS.add(firstCoauthor);
     coauthorDTOS.add(secondCoauthor);
     SongDTO dto = SongDTO.builder().id(1L).title("dummy title").lyrics("dasdafsgsdg gfdasgsd").guitarTabs("ddddddddd")
-        .author(authorDTO).tags(List.of(tagDTO)).averageRating(0.75).category(categoryDTO).curio(null)
+        .author(authorDTO).tags(List.of(tagDTO)).averageRating(0.75).category(categoryDTO).trivia(null)
         .creationTime(song.getCreationTime().format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMAT)))
         .coauthors(coauthorDTOS).build();
 
@@ -119,7 +119,7 @@ class SongMapperTest {
     assertEquals(dto.getLyrics(), mapped.getLyrics());
     assertEquals(dto.getTitle(), mapped.getTitle());
     assertEquals(dto.getGuitarTabs(), mapped.getGuitarTabs());
-    assertEquals(dto.getCurio(), mapped.getCurio());
+    assertEquals(dto.getTrivia(), mapped.getTrivia());
     assertEquals(dto.getTags().size(), mapped.getTags().size());
     assertEquals(dto.getCoauthors().size(), mapped.getCoauthors().size());
   }

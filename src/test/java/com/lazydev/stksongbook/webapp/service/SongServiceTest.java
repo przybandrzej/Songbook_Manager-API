@@ -78,7 +78,7 @@ class SongServiceTest {
   void testCreateAndSaveSong() {
     CreateCoauthorDTO coauthorDTO = CreateCoauthorDTO.builder().authorName("coauthor").function("muzyka").build();
     CreateCoauthorDTO coauthorDTO2 = CreateCoauthorDTO.builder().authorName("coauthor2").function("tekst").build();
-    CreateSongDTO dto = CreateSongDTO.builder().authorName("author").categoryId(1L).title("title s").curio(null)
+    CreateSongDTO dto = CreateSongDTO.builder().authorName("author").categoryId(1L).title("title s").trivia(null)
         .lyrics("dsa fa fda").tags(List.of("tag1", "tag2")).guitarTabs("gfsdgsjhifs")
         .coauthors(Set.of(coauthorDTO, coauthorDTO2)).build();
 
@@ -124,7 +124,7 @@ class SongServiceTest {
     assertEquals(dto.getAuthorName(), created.getAuthor().getName());
     assertEquals(dto.getCategoryId(), created.getCategory().getId());
     assertEquals(dto.getTitle(), created.getTitle());
-    assertEquals(dto.getCurio(), created.getCurio());
+    assertEquals(dto.getTrivia(), created.getTrivia());
     assertEquals(dto.getGuitarTabs(), created.getGuitarTabs());
     assertEquals(dto.getLyrics(), created.getLyrics());
     for(CreateCoauthorDTO entry : dto.getCoauthors()) {

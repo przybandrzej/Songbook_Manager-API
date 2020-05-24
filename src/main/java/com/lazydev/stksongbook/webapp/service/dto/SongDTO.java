@@ -40,7 +40,7 @@ public class SongDTO {
   @NotBlank(message = "Guitar tabs can't be blank.")
   String guitarTabs;
 
-  String curio;
+  String trivia;
 
   String creationTime;
 
