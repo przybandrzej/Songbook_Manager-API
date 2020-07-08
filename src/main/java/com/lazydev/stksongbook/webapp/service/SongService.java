@@ -142,7 +142,7 @@ public class SongService {
     song.setTitle(obj.getTitle());
     song.setLyrics(obj.getLyrics());
     song.setGuitarTabs(obj.getGuitarTabs());
-    song.setCurio(obj.getCurio());
+    song.setTrivia(obj.getTrivia());
 
     Set<Tag> tags = new HashSet<>();
     obj.getTags().forEach(it -> tags.add(tagService.findOrCreateTag(it)));

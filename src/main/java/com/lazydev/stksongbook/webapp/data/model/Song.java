@@ -59,10 +59,10 @@ public class Song {
   private String guitarTabs;
 
   /**
-   * @param curio is the optional bonus info about the song.
+   * @param trivia is the optional bonus info about the song.
    */
-  @Column(name = "curio", columnDefinition = "TEXT")
-  private String curio;
+  @Column(name = "trivia", columnDefinition = "TEXT")
+  private String trivia;
 
   /**
    * @param addition_time stores the date and time of the song's insertion to the database.
