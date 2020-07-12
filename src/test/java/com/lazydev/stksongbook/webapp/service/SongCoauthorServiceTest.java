@@ -44,7 +44,7 @@ class SongCoauthorServiceTest {
   @Test
   void deleteById() {
     var sample = getSample(1, 1);
-    Mockito.when(repository.findBySongIdAndAuthorIdAndFunction(1L, 1L, "muzyka"))
+    Mockito.when(repository.findBySongIdAndAuthorIdAndCoauthorFunction(1L, 1L, "muzyka"))
         .thenReturn(Optional.of(sample));
     assertDoesNotThrow(() -> service.delete(sample));
   }
@@ -60,7 +60,7 @@ class SongCoauthorServiceTest {
     coauthor.setId(new SongsCoauthorsKey());
     coauthor.setSong(song);
     coauthor.setAuthor(author);
-    coauthor.setFunction("muzyka");
+    coauthor.setCoauthorFunction("muzyka");
     return coauthor;
   }
 }

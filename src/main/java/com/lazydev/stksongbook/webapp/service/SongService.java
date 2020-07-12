@@ -9,7 +9,6 @@ import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -154,7 +153,7 @@ public class SongService {
 
     obj.getCoauthors().forEach(coauthorDTO -> {
       var auth = authorService.findOrCreateAuthor(coauthorDTO.getAuthorName());
-      coauthorService.findOrCreate(savedSong, auth, coauthorDTO.getFunction());
+      coauthorService.findOrCreate(savedSong, auth, coauthorDTO.getCoauthorFunction());
     });
     return savedSong;
   }

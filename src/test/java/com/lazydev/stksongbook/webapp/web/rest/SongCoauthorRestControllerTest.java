@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.lazydev.stksongbook.webapp.data.model.*;
 import com.lazydev.stksongbook.webapp.service.SongCoauthorService;
 import com.lazydev.stksongbook.webapp.service.dto.SongCoauthorDTO;
-import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.SongCoauthorMapper;
 import com.lazydev.stksongbook.webapp.web.rest.errors.ExceptionTranslator;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Optional;
 
@@ -87,10 +85,10 @@ class SongCoauthorRestControllerTest {
 
   @Test
   void testUpdate() throws Exception {
-    SongCoauthorDTO dto = SongCoauthorDTO.builder().authorId(5L).songId(1L).function("muzyka").build();
-    SongCoauthorDTO dto2 = SongCoauthorDTO.builder().authorId(5L).songId(3L).function("muza").build();
-    SongCoauthorDTO dto3 = SongCoauthorDTO.builder().authorId(5L).songId(4L).function("").build();
-    SongCoauthorDTO dto4 = SongCoauthorDTO.builder().authorId(5L).songId(2L).function("tekst").build();
+    SongCoauthorDTO dto = SongCoauthorDTO.builder().authorId(5L).songId(1L).coauthorFunction("muzyka").build();
+    SongCoauthorDTO dto2 = SongCoauthorDTO.builder().authorId(5L).songId(3L).coauthorFunction("muza").build();
+    SongCoauthorDTO dto3 = SongCoauthorDTO.builder().authorId(5L).songId(4L).coauthorFunction("").build();
+    SongCoauthorDTO dto4 = SongCoauthorDTO.builder().authorId(5L).songId(2L).coauthorFunction("tekst").build();
     SongCoauthor existing = map(dto4);
 
     given(songCoauthorService.findBySongIdAndAuthorIdNoException(1L, 5L)).willReturn(Optional.empty());
@@ -125,7 +123,7 @@ class SongCoauthorRestControllerTest {
 
   private SongCoauthorDTO map(SongCoauthor songCoauthor) {
     return SongCoauthorDTO.builder().authorId(songCoauthor.getAuthor().getId())
-        .songId(songCoauthor.getSong().getId()).function(songCoauthor.getFunction()).build();
+        .songId(songCoauthor.getSong().getId()).function(songCoauthor.getCoauthorFunction()).build();
   }
 
   private SongCoauthor map(SongCoauthorDTO dto) {
@@ -139,7 +137,7 @@ class SongCoauthorRestControllerTest {
     song.setId(dto.getSongId());
     song.setCoauthors(new HashSet<>());
     songCoauthor.setSong(song);
-    songCoauthor.setFunction(dto.getFunction());
+    songCoauthor.setCoauthorFunction(dto.getCoauthorFunction());
     return songCoauthor;
   }
 

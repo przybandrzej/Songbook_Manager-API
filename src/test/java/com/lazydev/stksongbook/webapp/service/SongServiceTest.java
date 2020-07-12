@@ -76,8 +76,8 @@ class SongServiceTest {
 
   @Test
   void testCreateAndSaveSong() {
-    CreateCoauthorDTO coauthorDTO = CreateCoauthorDTO.builder().authorName("coauthor").function("muzyka").build();
-    CreateCoauthorDTO coauthorDTO2 = CreateCoauthorDTO.builder().authorName("coauthor2").function("tekst").build();
+    CreateCoauthorDTO coauthorDTO = CreateCoauthorDTO.builder().authorName("coauthor").coauthorFunction("muzyka").build();
+    CreateCoauthorDTO coauthorDTO2 = CreateCoauthorDTO.builder().authorName("coauthor2").coauthorFunction("tekst").build();
     CreateSongDTO dto = CreateSongDTO.builder().authorName("author").categoryId(1L).title("title s").trivia(null)
         .lyrics("dsa fa fda").tags(List.of("tag1", "tag2")).guitarTabs("gfsdgsjhifs")
         .coauthors(Set.of(coauthorDTO, coauthorDTO2)).build();
@@ -106,7 +106,7 @@ class SongServiceTest {
       coauthor.setId(new SongsCoauthorsKey());
       coauthor.setAuthor(result.getArgument(1));
       coauthor.setSong(song);
-      coauthor.setFunction(result.getArgument(2));
+      coauthor.setCoauthorFunction(result.getArgument(2));
       return coauthor;
     });
     given(coauthorService.findOrCreate(any(Song.class), eq(author3), eq("tekst"))).willAnswer(result -> {
@@ -115,7 +115,7 @@ class SongServiceTest {
       coauthor.setId(new SongsCoauthorsKey());
       coauthor.setAuthor(result.getArgument(1));
       coauthor.setSong(song);
-      coauthor.setFunction(result.getArgument(2));
+      coauthor.setCoauthorFunction(result.getArgument(2));
       return coauthor;
     });
 
@@ -129,7 +129,7 @@ class SongServiceTest {
     assertEquals(dto.getLyrics(), created.getLyrics());
     for(CreateCoauthorDTO entry : dto.getCoauthors()) {
       assertTrue(created.getCoauthors().stream().anyMatch(it -> it.getAuthor().getName().equals(entry.getAuthorName())));
-      assertTrue(created.getCoauthors().stream().anyMatch(it -> it.getFunction().equals(entry.getFunction())));
+      assertTrue(created.getCoauthors().stream().anyMatch(it -> it.getCoauthorFunction().equals(entry.getCoauthorFunction())));
     }
     for(String entry : dto.getTags()) {
       assertTrue(created.getTags().stream().anyMatch(it -> it.getName().equals(entry)));
@@ -188,13 +188,13 @@ class SongServiceTest {
     coauthor.setId(new SongsCoauthorsKey());
     coauthor.setAuthor(author2);
     coauthor.setSong(song);
-    coauthor.setFunction("muzyka");
+    coauthor.setCoauthorFunction("muzyka");
 
     SongCoauthor coauthor2 = new SongCoauthor();
     coauthor2.setId(new SongsCoauthorsKey());
     coauthor2.setAuthor(author3);
     coauthor2.setSong(song);
-    coauthor2.setFunction("tekst");
+    coauthor2.setCoauthorFunction("tekst");
 
     Category category = new Category();
     category.setId(5L);

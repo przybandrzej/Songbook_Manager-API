@@ -157,13 +157,13 @@ class SongMapperTest {
     coauthor.setId(new SongsCoauthorsKey());
     coauthor.setAuthor(author2);
     coauthor.setSong(song);
-    coauthor.setFunction("muzyka");
+    coauthor.setCoauthorFunction("muzyka");
 
     SongCoauthor coauthor2 = new SongCoauthor();
     coauthor2.setId(new SongsCoauthorsKey());
     coauthor2.setAuthor(author3);
     coauthor2.setSong(song);
-    coauthor2.setFunction("tekst");
+    coauthor2.setCoauthorFunction("tekst");
 
     Category category = new Category();
     category.setId(5L);

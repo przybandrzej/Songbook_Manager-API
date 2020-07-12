@@ -28,12 +28,12 @@ public class SongCoauthorService {
   }
 
   public SongCoauthor findBySongIdAndAuthorIdAndFunction(Long songId, Long authorId, String function) {
-    return repository.findBySongIdAndAuthorIdAndFunction(songId, authorId, function)
+    return repository.findBySongIdAndAuthorIdAndCoauthorFunction(songId, authorId, function)
         .orElseThrow(() -> new EntityNotFoundException(SongCoauthor.class));
   }
 
   public Optional<SongCoauthor> findBySongIdAndAuthorIdAndFunctionNoException(Long songId, Long authorId, String function) {
-    return repository.findBySongIdAndAuthorIdAndFunction(songId, authorId, function);
+    return repository.findBySongIdAndAuthorIdAndCoauthorFunction(songId, authorId, function);
   }
 
   public List<SongCoauthor> findAll() {
@@ -49,7 +49,7 @@ public class SongCoauthorService {
   }
 
   public List<SongCoauthor> findByFunction(String function) {
-    return repository.findByFunctionContainingIgnoreCase(function);
+    return repository.findByCoauthorFunctionContainingIgnoreCase(function);
   }
 
   public SongCoauthor save(SongCoauthor songCoauthor) {
@@ -57,7 +57,7 @@ public class SongCoauthorService {
   }
 
   public void delete(SongCoauthor songCoauthor) {
-    findBySongIdAndAuthorIdAndFunction(songCoauthor.getSong().getId(), songCoauthor.getAuthor().getId(), songCoauthor.getFunction());
+    findBySongIdAndAuthorIdAndFunction(songCoauthor.getSong().getId(), songCoauthor.getAuthor().getId(), songCoauthor.getCoauthorFunction());
     songCoauthor.getSong().removeCoauthor(songCoauthor);
     songCoauthor.getAuthor().removeCoauthor(songCoauthor);
     repository.delete(songCoauthor);
@@ -68,7 +68,7 @@ public class SongCoauthorService {
     coauthor.setId(new SongsCoauthorsKey());
     coauthor.setAuthor(author);
     coauthor.setSong(song);
-    coauthor.setFunction(function);
+    coauthor.setCoauthorFunction(function);
     return repository.save(coauthor);
   }
 }

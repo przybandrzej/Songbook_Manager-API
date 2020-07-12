@@ -20,12 +20,12 @@ public class SongCoauthorDTO {
   Long authorId;
 
   @CoauthorFunctionConstraint
-  String function;
+  String coauthorFunction;
 
-  private SongCoauthorDTO(Long songId, Long authorId, String function) {
+  private SongCoauthorDTO(Long songId, Long authorId, String coauthorFunction) {
     this.songId = songId;
     this.authorId = authorId;
-    this.function = function;
+    this.coauthorFunction = coauthorFunction;
   }
 
   public static SongCoauthorDTO.Builder builder() {

@@ -3,8 +3,8 @@
     "categoryId": 1, 
     "title": "sample title", 
     "coauthors": [
-        {"authorName": "Generalo", "function": "muzyka"}, 
-        {"authorName": "Andrzej", "function": "tekst"}
+        {"authorName": "Generalo", "coauthorFunction": "muzyka"},
+        {"authorName": "Andrzej", "coauthorFunction": "tekst"}
     ], 
     "lyrics": "fjdksnfldsfnsdjklfndkl;sfndsl;kfndkls\ndsavdgsvbhaj", 
     "guitarTabs": "ABBA CD E F", 
