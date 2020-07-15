@@ -33,7 +33,7 @@ public abstract class AuthorMapperDecorator implements AuthorMapper {
     author.setBiographyUrl(null);
     author.setPhotoResource(null);
     author.setCoauthorSongs(new HashSet<>(songCoauthorService.findByAuthorId(dto.getId())));
-    author.setSongs(new HashSet<>(songService.findByAuthorId(dto.getId())));
+    author.setSongs(new HashSet<>(songService.findByAuthorId(dto.getId(), null, null)));
     return author;
   }
 

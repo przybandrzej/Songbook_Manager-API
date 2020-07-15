@@ -3,13 +3,13 @@ package com.lazydev.stksongbook.webapp.web.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.lazydev.stksongbook.webapp.data.model.UserRole;
-import com.lazydev.stksongbook.webapp.service.UserRoleService;
-import com.lazydev.stksongbook.webapp.service.dto.UserRoleDTO;
+import com.lazydev.stksongbook.webapp.data.model.Tag;
+import com.lazydev.stksongbook.webapp.service.TagService;
+import com.lazydev.stksongbook.webapp.service.dto.TagDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
-import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
-import com.lazydev.stksongbook.webapp.service.mappers.UserRoleMapper;
+import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
+import com.lazydev.stksongbook.webapp.service.mappers.TagMapper;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import com.lazydev.stksongbook.webapp.web.rest.errors.ExceptionTranslator;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,18 +34,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith({MockitoExtension.class})
-class UserRoleRestControllerTest {
+class TagResourceTest {
 
-  private static final String BASE_URL = "/api/user_roles";
+  private static final String BASE_URL = "/api/tags";
 
   @Mock
-  UserRoleService userRoleService;
+  TagService tagService;
   @Mock
-  UserRoleMapper mapper;
+  SongMapper songMapper;
   @Mock
-  UserMapper userMapper;
+  TagMapper mapper;
   @InjectMocks
-  UserRoleRestController controller;
+  TagResource controller;
 
   private MockMvc mockMvc;
 
@@ -60,10 +60,10 @@ class UserRoleRestControllerTest {
     UniversalCreateDTO dto2 = UniversalCreateDTO.builder().id(2L).name("name2").build();
     UniversalCreateDTO dto3 = UniversalCreateDTO.builder().id(5L).name("").build();
 
-    given(userRoleService.findByNameNoException("name")).willReturn(Optional.empty());
-    given(userRoleService.findByNameNoException("name2")).willReturn(Optional.of(map(dto2)));
-    given(userRoleService.save(any(UserRole.class))).willAnswer(it -> {
-      UserRole a = it.getArgument(0);
+    given(tagService.findByNameNoException("name")).willReturn(Optional.empty());
+    given(tagService.findByNameNoException("name2")).willReturn(Optional.of(map(dto2)));
+    given(tagService.save(any(Tag.class))).willAnswer(it -> {
+      Tag a = it.getArgument(0);
       a.setId(2L);
       return a;
     });
@@ -71,14 +71,14 @@ class UserRoleRestControllerTest {
       UniversalCreateDTO a = it.getArgument(0);
       return map(a);
     });
-    given(mapper.map(any(UserRole.class))).willAnswer(it -> {
-      UserRole a = it.getArgument(0);
+    given(mapper.map(any(Tag.class))).willAnswer(it -> {
+      Tag a = it.getArgument(0);
       return map(a);
     });
 
-    UserRole saved = map(dto);
+    Tag saved = map(dto);
     saved.setId(2L);
-    UserRoleDTO returned = map(saved);
+    TagDTO returned = map(saved);
 
     mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL).contentType(MediaType.APPLICATION_JSON)
         .content(new ObjectMapper().writeValueAsString(dto)))
@@ -94,21 +94,21 @@ class UserRoleRestControllerTest {
 
   @Test
   void testUpdate() throws Exception {
-    UserRoleDTO dto = UserRoleDTO.builder().id(1L).name("dummy name").create();
-    UserRoleDTO dto1 = UserRoleDTO.builder().id(null).name("dummy name2").create();
-    UserRoleDTO dto2 = UserRoleDTO.builder().id(3L).name("").create();
+    TagDTO dto = TagDTO.builder().id(1L).name("dummy name").create();
+    TagDTO dto1 = TagDTO.builder().id(null).name("dummy name2").create();
+    TagDTO dto2 = TagDTO.builder().id(3L).name("").create();
 
-    given(userRoleService.findByIdNoException(1L)).willReturn(Optional.of(map(dto)));
-    given(userRoleService.save(any(UserRole.class))).willAnswer(it -> {
-      UserRole a = it.getArgument(0);
+    given(tagService.findByIdNoException(1L)).willReturn(Optional.of(map(dto)));
+    given(tagService.save(any(Tag.class))).willAnswer(it -> {
+      Tag a = it.getArgument(0);
       return a;
     });
-    given(mapper.map(any(UserRoleDTO.class))).willAnswer(it -> {
-      UserRoleDTO a = it.getArgument(0);
+    given(mapper.map(any(TagDTO.class))).willAnswer(it -> {
+      TagDTO a = it.getArgument(0);
       return map(a);
     });
-    given(mapper.map(any(UserRole.class))).willAnswer(it -> {
-      UserRole a = it.getArgument(0);
+    given(mapper.map(any(Tag.class))).willAnswer(it -> {
+      Tag a = it.getArgument(0);
       return map(a);
     });
 
@@ -126,19 +126,19 @@ class UserRoleRestControllerTest {
 
   @Test
   void testGetById() throws Exception {
-    List<UserRole> list = new ArrayList<>();
-    given(userRoleService.findById(1L)).willAnswer(i -> {
+    List<Tag> list = new ArrayList<>();
+    given(tagService.findById(1L)).willAnswer(i -> {
       Long id = i.getArgument(0);
-      UserRole userRole = new UserRole();
-      userRole.setId(1L);
-      userRole.setName("dummy name");
-      userRole.setUsers(new HashSet<>());
-      list.add(userRole);
-      return userRole;
+      Tag tag = new Tag();
+      tag.setId(1L);
+      tag.setName("dummy name");
+      tag.setSongs(new HashSet<>());
+      list.add(tag);
+      return tag;
     });
-    given(userRoleService.findById(2L)).willThrow(EntityNotFoundException.class);
-    given(mapper.map(any(UserRole.class))).willAnswer(it -> {
-      UserRole a = it.getArgument(0);
+    given(tagService.findById(2L)).willThrow(EntityNotFoundException.class);
+    given(mapper.map(any(Tag.class))).willAnswer(it -> {
+      Tag a = it.getArgument(0);
       return map(a);
     });
 
@@ -149,27 +149,27 @@ class UserRoleRestControllerTest {
         .andExpect(status().isNotFound());
   }
 
-  private UserRoleDTO map(UserRole userRole) {
-    return UserRoleDTO.builder().id(userRole.getId()).name(userRole.getName()).create();
+  private TagDTO map(Tag tag) {
+    return TagDTO.builder().id(tag.getId()).name(tag.getName()).create();
   }
 
-  private UserRole map(UniversalCreateDTO dto) {
-    UserRole userRole = new UserRole();
-    userRole.setId(Constants.DEFAULT_ID);
-    userRole.setName(dto.getName());
-    userRole.setUsers(new HashSet<>());
-    return userRole;
+  private Tag map(UniversalCreateDTO dto) {
+    Tag tag = new Tag();
+    tag.setId(Constants.DEFAULT_ID);
+    tag.setName(dto.getName());
+    tag.setSongs(new HashSet<>());
+    return tag;
   }
 
-  private UserRole map(UserRoleDTO dto) {
-    UserRole userRole = new UserRole();
-    userRole.setId(dto.getId());
-    userRole.setName(dto.getName());
-    userRole.setUsers(new HashSet<>());
-    return userRole;
+  private Tag map(TagDTO dto) {
+    Tag tag = new Tag();
+    tag.setId(dto.getId());
+    tag.setName(dto.getName());
+    tag.setSongs(new HashSet<>());
+    return tag;
   }
 
-  private String convertObjectToJsonString(UserRoleDTO dto) throws JsonProcessingException {
+  private String convertObjectToJsonString(TagDTO dto) throws JsonProcessingException {
     ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
     return writer.writeValueAsString(dto);
   }

@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @CrossOrigin
 @RequestMapping("/api/users")
 @AllArgsConstructor
-public class UserRestController {
+public class UserResource {
 
   private UserMapper mapper;
   private UserService service;

@@ -53,6 +53,12 @@ public class Song {
   private String lyrics;
 
   /**
+   * Column that indicates whether the song is waiting for being accepted, edited or deleted
+   */
+  @Column(name = "is_awaiting", nullable = false)
+  private boolean isAwaiting;
+
+  /**
    * @param guitar_tabs stores the guitar tabs.
    */
   @Column(name = "guitar_tabs", columnDefinition = "TEXT", nullable = false)

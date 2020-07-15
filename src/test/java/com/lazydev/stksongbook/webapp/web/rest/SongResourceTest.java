@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -45,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-class SongRestControllerTest {
+class SongResourceTest {
   /**
    * Tests for all GET methods and DELETE make no sense since all the work is performed by mappers and services.
    * The only tested methods are the Create and Update.
@@ -64,7 +65,7 @@ class SongRestControllerTest {
   @Mock
   private FileSystemStorageService storageService;
   @InjectMocks
-  private SongRestController controller;
+  private SongResource controller;
 
   private MockMvc mockMvc;
   private static final String endpoint = "/api/songs";
@@ -259,6 +260,8 @@ class SongRestControllerTest {
     playlist.addSong(song);
     user.addPlaylist(playlist);
 
+    song.setAwaiting(true);
+
     return song;
   }
 
@@ -278,6 +281,7 @@ class SongRestControllerTest {
     author.setName(dto.getAuthor().getName());
     author.setSongs(new HashSet<>());
     author.addSong(song);
+    song.setAwaiting(dto.getIsAwaiting());
     song.setUsersSongs(new HashSet<>());
     Category category = new Category();
     category.setId(dto.getCategory().getId());
@@ -324,6 +328,7 @@ class SongRestControllerTest {
     song.setLyrics(dto.getLyrics());
     song.setGuitarTabs(dto.getGuitarTabs());
     song.setTags(new HashSet<>());
+    song.setAwaiting(true);
     dto.getTags().forEach(it -> {
       song.addTag(new Tag(2L, it, new HashSet<>()));
     });
@@ -343,9 +348,9 @@ class SongRestControllerTest {
     CategoryDTO categoryDTO = CategoryDTO.builder().id(song.getCategory().getId()).name(song.getCategory().getName()).build();
     List<TagDTO> tagDTOS = song.getTags().stream().map(it -> TagDTO.builder().id(it.getId()).name(it.getName()).build()).collect(Collectors.toList());
     Set<SongCoauthorDTO> coauthorDTOS = song.getCoauthors().stream().map(it -> SongCoauthorDTO.builder().songId(it.getSong().getId())
-        .authorId(it.getAuthor().getId()).function(it.getCoauthorFunction()).build()).collect(Collectors.toSet());
+        .authorId(it.getAuthor().getId()).coauthorFunction(it.getCoauthorFunction()).build()).collect(Collectors.toSet());
     return SongDTO.builder().id(song.getId()).title(song.getTitle()).author(authorDTO).lyrics(song.getLyrics()).category(categoryDTO)
-        .averageRating(0.0).guitarTabs(song.getGuitarTabs()).tags(tagDTOS).coauthors(coauthorDTOS).build();
+        .averageRating(0.0).guitarTabs(song.getGuitarTabs()).tags(tagDTOS).coauthors(coauthorDTOS).isAwaiting(song.isAwaiting()).build();
   }
 
   private String convertObjectToJsonString(SongDTO dto) throws JsonProcessingException {

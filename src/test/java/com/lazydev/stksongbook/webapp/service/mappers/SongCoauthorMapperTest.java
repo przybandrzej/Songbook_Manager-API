@@ -56,7 +56,7 @@ class SongCoauthorMapperTest {
 
   @Test
   void testMapToEntity() {
-    SongCoauthorDTO dto = SongCoauthorDTO.builder().authorId(1L).songId(2L).function("muzyka").build();
+    SongCoauthorDTO dto = SongCoauthorDTO.builder().authorId(1L).songId(2L).coauthorFunction("muzyka").build();
     SongCoauthor coauthor = getSample();
 
     given(songService.findById(2L)).willReturn(coauthor.getSong());

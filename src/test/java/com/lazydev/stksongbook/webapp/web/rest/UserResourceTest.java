@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-class UserRestControllerTest {
+class UserResourceTest {
   /**
    * Tests for all GET and DELETE methods make no sense since all the work is performed by mappers and services.
    * The only tested methods are the Create, Update and one GET.
@@ -52,7 +52,7 @@ class UserRestControllerTest {
   @Mock
   private UserMapper mapper;
   @InjectMocks
-  private UserRestController controller;
+  private UserResource controller;
   private MockMvc mockMvc;
 
   private static final String endpoint = "/api/users";

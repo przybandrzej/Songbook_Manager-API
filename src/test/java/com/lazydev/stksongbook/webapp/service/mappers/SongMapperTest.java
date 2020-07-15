@@ -88,14 +88,14 @@ class SongMapperTest {
     TagDTO tagDTO = TagDTO.builder().id(6L).name("dummy tag").build();
     CategoryDTO categoryDTO = CategoryDTO.builder().id(5L).name("dummy category").build();
     Set<SongCoauthorDTO> coauthorDTOS = new HashSet<>();
-    SongCoauthorDTO firstCoauthor = SongCoauthorDTO.builder().authorId(2L).songId(1L).create();
-    SongCoauthorDTO secondCoauthor = SongCoauthorDTO.builder().authorId(1L).songId(1L).create();
+    SongCoauthorDTO firstCoauthor = SongCoauthorDTO.builder().authorId(2L).songId(1L).build();
+    SongCoauthorDTO secondCoauthor = SongCoauthorDTO.builder().authorId(1L).songId(1L).build();
     coauthorDTOS.add(firstCoauthor);
     coauthorDTOS.add(secondCoauthor);
     SongDTO dto = SongDTO.builder().id(1L).title("dummy title").lyrics("dasdafsgsdg gfdasgsd").guitarTabs("ddddddddd")
         .author(authorDTO).tags(List.of(tagDTO)).averageRating(0.75).category(categoryDTO).trivia(null)
         .creationTime(song.getCreationTime().format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMAT)))
-        .coauthors(coauthorDTOS).build();
+        .coauthors(coauthorDTOS).isAwaiting(song.isAwaiting()).build();
 
     given(tagMapper.map(tagDTO)).willReturn(getTag());
     given(categoryMapper.map(categoryDTO)).willReturn(song.getCategory());
@@ -193,6 +193,7 @@ class SongMapperTest {
     rating2.setSong(song);
 
     song.setRatings(Set.of(rating, rating2));
+    song.setAwaiting(true);
 
     return song;
   }
