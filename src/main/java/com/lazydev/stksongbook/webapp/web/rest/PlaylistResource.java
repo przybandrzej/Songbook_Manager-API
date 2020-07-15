@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @CrossOrigin
 @RequestMapping("/api/playlists")
 @AllArgsConstructor
-public class PlaylistRestController {
+public class PlaylistResource {
 
   private PlaylistService service;
   private PlaylistMapper mapper;

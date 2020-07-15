@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith({MockitoExtension.class})
-class SongCoauthorRestControllerTest {
+class SongCoauthorResourceTest {
 
   private static final String BASE_URL = "/api/coauthors";
 
@@ -37,7 +37,7 @@ class SongCoauthorRestControllerTest {
   @Mock
   SongCoauthorMapper mapper;
   @InjectMocks
-  SongCoauthorRestController controller;
+  SongCoauthorResource controller;
   private MockMvc mockMvc;
 
   @BeforeEach
@@ -47,10 +47,10 @@ class SongCoauthorRestControllerTest {
 
   @Test
   void testCreate() throws Exception {
-    SongCoauthorDTO dto = SongCoauthorDTO.builder().authorId(5L).songId(1L).function("muzyka").build();
-    SongCoauthorDTO dto2 = SongCoauthorDTO.builder().authorId(5L).songId(3L).function("muza").build();
-    SongCoauthorDTO dto3 = SongCoauthorDTO.builder().authorId(5L).songId(4L).function("").build();
-    SongCoauthorDTO dto4 = SongCoauthorDTO.builder().authorId(5L).songId(2L).function("tekst").build();
+    SongCoauthorDTO dto = SongCoauthorDTO.builder().authorId(5L).songId(1L).coauthorFunction("muzyka").build();
+    SongCoauthorDTO dto2 = SongCoauthorDTO.builder().authorId(5L).songId(3L).coauthorFunction("muza").build();
+    SongCoauthorDTO dto3 = SongCoauthorDTO.builder().authorId(5L).songId(4L).coauthorFunction("").build();
+    SongCoauthorDTO dto4 = SongCoauthorDTO.builder().authorId(5L).songId(2L).coauthorFunction("tekst").build();
     SongCoauthor existing = map(dto4);
 
     given(songCoauthorService.findBySongIdAndAuthorIdNoException(1L, 5L)).willReturn(Optional.empty());
@@ -123,7 +123,7 @@ class SongCoauthorRestControllerTest {
 
   private SongCoauthorDTO map(SongCoauthor songCoauthor) {
     return SongCoauthorDTO.builder().authorId(songCoauthor.getAuthor().getId())
-        .songId(songCoauthor.getSong().getId()).function(songCoauthor.getCoauthorFunction()).build();
+        .songId(songCoauthor.getSong().getId()).coauthorFunction(songCoauthor.getCoauthorFunction()).build();
   }
 
   private SongCoauthor map(SongCoauthorDTO dto) {
@@ -136,8 +136,10 @@ class SongCoauthorRestControllerTest {
     Song song = new Song();
     song.setId(dto.getSongId());
     song.setCoauthors(new HashSet<>());
+    song.setAwaiting(true);
     songCoauthor.setSong(song);
     songCoauthor.setCoauthorFunction(dto.getCoauthorFunction());
+    song.setAwaiting(true);
     return songCoauthor;
   }
 

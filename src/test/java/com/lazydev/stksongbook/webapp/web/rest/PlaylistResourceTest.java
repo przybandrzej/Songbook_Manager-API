@@ -33,7 +33,7 @@ import static org.mockito.BDDMockito.mock;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class PlaylistRestControllerTest {
+class PlaylistResourceTest {
   /**
    * Tests for all GET methods (including download)
    * and DELETE make no sense since all the work is performed by mappers and services.
@@ -44,7 +44,7 @@ class PlaylistRestControllerTest {
   private PlaylistMapper mapper;
   private MockMvc mockMvc;
 
-  private PlaylistRestController controller;
+  private PlaylistResource controller;
   private static final String endpoint = "/api/playlists";
 
   @BeforeEach
@@ -53,7 +53,7 @@ class PlaylistRestControllerTest {
     service = mock(PlaylistService.class);
     mapper = mock(PlaylistMapper.class);
     FileSystemStorageService storageService = mock(FileSystemStorageService.class);
-    controller = new PlaylistRestController(service, mapper, pdfService, storageService);
+    controller = new PlaylistResource(service, mapper, pdfService, storageService);
     mockMvc = MockMvcBuilders.standaloneSetup(controller).setControllerAdvice(ExceptionTranslator.class).build();
   }
 

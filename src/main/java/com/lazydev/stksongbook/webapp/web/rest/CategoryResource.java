@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @CrossOrigin
 @RequestMapping("/api/categories")
 @AllArgsConstructor
-public class CategoryRestController {
+public class CategoryResource {
 
   private CategoryService service;
   private CategoryMapper modelMapper;

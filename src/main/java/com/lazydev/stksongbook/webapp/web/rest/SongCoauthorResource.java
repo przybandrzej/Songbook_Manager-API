@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @CrossOrigin
 @RequestMapping("/api/coauthors")
 @AllArgsConstructor
-public class SongCoauthorRestController {
+public class SongCoauthorResource {
 
   private SongCoauthorMapper songCoauthorMapper;
   private SongCoauthorService songCoauthorService;

@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @CrossOrigin
 @RequestMapping("/api/user_roles")
 @AllArgsConstructor
-public class UserRoleRestController {
+public class UserRoleResource {
 
   private UserRoleService service;
   private UserRoleMapper mapper;

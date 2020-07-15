@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @CrossOrigin
 @RequestMapping("/api/ratings")
 @AllArgsConstructor
-public class UserSongRatingRestController {
+public class UserSongRatingResource {
 
   private UserSongRatingMapper mapper;
   private UserSongRatingService service;

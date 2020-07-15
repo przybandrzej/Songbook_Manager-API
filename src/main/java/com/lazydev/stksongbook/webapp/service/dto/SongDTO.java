@@ -49,6 +49,8 @@ public class SongDTO {
   @NotNull(message = "Tags list must be initialized.")
   List<@Valid TagDTO> tags;
 
+  Boolean isAwaiting;
+
   @JsonPOJOBuilder(withPrefix = "")
   public static class Builder {
   }

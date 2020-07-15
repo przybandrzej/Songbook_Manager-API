@@ -12,6 +12,6 @@ public class CoauthorFunctionValidator implements ConstraintValidator<CoauthorFu
 
   @Override
   public boolean isValid(String provided, ConstraintValidatorContext constraintValidatorContext) {
-    return provided.equals(Constants._Function_Music_Polish.replace("'", "")) || provided.equals(Constants._Function_Text_Polish.replace("'", ""));
+    return provided != null && (provided.equals(Constants._Function_Music_Polish.replace("'", "")) || provided.equals(Constants._Function_Text_Polish.replace("'", "")));
   }
 }

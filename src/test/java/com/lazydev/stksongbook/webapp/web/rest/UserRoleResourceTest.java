@@ -3,13 +3,13 @@ package com.lazydev.stksongbook.webapp.web.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.lazydev.stksongbook.webapp.data.model.Author;
-import com.lazydev.stksongbook.webapp.service.AuthorService;
-import com.lazydev.stksongbook.webapp.service.dto.AuthorDTO;
+import com.lazydev.stksongbook.webapp.data.model.UserRole;
+import com.lazydev.stksongbook.webapp.service.UserRoleService;
+import com.lazydev.stksongbook.webapp.service.dto.UserRoleDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
-import com.lazydev.stksongbook.webapp.service.mappers.AuthorMapper;
-import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
+import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
+import com.lazydev.stksongbook.webapp.service.mappers.UserRoleMapper;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import com.lazydev.stksongbook.webapp.web.rest.errors.ExceptionTranslator;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,18 +34,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith({MockitoExtension.class})
-class AuthorRestControllerTest {
+class UserRoleResourceTest {
 
-  private static final String BASE_URL = "/api/authors";
+  private static final String BASE_URL = "/api/user_roles";
 
   @Mock
-  AuthorService authorService;
+  UserRoleService userRoleService;
   @Mock
-  SongMapper songMapper;
+  UserRoleMapper mapper;
   @Mock
-  AuthorMapper mapper;
+  UserMapper userMapper;
   @InjectMocks
-  AuthorRestController controller;
+  UserRoleResource controller;
 
   private MockMvc mockMvc;
 
@@ -60,10 +60,10 @@ class AuthorRestControllerTest {
     UniversalCreateDTO dto2 = UniversalCreateDTO.builder().id(2L).name("name2").build();
     UniversalCreateDTO dto3 = UniversalCreateDTO.builder().id(5L).name("").build();
 
-    given(authorService.findByNameNoException("name")).willReturn(Optional.empty());
-    given(authorService.findByNameNoException("name2")).willReturn(Optional.of(map(dto2)));
-    given(authorService.save(any(Author.class))).willAnswer(it -> {
-      Author a = it.getArgument(0);
+    given(userRoleService.findByNameNoException("name")).willReturn(Optional.empty());
+    given(userRoleService.findByNameNoException("name2")).willReturn(Optional.of(map(dto2)));
+    given(userRoleService.save(any(UserRole.class))).willAnswer(it -> {
+      UserRole a = it.getArgument(0);
       a.setId(2L);
       return a;
     });
@@ -71,14 +71,14 @@ class AuthorRestControllerTest {
       UniversalCreateDTO a = it.getArgument(0);
       return map(a);
     });
-    given(mapper.map(any(Author.class))).willAnswer(it -> {
-      Author a = it.getArgument(0);
+    given(mapper.map(any(UserRole.class))).willAnswer(it -> {
+      UserRole a = it.getArgument(0);
       return map(a);
     });
 
-    Author saved = map(dto);
+    UserRole saved = map(dto);
     saved.setId(2L);
-    AuthorDTO returned = map(saved);
+    UserRoleDTO returned = map(saved);
 
     mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL).contentType(MediaType.APPLICATION_JSON)
         .content(new ObjectMapper().writeValueAsString(dto)))
@@ -94,21 +94,21 @@ class AuthorRestControllerTest {
 
   @Test
   void testUpdate() throws Exception {
-    AuthorDTO dto = AuthorDTO.builder().id(1L).name("dummy name").create();
-    AuthorDTO dto1 = AuthorDTO.builder().id(null).name("dummy name2").create();
-    AuthorDTO dto2 = AuthorDTO.builder().id(3L).name("").create();
+    UserRoleDTO dto = UserRoleDTO.builder().id(1L).name("dummy name").create();
+    UserRoleDTO dto1 = UserRoleDTO.builder().id(null).name("dummy name2").create();
+    UserRoleDTO dto2 = UserRoleDTO.builder().id(3L).name("").create();
 
-    given(authorService.findByIdNoException(1L)).willReturn(Optional.of(map(dto)));
-    given(authorService.save(any(Author.class))).willAnswer(it -> {
-      Author a = it.getArgument(0);
+    given(userRoleService.findByIdNoException(1L)).willReturn(Optional.of(map(dto)));
+    given(userRoleService.save(any(UserRole.class))).willAnswer(it -> {
+      UserRole a = it.getArgument(0);
       return a;
     });
-    given(mapper.map(any(AuthorDTO.class))).willAnswer(it -> {
-      AuthorDTO a = it.getArgument(0);
+    given(mapper.map(any(UserRoleDTO.class))).willAnswer(it -> {
+      UserRoleDTO a = it.getArgument(0);
       return map(a);
     });
-    given(mapper.map(any(Author.class))).willAnswer(it -> {
-      Author a = it.getArgument(0);
+    given(mapper.map(any(UserRole.class))).willAnswer(it -> {
+      UserRole a = it.getArgument(0);
       return map(a);
     });
 
@@ -126,19 +126,19 @@ class AuthorRestControllerTest {
 
   @Test
   void testGetById() throws Exception {
-    List<Author> list = new ArrayList<>();
-    given(authorService.findById(1L)).willAnswer(i -> {
+    List<UserRole> list = new ArrayList<>();
+    given(userRoleService.findById(1L)).willAnswer(i -> {
       Long id = i.getArgument(0);
-      Author author = new Author();
-      author.setId(1L);
-      author.setName("dummy name");
-      author.setSongs(new HashSet<>());
-      list.add(author);
-      return author;
+      UserRole userRole = new UserRole();
+      userRole.setId(1L);
+      userRole.setName("dummy name");
+      userRole.setUsers(new HashSet<>());
+      list.add(userRole);
+      return userRole;
     });
-    given(authorService.findById(2L)).willThrow(EntityNotFoundException.class);
-    given(mapper.map(any(Author.class))).willAnswer(it -> {
-      Author a = it.getArgument(0);
+    given(userRoleService.findById(2L)).willThrow(EntityNotFoundException.class);
+    given(mapper.map(any(UserRole.class))).willAnswer(it -> {
+      UserRole a = it.getArgument(0);
       return map(a);
     });
 
@@ -149,33 +149,27 @@ class AuthorRestControllerTest {
         .andExpect(status().isNotFound());
   }
 
-  private AuthorDTO map(Author author) {
-    return AuthorDTO.builder().id(author.getId()).name(author.getName()).create();
+  private UserRoleDTO map(UserRole userRole) {
+    return UserRoleDTO.builder().id(userRole.getId()).name(userRole.getName()).create();
   }
 
-  private Author map(UniversalCreateDTO dto) {
-    Author author = new Author();
-    author.setId(Constants.DEFAULT_ID);
-    author.setName(dto.getName());
-    author.setCoauthorSongs(new HashSet<>());
-    author.setSongs(new HashSet<>());
-    author.setBiographyUrl(null);
-    author.setPhotoResource(null);
-    return author;
+  private UserRole map(UniversalCreateDTO dto) {
+    UserRole userRole = new UserRole();
+    userRole.setId(Constants.DEFAULT_ID);
+    userRole.setName(dto.getName());
+    userRole.setUsers(new HashSet<>());
+    return userRole;
   }
 
-  private Author map(AuthorDTO dto) {
-    Author author = new Author();
-    author.setId(dto.getId());
-    author.setName(dto.getName());
-    author.setPhotoResource(null);
-    author.setBiographyUrl(null);
-    author.setSongs(new HashSet<>());
-    author.setCoauthorSongs(new HashSet<>());
-    return author;
+  private UserRole map(UserRoleDTO dto) {
+    UserRole userRole = new UserRole();
+    userRole.setId(dto.getId());
+    userRole.setName(dto.getName());
+    userRole.setUsers(new HashSet<>());
+    return userRole;
   }
 
-  private String convertObjectToJsonString(AuthorDTO dto) throws JsonProcessingException {
+  private String convertObjectToJsonString(UserRoleDTO dto) throws JsonProcessingException {
     ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
     return writer.writeValueAsString(dto);
   }
