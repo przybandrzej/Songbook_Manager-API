@@ -43,7 +43,7 @@ public class AdminResource {
       throw new UsernameAlreadyUsedException(form.getUsername());
     }
     UserRole role = roleService.findById(form.getRoleId());
-    if(role.getName().equals(applicationProperties.getRole().getSuperAdmin()) && !role.getUsers().isEmpty()) {
+    if(role.getName().equals(applicationProperties.getRole().getSuperuser()) && !role.getUsers().isEmpty()) {
       throw new SuperUserAlreadyExistsException();
     }
     User user = mapper.mapFromAddUserDto(form);

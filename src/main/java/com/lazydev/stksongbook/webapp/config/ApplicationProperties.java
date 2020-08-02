@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "application")
 public class ApplicationProperties {
 
-  private Role role;
+  private Role role = new Role();
 
   public Role getRole() {
     return role;
@@ -19,7 +19,7 @@ public class ApplicationProperties {
     private String user;
     private String moderator;
     private String admin;
-    private String superAdmin;
+    private String superuser;
 
     public String getUser() {
       return user;
@@ -45,12 +45,12 @@ public class ApplicationProperties {
       this.admin = admin;
     }
 
-    public String getSuperAdmin() {
-      return superAdmin;
+    public String getSuperuser() {
+      return superuser;
     }
 
-    public void setSuperAdmin(String superAdmin) {
-      this.superAdmin = superAdmin;
+    public void setSuperuser(String superuser) {
+      this.superuser = superuser;
     }
   }
 }

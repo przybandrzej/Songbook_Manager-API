@@ -16,7 +16,4 @@ curl -X POST -H "Content-Type: application/json" -d \
     '{"id": 0, "name":"user"}' "http://localhost:8080/api/user_roles"; \
 
 curl -X POST -H "Content-Type: application/json" -d \
-    '{"roleId": 1, "email":"admin@admin.com", "password": "superuser", "username": "superuser", "firstName": "Super", "lastName": "User"}' "http://localhost:8080/api/admin/user"; \
-
-
-
+    '{"roleId": 1, "email":"admin@admin.com", "password": "Superuser12", "username": "superuser", "firstName": "Super", "lastName": "User"}' "http://localhost:8080/api/admin/user";
