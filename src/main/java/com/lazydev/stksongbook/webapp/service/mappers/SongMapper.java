@@ -16,16 +16,14 @@ import java.util.Set;
 
 @Mapper(componentModel = "spring",
     uses = {Tag.class, SongCoauthorMapper.class, TagService.class, CategoryService.class, CategoryMapper.class,
-        AuthorMapper.class, TagMapper.class},
+        AuthorMapper.class, TagMapper.class, SongTimestampMapper.class},
     injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 @DecoratedWith(SongMapperDecorator.class)
 public interface SongMapper {
 
-  @Mapping(target = "creationTime", source = "creationTime", dateFormat = "dd-MM-yyyy HH:mm:ss")
   @Mapping(target = "averageRating", expression = "java(calculateAverageRating(entity.getRatings()))")
   SongDTO map(Song entity);
 
-  @Mapping(target = "creationTime", ignore = true)
   Song map(SongDTO dto);
 
   default Double calculateAverageRating(Set<UserSongRating> ratings) {

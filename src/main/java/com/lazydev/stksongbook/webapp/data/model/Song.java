@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -21,7 +21,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode(exclude = {"coauthors", "tags", "usersSongs", "playlists", "ratings"})
+@EqualsAndHashCode(exclude = {"coauthors", "tags", "usersSongs", "playlists", "ratings", "additions", "editions"})
 public class Song {
 
   /**
@@ -71,12 +71,6 @@ public class Song {
   private String trivia;
 
   /**
-   * @param addition_time stores the date and time of the song's insertion to the database.
-   */
-  @Column(name = "creation_time", nullable = false, columnDefinition = "TIMESTAMP default NOW()")
-  private LocalDateTime creationTime;
-
-  /**
    * @param categoryId is the Foreign Key referencing the ID in the CATEGORIES table.
    * It is used for determinig the category of the song.
    */
@@ -98,6 +92,12 @@ public class Song {
 
   @ManyToMany(mappedBy = "songs")
   private Set<Playlist> playlists;
+
+  @OneToMany(mappedBy = "song", orphanRemoval = true)
+  private Set<SongTimestamp> additions = new HashSet<>();
+
+  @OneToMany(mappedBy = "song", orphanRemoval = true)
+  private Set<SongTimestamp> editions = new HashSet<>();
 
   public void setAuthor(Author author) {
     this.author = author;
@@ -142,5 +142,29 @@ public class Song {
 
   public void removeCoauthor(SongCoauthor coauthor) {
     this.coauthors.remove(coauthor);
+  }
+
+  public boolean addAddition(SongTimestamp timestamp) {
+    if(this.additions.add(timestamp)) {
+      timestamp.setSong(this);
+      return true;
+    }
+    return false;
+  }
+
+  public boolean removeAddition(SongTimestamp timestamp) {
+    return additions.remove(timestamp);
+  }
+
+  public boolean addEdition(SongTimestamp timestamp) {
+    if(this.editions.add(timestamp)) {
+      timestamp.setSong(this);
+      return true;
+    }
+    return false;
+  }
+
+  public boolean removeEdition(SongTimestamp timestamp) {
+    return this.editions.remove(timestamp);
   }
 }

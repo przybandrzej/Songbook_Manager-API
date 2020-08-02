@@ -51,10 +51,10 @@ public interface SongRepository extends JpaRepository<Song, Long> {
   List<Song> findByRatingsRatingGreaterThanEqualAndIsAwaiting(Double value, boolean isAwaiting);
   List<Song> findByRatingsRatingLessThanEqualAndIsAwaiting(Double value, boolean isAwaiting);
 
-  List<Song> findByCreationTimeGreaterThanEqual(LocalDateTime date);
-  List<Song> findByCreationTimeLessThanEqual(LocalDateTime date);
-  List<Song> findByCreationTimeGreaterThanEqualAndIsAwaiting(LocalDateTime date, boolean isAwaiting);
-  List<Song> findByCreationTimeLessThanEqualAndIsAwaiting(LocalDateTime date, boolean isAwaiting);
+  List<Song> findByAdditionsTimestampGreaterThanEqual(LocalDateTime date);
+  List<Song> findByAdditionsTimestampLessThanEqual(LocalDateTime date);
+  List<Song> findByAdditionsTimestampGreaterThanEqualAndIsAwaiting(LocalDateTime date, boolean isAwaiting);
+  List<Song> findByAdditionsTimestampLessThanEqualAndIsAwaiting(LocalDateTime date, boolean isAwaiting);
 
   List<Song> findByUsersSongsIdAndIsAwaiting(Long userId, boolean isAwaiting);
 }

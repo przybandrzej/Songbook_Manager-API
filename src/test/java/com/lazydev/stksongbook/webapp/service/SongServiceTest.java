@@ -2,6 +2,7 @@ package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.data.model.*;
 import com.lazydev.stksongbook.webapp.repository.SongRepository;
+import com.lazydev.stksongbook.webapp.repository.SongTimestampRepository;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateCoauthorDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
@@ -42,6 +43,10 @@ class SongServiceTest {
   private FileSystemStorageService storageService;
   @Mock
   private UserSongRatingService ratingService;
+  @Mock
+  private SongTimestampRepository timestampRepository;
+  @Mock
+  private UserService userService;
   @InjectMocks
   private SongService songService;
 
@@ -80,7 +85,7 @@ class SongServiceTest {
     CreateCoauthorDTO coauthorDTO2 = CreateCoauthorDTO.builder().authorName("coauthor2").coauthorFunction("tekst").build();
     CreateSongDTO dto = CreateSongDTO.builder().authorName("author").categoryId(1L).title("title s").trivia(null)
         .lyrics("dsa fa fda").tags(List.of("tag1", "tag2")).guitarTabs("gfsdgsjhifs")
-        .coauthors(Set.of(coauthorDTO, coauthorDTO2)).build();
+        .coauthors(Set.of(coauthorDTO, coauthorDTO2)).userIdAdded(1L).build();
 
     Tag tag1 = new Tag(1L, "tag1", new HashSet<>());
     Tag tag2 = new Tag(2L, "tag2", new HashSet<>());
@@ -89,6 +94,9 @@ class SongServiceTest {
     Author author3 = new Author(1L, "coauthor2", null, null, new HashSet<>(), new HashSet<>());
     Category category = new Category(1L, "category", new HashSet<>());
 
+    User user = new User();
+    user.setId(1L);
+    given(userService.findById(1L)).willReturn(user);
     given(categoryService.findById(1L)).willReturn(category);
     given(tagService.findOrCreateTag("tag1")).willReturn(tag1);
     given(tagService.findOrCreateTag("tag2")).willReturn(tag2);
@@ -202,7 +210,7 @@ class SongServiceTest {
     category.setSongs(new HashSet<>());
     song.setCategory(category);
 
-    song.setCreationTime(LocalDateTime.now());
+    //song.setCreationTime(LocalDateTime.now());
     song.addTag(getTag());
 
     UserSongRating rating = new UserSongRating();

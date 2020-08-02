@@ -140,7 +140,7 @@ public class SongResource {
       throw new EntityNotFoundException(Song.class, obj.getId());
     }
     var song = mapper.map(obj);
-    song.setCreationTime(optional.get().getCreationTime());
+    //song.addEdition();
     var saved = service.save(song);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.OK);
   }

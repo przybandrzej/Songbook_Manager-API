@@ -42,14 +42,18 @@ public class SongDTO {
 
   String trivia;
 
-  String creationTime;
-
   Double averageRating;
 
   @NotNull(message = "Tags list must be initialized.")
   List<@Valid TagDTO> tags;
 
   Boolean isAwaiting;
+
+  @NotNull(message = "Edits list must be initialized.")
+  List<@Valid SongTimestampDTO> edits;
+
+  @NotNull(message = "AddedBy list must be initialized.")
+  List<@Valid SongTimestampDTO> addedBy;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class Builder {
