@@ -14,7 +14,7 @@ The idea for this application came to me when I joined the [**Sekcja Turystyki K
 
 ### Web clients
 
-There will be two web clients of this application in the near future. One created with **Angular** by me. And one created by my friend (a Frontend dev) with **React**.
+There is one web client of this application created with **Angular** by me: [**Songbook Angular Client repo**](https://github.com/przybandrzej/songbook-angular-client)
 
 
 ### Mobile client
