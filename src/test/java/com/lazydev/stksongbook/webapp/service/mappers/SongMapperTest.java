@@ -47,6 +47,10 @@ class SongMapperTest {
   private AuthorMapper authorMapper;
   @Mock
   private SongService songService;
+  @Mock
+  private SongAddMapper songAddMapper;
+  @Mock
+  private SongEditMapper songEditMapper;
 
   @Autowired
   private SongMapperImpl impl;
@@ -58,7 +62,7 @@ class SongMapperTest {
     impl.setUserService(userService);
     impl.setUserSongRatingService(ratingService);
     impl.setSongService(songService);
-    SongMapperImpl_ delegate = new SongMapperImpl_(songCoauthorMapper, categoryMapper, authorMapper, tagMapper);
+    SongMapperImpl_ delegate = new SongMapperImpl_(songCoauthorMapper, categoryMapper, authorMapper, tagMapper, songAddMapper, songEditMapper);
     impl.setDelegate(delegate);
     mapper = impl;
   }
@@ -96,10 +100,11 @@ class SongMapperTest {
     SongCoauthorDTO secondCoauthor = SongCoauthorDTO.builder().authorId(1L).songId(1L).build();
     coauthorDTOS.add(firstCoauthor);
     coauthorDTOS.add(secondCoauthor);
-    SongTimestampDTO timestampDTO = SongTimestampDTO.builder().songId(1L).userId(2L).id(1L).timestamp(song.getAdditions().stream().findFirst().orElse(new SongTimestamp()).getTimestamp().format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMAT))).build();
+    SongAddDTO timestampDTO = SongAddDTO.builder().addedSong(1L).addedBy(2L).id(1L)
+        .timestamp(song.getAdded().getTimestamp().format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMAT))).build();
     SongDTO dto = SongDTO.builder().id(1L).title("dummy title").lyrics("dasdafsgsdg gfdasgsd").guitarTabs("ddddddddd")
         .author(authorDTO).tags(List.of(tagDTO)).averageRating(0.75).category(categoryDTO).trivia(null)
-        .addedBy(List.of(timestampDTO))
+        .addedBy(timestampDTO)
         .coauthors(coauthorDTOS).isAwaiting(song.isAwaiting()).build();
 
     given(songService.findById(dto.getId())).willReturn(song);
@@ -179,10 +184,10 @@ class SongMapperTest {
 
     User usero = new User();
     usero.setId(2L);
-    SongTimestamp timestamp = new SongTimestamp();
+    SongAdd timestamp = new SongAdd();
     timestamp.setTimestamp(LocalDateTime.now());
     timestamp.setId(1L);
-    song.addAddition(timestamp);
+    song.setAdded(timestamp);
     usero.addAddedSong(timestamp);
     song.addTag(getTag());
 

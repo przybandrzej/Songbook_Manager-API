@@ -3,10 +3,9 @@ package com.lazydev.stksongbook.webapp.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lazydev.stksongbook.webapp.data.model.Author;
 import com.lazydev.stksongbook.webapp.data.model.Song;
-import com.lazydev.stksongbook.webapp.data.model.SongTimestamp;
+import com.lazydev.stksongbook.webapp.data.model.SongAdd;
 import com.lazydev.stksongbook.webapp.data.model.Tag;
 import com.lazydev.stksongbook.webapp.repository.SongRepository;
-import com.lazydev.stksongbook.webapp.repository.SongTimestampRepository;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.util.Constants;
@@ -38,7 +37,6 @@ public class SongService {
   private CategoryService categoryService;
   private FileSystemStorageService storageService;
   private UserSongRatingService ratingService;
-  private SongTimestampRepository timestampRepository;
   private UserService userService;
 
   public List<Song> findAll(Boolean awaiting, Boolean includeAwaiting, Integer limit) {
@@ -191,17 +189,17 @@ public class SongService {
 
   public List<Song> findByCreationTimeEqualGreater(LocalDateTime val, Boolean awaiting) {
     if(awaiting != null) {
-      return repository.findByAdditionsTimestampGreaterThanEqualAndIsAwaiting(val, awaiting);
+      return repository.findByAddedTimestampGreaterThanEqualAndIsAwaiting(val, awaiting);
     } else {
-      return repository.findByAdditionsTimestampGreaterThanEqual(val);
+      return repository.findByAddedTimestampGreaterThanEqual(val);
     }
   }
 
   public List<Song> findByCreationTimeEqualLess(LocalDateTime val, Boolean awaiting) {
     if(awaiting != null) {
-      return repository.findByAdditionsTimestampLessThanEqualAndIsAwaiting(val, awaiting);
+      return repository.findByAddedTimestampLessThanEqualAndIsAwaiting(val, awaiting);
     }
-    return repository.findByAdditionsTimestampLessThanEqual(val);
+    return repository.findByAddedTimestampLessThanEqual(val);
   }
 
   public Song save(Song saveSong) {
@@ -216,8 +214,6 @@ public class SongService {
     song.getRatings().forEach(it -> ratingService.delete(it));
     song.getTags().forEach(song::removeTag);
     song.removeCategory();
-    timestampRepository.deleteAll(song.getEditions());
-    timestampRepository.deleteAll(song.getAdditions());
     repository.deleteById(id);
   }
 
@@ -228,11 +224,11 @@ public class SongService {
     song.setUsersSongs(new HashSet<>());
     song.setRatings(new HashSet<>());
     song.setPlaylists(new HashSet<>());
-    SongTimestamp timestamp = new SongTimestamp();
+    SongAdd timestamp = new SongAdd();
     timestamp.setId(Constants.DEFAULT_ID);
     timestamp.setTimestamp(LocalDateTime.now());
     userService.findById(obj.getUserIdAdded()).addAddedSong(timestamp);
-    song.addAddition(timestamp);
+    song.setAdded(timestamp);
     song.setCoauthors(new HashSet<>());
     song.setTags(new HashSet<>());
     song.setTitle(obj.getTitle());

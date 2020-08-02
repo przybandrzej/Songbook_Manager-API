@@ -50,10 +50,9 @@ public class SongDTO {
   Boolean isAwaiting;
 
   @NotNull(message = "Edits list must be initialized.")
-  List<@Valid SongTimestampDTO> edits;
+  List<@Valid SongEditDTO> edits;
 
-  @NotNull(message = "AddedBy list must be initialized.")
-  List<@Valid SongTimestampDTO> addedBy;
+  @Valid SongAddDTO addedBy;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class Builder {

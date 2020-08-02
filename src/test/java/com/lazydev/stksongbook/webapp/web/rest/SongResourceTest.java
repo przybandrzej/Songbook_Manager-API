@@ -34,6 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -225,7 +226,14 @@ class SongResourceTest {
     category.setSongs(new HashSet<>());
     song.setCategory(category);
 
-    //song.setCreationTime(LocalDateTime.now());
+    SongAdd add = new SongAdd();
+    add.setId(1L);
+    add.setTimestamp(LocalDateTime.now());
+    song.setAdded(add);
+    User usr = new User();
+    usr.setId(1L);
+    usr.addAddedSong(add);
+
     song.addTag(getTag());
 
     UserSongRating rating = new UserSongRating();
@@ -337,6 +345,15 @@ class SongResourceTest {
       coauthor.setAuthor(new Author(2L, it.getAuthorName(), null, null, new HashSet<>(), new HashSet<>()));
       coauthor.setSong(song);
     });
+
+    User usr = new User();
+    usr.setId(1L);
+    SongAdd add = new SongAdd();
+    add.setTimestamp(LocalDateTime.now());
+    add.setId(Constants.DEFAULT_ID);
+    song.setAdded(add);
+    usr.addAddedSong(add);
+
     return song;
   }
 
@@ -347,7 +364,11 @@ class SongResourceTest {
     Set<SongCoauthorDTO> coauthorDTOS = song.getCoauthors().stream().map(it -> SongCoauthorDTO.builder().songId(it.getSong().getId())
         .authorId(it.getAuthor().getId()).coauthorFunction(it.getCoauthorFunction()).build()).collect(Collectors.toSet());
     return SongDTO.builder().id(song.getId()).title(song.getTitle()).author(authorDTO).lyrics(song.getLyrics()).category(categoryDTO)
-        .averageRating(0.0).guitarTabs(song.getGuitarTabs()).tags(tagDTOS).coauthors(coauthorDTOS).edits(new ArrayList<>()).isAwaiting(song.isAwaiting()).addedBy(new ArrayList<>()).build();
+        .averageRating(0.0).guitarTabs(song.getGuitarTabs()).tags(tagDTOS).coauthors(coauthorDTOS).edits(new ArrayList<>())
+        .isAwaiting(song.isAwaiting())
+        .addedBy(SongAddDTO.builder().addedBy(song.getAdded().getAddedBy().getId()).addedSong(song.getId())
+            .timestamp(song.getAdded().getTimestamp().format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMAT)))
+            .id(song.getAdded().getId()).build()).edits(new ArrayList<>()).build();
   }
 
   private String convertObjectToJsonString(SongDTO dto) throws JsonProcessingException {

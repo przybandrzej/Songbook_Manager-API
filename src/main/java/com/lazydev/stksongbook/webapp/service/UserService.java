@@ -1,7 +1,6 @@
 package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.data.model.User;
-import com.lazydev.stksongbook.webapp.repository.SongTimestampRepository;
 import com.lazydev.stksongbook.webapp.repository.UserRepository;
 import com.lazydev.stksongbook.webapp.service.exception.UserNotExistsException;
 import lombok.AllArgsConstructor;
@@ -17,7 +16,6 @@ public class UserService {
 
   private UserRepository repository;
   private PlaylistService playlistService;
-  private SongTimestampRepository songTimestampRepository;
 
   public Optional<User> findByIdNoException(Long id) {
     return repository.findById(id);
@@ -70,8 +68,6 @@ public class UserService {
   public void deleteById(Long id) {
     var user = findById(id);
     user.getPlaylists().forEach(it -> playlistService.deleteById(it.getId()));
-    songTimestampRepository.deleteAll(user.getAddedSongs());
-    songTimestampRepository.deleteAll(user.getEditedSongs());
     repository.deleteById(id);
   }
 }

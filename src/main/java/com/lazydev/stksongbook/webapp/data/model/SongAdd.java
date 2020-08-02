@@ -8,11 +8,11 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "song_timestamps")
+@Table(name = "song_adds")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class SongTimestamp {
+public class SongAdd {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,13 +21,12 @@ public class SongTimestamp {
 
   @ManyToOne
   @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-  private User user;
+  private User addedBy;
 
-  @ManyToOne
+  @OneToOne
   @JoinColumn(name = "song_id", referencedColumnName = "id", nullable = false)
-  private Song song;
+  private Song addedSong;
 
   @Column(name = "timestamp", nullable = false)
   private LocalDateTime timestamp;
-
 }

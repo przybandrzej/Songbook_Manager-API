@@ -8,18 +8,18 @@ import lombok.Value;
 import javax.validation.constraints.NotNull;
 
 @Value
-@JsonDeserialize(builder = SongTimestampDTO.Builder.class)
+@JsonDeserialize(builder = SongAddDTO.Builder.class)
 @Builder(builderClassName = "Builder", toBuilder = true)
-public class SongTimestampDTO {
+public class SongAddDTO {
 
   @NotNull(message = "ID must be defined.")
   Long id;
 
   @NotNull(message = "Song ID must be defined.")
-  Long songId;
+  Long addedSong;
 
   @NotNull(message = "User ID must be defined.")
-  Long userId;
+  Long addedBy;
 
   String timestamp;
 

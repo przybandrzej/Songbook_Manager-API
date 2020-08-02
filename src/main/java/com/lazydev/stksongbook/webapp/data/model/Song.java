@@ -21,7 +21,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode(exclude = {"coauthors", "tags", "usersSongs", "playlists", "ratings", "additions", "editions"})
+@EqualsAndHashCode(exclude = {"coauthors", "tags", "usersSongs", "playlists", "ratings", "added", "edits"})
 public class Song {
 
   /**
@@ -93,11 +93,11 @@ public class Song {
   @ManyToMany(mappedBy = "songs")
   private Set<Playlist> playlists;
 
-  @OneToMany(mappedBy = "song", orphanRemoval = true)
-  private Set<SongTimestamp> additions = new HashSet<>();
+  @OneToOne(mappedBy = "addedSong", orphanRemoval = true, cascade = CascadeType.ALL)
+  private SongAdd added;
 
-  @OneToMany(mappedBy = "song", orphanRemoval = true)
-  private Set<SongTimestamp> editions = new HashSet<>();
+  @OneToMany(mappedBy = "editedSong", orphanRemoval = true, cascade = CascadeType.ALL)
+  private Set<SongEdit> edits = new HashSet<>();
 
   public void setAuthor(Author author) {
     this.author = author;
@@ -144,27 +144,20 @@ public class Song {
     this.coauthors.remove(coauthor);
   }
 
-  public boolean addAddition(SongTimestamp timestamp) {
-    if(this.additions.add(timestamp)) {
-      timestamp.setSong(this);
+  public boolean addEdit(SongEdit timestamp) {
+    if(this.edits.add(timestamp)) {
+      timestamp.setEditedSong(this);
       return true;
     }
     return false;
   }
 
-  public boolean removeAddition(SongTimestamp timestamp) {
-    return additions.remove(timestamp);
+  public boolean removeEdit(SongEdit timestamp) {
+    return this.edits.remove(timestamp);
   }
 
-  public boolean addEdition(SongTimestamp timestamp) {
-    if(this.editions.add(timestamp)) {
-      timestamp.setSong(this);
-      return true;
-    }
-    return false;
-  }
-
-  public boolean removeEdition(SongTimestamp timestamp) {
-    return this.editions.remove(timestamp);
+  public void setAdded(SongAdd timestamp) {
+    this.added = timestamp;
+    this.added.setAddedSong(this);
   }
 }

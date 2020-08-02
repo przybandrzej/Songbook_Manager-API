@@ -84,11 +84,11 @@ public class User {
   @OneToMany(mappedBy = "owner", orphanRemoval = true)
   private Set<Playlist> playlists;
 
-  @OneToMany(mappedBy = "user", orphanRemoval = true)
-  private Set<SongTimestamp> addedSongs = new HashSet<>();
+  @OneToMany(mappedBy = "addedBy", orphanRemoval = true, cascade = CascadeType.ALL)
+  private Set<SongAdd> addedSongs = new HashSet<>();
 
-  @OneToMany(mappedBy = "user", orphanRemoval = true)
-  private Set<SongTimestamp> editedSongs = new HashSet<>();
+  @OneToMany(mappedBy = "editedBy", orphanRemoval = true, cascade = CascadeType.ALL)
+  private Set<SongEdit> editedSongs = new HashSet<>();
 
   public boolean removeSong(Song song) {
     return songs.remove(song);
@@ -124,27 +124,27 @@ public class User {
     this.userRole = null;
   }
 
-  public boolean addAddedSong(SongTimestamp timestamp) {
+  public boolean addAddedSong(SongAdd timestamp) {
     if(this.addedSongs.add(timestamp)) {
-      timestamp.setUser(this);
+      timestamp.setAddedBy(this);
       return true;
     }
     return false;
   }
 
-  public boolean removeAddedSong(SongTimestamp timestamp) {
+  public boolean removeAddedSong(SongAdd timestamp) {
     return addedSongs.remove(timestamp);
   }
 
-  public boolean addEditedSong(SongTimestamp timestamp) {
+  public boolean addEditedSong(SongEdit timestamp) {
     if(this.editedSongs.add(timestamp)) {
-      timestamp.setUser(this);
+      timestamp.setEditedBy(this);
       return true;
     }
     return false;
   }
 
-  public boolean removeEditedSong(SongTimestamp timestamp) {
+  public boolean removeEditedSong(SongEdit timestamp) {
     return this.editedSongs.remove(timestamp);
   }
 }

@@ -2,7 +2,6 @@ package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.data.model.UserRole;
-import com.lazydev.stksongbook.webapp.repository.SongTimestampRepository;
 import com.lazydev.stksongbook.webapp.repository.UserRepository;
 import com.lazydev.stksongbook.webapp.service.exception.UserNotExistsException;
 import org.junit.jupiter.api.Test;
@@ -30,11 +29,8 @@ class UserServiceTest {
   @Mock
   PlaylistService playlistService;
 
-  @Mock
-  SongTimestampRepository timestampRepository;
-
   @InjectMocks
-  UserService service = new UserService(repository, playlistService, timestampRepository);
+  UserService service = new UserService(repository, playlistService);
 
   @Test
   void findById() {
