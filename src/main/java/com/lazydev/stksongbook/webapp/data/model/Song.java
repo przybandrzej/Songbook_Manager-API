@@ -93,10 +93,10 @@ public class Song {
   @ManyToMany(mappedBy = "songs")
   private Set<Playlist> playlists;
 
-  @OneToOne(mappedBy = "addedSong", orphanRemoval = true, cascade = CascadeType.ALL)
+  @OneToOne(mappedBy = "addedSong", orphanRemoval = true)
   private SongAdd added;
 
-  @OneToMany(mappedBy = "editedSong", orphanRemoval = true, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "editedSong", orphanRemoval = true)
   private Set<SongEdit> edits = new HashSet<>();
 
   public void setAuthor(Author author) {

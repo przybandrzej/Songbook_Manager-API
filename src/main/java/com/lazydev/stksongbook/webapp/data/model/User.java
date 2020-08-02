@@ -84,10 +84,10 @@ public class User {
   @OneToMany(mappedBy = "owner", orphanRemoval = true)
   private Set<Playlist> playlists;
 
-  @OneToMany(mappedBy = "addedBy", orphanRemoval = true, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "addedBy", orphanRemoval = true)
   private Set<SongAdd> addedSongs = new HashSet<>();
 
-  @OneToMany(mappedBy = "editedBy", orphanRemoval = true, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "editedBy", orphanRemoval = true)
   private Set<SongEdit> editedSongs = new HashSet<>();
 
   public boolean removeSong(Song song) {

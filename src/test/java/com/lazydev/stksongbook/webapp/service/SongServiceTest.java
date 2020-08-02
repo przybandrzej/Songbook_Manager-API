@@ -1,6 +1,8 @@
 package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.data.model.*;
+import com.lazydev.stksongbook.webapp.repository.SongAddRepository;
+import com.lazydev.stksongbook.webapp.repository.SongEditRepository;
 import com.lazydev.stksongbook.webapp.repository.SongRepository;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateCoauthorDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
@@ -44,6 +46,10 @@ class SongServiceTest {
   private UserSongRatingService ratingService;
   @Mock
   private UserService userService;
+  @Mock
+  private SongAddRepository songAddRepository;
+  @Mock
+  private SongEditRepository songEditRepository;
   @InjectMocks
   private SongService songService;
 

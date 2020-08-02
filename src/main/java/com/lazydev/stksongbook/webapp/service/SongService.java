@@ -5,6 +5,8 @@ import com.lazydev.stksongbook.webapp.data.model.Author;
 import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.data.model.SongAdd;
 import com.lazydev.stksongbook.webapp.data.model.Tag;
+import com.lazydev.stksongbook.webapp.repository.SongAddRepository;
+import com.lazydev.stksongbook.webapp.repository.SongEditRepository;
 import com.lazydev.stksongbook.webapp.repository.SongRepository;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
@@ -38,6 +40,8 @@ public class SongService {
   private FileSystemStorageService storageService;
   private UserSongRatingService ratingService;
   private UserService userService;
+  private SongAddRepository songAddRepository;
+  private SongEditRepository songEditRepository;
 
   public List<Song> findAll(Boolean awaiting, Boolean includeAwaiting, Integer limit) {
     if(limit != null) {
@@ -214,6 +218,8 @@ public class SongService {
     song.getRatings().forEach(it -> ratingService.delete(it));
     song.getTags().forEach(song::removeTag);
     song.removeCategory();
+    songAddRepository.delete(song.getAdded());
+    songEditRepository.deleteAll(song.getEdits());
     repository.deleteById(id);
   }
 
@@ -224,11 +230,6 @@ public class SongService {
     song.setUsersSongs(new HashSet<>());
     song.setRatings(new HashSet<>());
     song.setPlaylists(new HashSet<>());
-    SongAdd timestamp = new SongAdd();
-    timestamp.setId(Constants.DEFAULT_ID);
-    timestamp.setTimestamp(LocalDateTime.now());
-    userService.findById(obj.getUserIdAdded()).addAddedSong(timestamp);
-    song.setAdded(timestamp);
     song.setCoauthors(new HashSet<>());
     song.setTags(new HashSet<>());
     song.setTitle(obj.getTitle());
@@ -249,6 +250,14 @@ public class SongService {
       var auth = authorService.findOrCreateAuthor(coauthorDTO.getAuthorName());
       coauthorService.findOrCreate(savedSong, auth, coauthorDTO.getCoauthorFunction());
     });
+
+    SongAdd timestamp = new SongAdd();
+    timestamp.setId(Constants.DEFAULT_ID);
+    timestamp.setTimestamp(LocalDateTime.now());
+    userService.findById(obj.getUserIdAdded()).addAddedSong(timestamp);
+    savedSong.setAdded(timestamp);
+    songAddRepository.save(timestamp);
+
     return savedSong;
   }
 
