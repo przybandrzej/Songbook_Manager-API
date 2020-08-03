@@ -3,6 +3,7 @@ package com.lazydev.stksongbook.webapp.service.mappers;
 import com.lazydev.stksongbook.webapp.StkSongbookApplication;
 import com.lazydev.stksongbook.webapp.data.model.*;
 import com.lazydev.stksongbook.webapp.service.PlaylistService;
+import com.lazydev.stksongbook.webapp.service.SongService;
 import com.lazydev.stksongbook.webapp.service.UserService;
 import com.lazydev.stksongbook.webapp.service.UserSongRatingService;
 import com.lazydev.stksongbook.webapp.service.dto.*;
@@ -44,6 +45,12 @@ class SongMapperTest {
   private SongCoauthorMapper songCoauthorMapper;
   @Mock
   private AuthorMapper authorMapper;
+  @Mock
+  private SongService songService;
+  @Mock
+  private SongAddMapper songAddMapper;
+  @Mock
+  private SongEditMapper songEditMapper;
 
   @Autowired
   private SongMapperImpl impl;
@@ -54,7 +61,8 @@ class SongMapperTest {
     impl.setPlaylistService(playlistService);
     impl.setUserService(userService);
     impl.setUserSongRatingService(ratingService);
-    SongMapperImpl_ delegate = new SongMapperImpl_(songCoauthorMapper, categoryMapper, authorMapper, tagMapper);
+    impl.setSongService(songService);
+    SongMapperImpl_ delegate = new SongMapperImpl_(songCoauthorMapper, categoryMapper, authorMapper, tagMapper, songAddMapper, songEditMapper);
     impl.setDelegate(delegate);
     mapper = impl;
   }
@@ -92,11 +100,14 @@ class SongMapperTest {
     SongCoauthorDTO secondCoauthor = SongCoauthorDTO.builder().authorId(1L).songId(1L).build();
     coauthorDTOS.add(firstCoauthor);
     coauthorDTOS.add(secondCoauthor);
+    SongAddDTO timestampDTO = SongAddDTO.builder().addedSong(1L).addedBy(2L).id(1L)
+        .timestamp(song.getAdded().getTimestamp().format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMAT))).build();
     SongDTO dto = SongDTO.builder().id(1L).title("dummy title").lyrics("dasdafsgsdg gfdasgsd").guitarTabs("ddddddddd")
         .author(authorDTO).tags(List.of(tagDTO)).averageRating(0.75).category(categoryDTO).trivia(null)
-        .creationTime(song.getCreationTime().format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMAT)))
+        .addedBy(timestampDTO)
         .coauthors(coauthorDTOS).isAwaiting(song.isAwaiting()).build();
 
+    given(songService.findById(dto.getId())).willReturn(song);
     given(tagMapper.map(tagDTO)).willReturn(getTag());
     given(categoryMapper.map(categoryDTO)).willReturn(song.getCategory());
     given(songCoauthorMapper.map(any(SongCoauthorDTO.class))).willAnswer(result -> {
@@ -171,7 +182,13 @@ class SongMapperTest {
     category.setSongs(new HashSet<>());
     song.setCategory(category);
 
-    song.setCreationTime(LocalDateTime.now());
+    User usero = new User();
+    usero.setId(2L);
+    SongAdd timestamp = new SongAdd();
+    timestamp.setTimestamp(LocalDateTime.now());
+    timestamp.setId(1L);
+    song.setAdded(timestamp);
+    usero.addAddedSong(timestamp);
     song.addTag(getTag());
 
     UserSongRating rating = new UserSongRating();

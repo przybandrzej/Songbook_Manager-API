@@ -29,6 +29,8 @@ public interface UserMapper {
   @Mapping(target = "userRole", ignore = true)
   @Mapping(target = "userRatings", ignore = true)
   @Mapping(target = "playlists", ignore = true)
+  @Mapping(target = "addedSongs", ignore = true)
+  @Mapping(target = "editedSongs", ignore = true)
   User map(UserDTO dto);
 
   User mapFromRegisterForm(RegisterNewUserForm form);

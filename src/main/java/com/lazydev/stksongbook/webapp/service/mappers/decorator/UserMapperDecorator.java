@@ -41,6 +41,8 @@ public abstract class UserMapperDecorator implements UserMapper {
     user.setPlaylists(new HashSet<>(playlistService.findByOwnerId(dto.getId(), true)));
     user.setEmail(found.getEmail());
     user.setPassword(found.getPassword());
+    user.setEditedSongs(found.getEditedSongs());
+    user.setAddedSongs(found.getAddedSongs());
     return user;
   }
 
