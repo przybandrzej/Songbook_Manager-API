@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @CrossOrigin
 @RequestMapping("/api/songs")
 @AllArgsConstructor
-public class SongRestController {
+public class SongResource {
 
   private SongService service;
   private SongMapper mapper;
@@ -40,18 +40,9 @@ public class SongRestController {
   private FileSystemStorageService storageService;
 
   @GetMapping
-  public ResponseEntity<List<SongDTO>> getAll(@RequestParam(value = "limit", required = false) Integer limit) {
-    if(limit != null) {
-      List<SongDTO> list = service.findAll(limit).stream().map(mapper::map).collect(Collectors.toList());
-      return new ResponseEntity<>(list, HttpStatus.OK);
-    }
-    List<SongDTO> list = service.findAll().stream().map(mapper::map).collect(Collectors.toList());
-    return new ResponseEntity<>(list, HttpStatus.OK);
-  }
-
-  @GetMapping("/latest")
-  public ResponseEntity<List<SongDTO>> getLatest(@RequestParam(value = "limit") Integer limit) {
-    List<SongDTO> list = service.findLatestLimited(limit).stream().map(mapper::map).collect(Collectors.toList());
+  public ResponseEntity<List<SongDTO>> getAll(@RequestParam(value = "limit", required = false) Integer limit,
+                                              @RequestParam(value = "include_awaiting", required = false) Boolean includeAwaiting) {
+    List<SongDTO> list = service.findAll(false, includeAwaiting, limit).stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
@@ -60,42 +51,37 @@ public class SongRestController {
     return new ResponseEntity<>(mapper.map(service.findById(id)), HttpStatus.OK);
   }
 
+  @GetMapping("/latest")
+  public ResponseEntity<List<SongDTO>> getLatest(@RequestParam(value = "limit") Integer limit) {
+    List<SongDTO> list = service.findLatestLimited(limit, false).stream().map(mapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
+  }
+
   @GetMapping("/title/{title}")
   public ResponseEntity<List<SongDTO>> getByTitleFragment(@PathVariable("title") String title,
                                                           @RequestParam(value = "limit", required = false) Integer limit) {
-    if(limit != null) {
-      List<SongDTO> list = service.findByTitleContains(title, limit).stream().map(mapper::map).collect(Collectors.toList());
-      return new ResponseEntity<>(list, HttpStatus.OK);
-    }
-    List<SongDTO> list = service.findByTitleContains(title).stream().map(mapper::map).collect(Collectors.toList());
+    List<SongDTO> list = service.findByTitleContains(title, false, limit).stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @GetMapping("/lyrics_fragment/{value}")
   public ResponseEntity<List<SongDTO>> getByLyricsFragment(@PathVariable("value") String value,
                                                            @RequestParam(value = "limit", required = false) Integer limit) {
-    if(limit != null) {
-      List<SongDTO> list = service.findByLyricsContains(value, limit).stream().map(mapper::map).collect(Collectors.toList());
-      return new ResponseEntity<>(list, HttpStatus.OK);
-    }
-    List<SongDTO> list = service.findByLyricsContains(value).stream().map(mapper::map).collect(Collectors.toList());
+    List<SongDTO> list = service.findByLyricsContains(value, false, limit).stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @GetMapping("/category/{categoryId}")
   public ResponseEntity<List<SongDTO>> getByCategory(@PathVariable("categoryId") Long id,
                                                      @RequestParam(value = "limit", required = false) Integer limit) {
-    if(limit != null) {
-      List<SongDTO> list = service.findByCategoryId(id, limit).stream().map(mapper::map).collect(Collectors.toList());
-      return new ResponseEntity<>(list, HttpStatus.OK);
-    }
-    List<SongDTO> list = service.findByCategoryId(id).stream().map(mapper::map).collect(Collectors.toList());
+    List<SongDTO> list = service.findByCategoryId(id, false, limit).stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @GetMapping("/tag/{tagId}")
-  public ResponseEntity<List<SongDTO>> getByTag(@PathVariable("tagId") Long id) {
-    List<SongDTO> list = service.findByTagId(id).stream().map(mapper::map).collect(Collectors.toList());
+  public ResponseEntity<List<SongDTO>> getByTag(@PathVariable("tagId") Long id,
+                                                @RequestParam(value = "limit", required = false) Integer limit) {
+    List<SongDTO> list = service.findByTagId(id, false, limit).stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
@@ -154,7 +140,7 @@ public class SongRestController {
       throw new EntityNotFoundException(Song.class, obj.getId());
     }
     var song = mapper.map(obj);
-    song.setCreationTime(optional.get().getCreationTime());
+    //song.addEdition();
     var saved = service.save(song);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.OK);
   }

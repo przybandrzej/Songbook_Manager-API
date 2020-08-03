@@ -3,13 +3,13 @@ package com.lazydev.stksongbook.webapp.web.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.lazydev.stksongbook.webapp.data.model.Tag;
-import com.lazydev.stksongbook.webapp.service.TagService;
-import com.lazydev.stksongbook.webapp.service.dto.TagDTO;
+import com.lazydev.stksongbook.webapp.data.model.Author;
+import com.lazydev.stksongbook.webapp.service.AuthorService;
+import com.lazydev.stksongbook.webapp.service.dto.AuthorDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
+import com.lazydev.stksongbook.webapp.service.mappers.AuthorMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
-import com.lazydev.stksongbook.webapp.service.mappers.TagMapper;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import com.lazydev.stksongbook.webapp.web.rest.errors.ExceptionTranslator;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,18 +34,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith({MockitoExtension.class})
-class TagRestControllerTest {
+class AuthorResourceTest {
 
-  private static final String BASE_URL = "/api/tags";
+  private static final String BASE_URL = "/api/authors";
 
   @Mock
-  TagService tagService;
+  AuthorService authorService;
   @Mock
   SongMapper songMapper;
   @Mock
-  TagMapper mapper;
+  AuthorMapper mapper;
   @InjectMocks
-  TagRestController controller;
+  AuthorResource controller;
 
   private MockMvc mockMvc;
 
@@ -60,10 +60,10 @@ class TagRestControllerTest {
     UniversalCreateDTO dto2 = UniversalCreateDTO.builder().id(2L).name("name2").build();
     UniversalCreateDTO dto3 = UniversalCreateDTO.builder().id(5L).name("").build();
 
-    given(tagService.findByNameNoException("name")).willReturn(Optional.empty());
-    given(tagService.findByNameNoException("name2")).willReturn(Optional.of(map(dto2)));
-    given(tagService.save(any(Tag.class))).willAnswer(it -> {
-      Tag a = it.getArgument(0);
+    given(authorService.findByNameNoException("name")).willReturn(Optional.empty());
+    given(authorService.findByNameNoException("name2")).willReturn(Optional.of(map(dto2)));
+    given(authorService.save(any(Author.class))).willAnswer(it -> {
+      Author a = it.getArgument(0);
       a.setId(2L);
       return a;
     });
@@ -71,14 +71,14 @@ class TagRestControllerTest {
       UniversalCreateDTO a = it.getArgument(0);
       return map(a);
     });
-    given(mapper.map(any(Tag.class))).willAnswer(it -> {
-      Tag a = it.getArgument(0);
+    given(mapper.map(any(Author.class))).willAnswer(it -> {
+      Author a = it.getArgument(0);
       return map(a);
     });
 
-    Tag saved = map(dto);
+    Author saved = map(dto);
     saved.setId(2L);
-    TagDTO returned = map(saved);
+    AuthorDTO returned = map(saved);
 
     mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL).contentType(MediaType.APPLICATION_JSON)
         .content(new ObjectMapper().writeValueAsString(dto)))
@@ -94,21 +94,21 @@ class TagRestControllerTest {
 
   @Test
   void testUpdate() throws Exception {
-    TagDTO dto = TagDTO.builder().id(1L).name("dummy name").create();
-    TagDTO dto1 = TagDTO.builder().id(null).name("dummy name2").create();
-    TagDTO dto2 = TagDTO.builder().id(3L).name("").create();
+    AuthorDTO dto = AuthorDTO.builder().id(1L).name("dummy name").create();
+    AuthorDTO dto1 = AuthorDTO.builder().id(null).name("dummy name2").create();
+    AuthorDTO dto2 = AuthorDTO.builder().id(3L).name("").create();
 
-    given(tagService.findByIdNoException(1L)).willReturn(Optional.of(map(dto)));
-    given(tagService.save(any(Tag.class))).willAnswer(it -> {
-      Tag a = it.getArgument(0);
+    given(authorService.findByIdNoException(1L)).willReturn(Optional.of(map(dto)));
+    given(authorService.save(any(Author.class))).willAnswer(it -> {
+      Author a = it.getArgument(0);
       return a;
     });
-    given(mapper.map(any(TagDTO.class))).willAnswer(it -> {
-      TagDTO a = it.getArgument(0);
+    given(mapper.map(any(AuthorDTO.class))).willAnswer(it -> {
+      AuthorDTO a = it.getArgument(0);
       return map(a);
     });
-    given(mapper.map(any(Tag.class))).willAnswer(it -> {
-      Tag a = it.getArgument(0);
+    given(mapper.map(any(Author.class))).willAnswer(it -> {
+      Author a = it.getArgument(0);
       return map(a);
     });
 
@@ -126,19 +126,19 @@ class TagRestControllerTest {
 
   @Test
   void testGetById() throws Exception {
-    List<Tag> list = new ArrayList<>();
-    given(tagService.findById(1L)).willAnswer(i -> {
+    List<Author> list = new ArrayList<>();
+    given(authorService.findById(1L)).willAnswer(i -> {
       Long id = i.getArgument(0);
-      Tag tag = new Tag();
-      tag.setId(1L);
-      tag.setName("dummy name");
-      tag.setSongs(new HashSet<>());
-      list.add(tag);
-      return tag;
+      Author author = new Author();
+      author.setId(1L);
+      author.setName("dummy name");
+      author.setSongs(new HashSet<>());
+      list.add(author);
+      return author;
     });
-    given(tagService.findById(2L)).willThrow(EntityNotFoundException.class);
-    given(mapper.map(any(Tag.class))).willAnswer(it -> {
-      Tag a = it.getArgument(0);
+    given(authorService.findById(2L)).willThrow(EntityNotFoundException.class);
+    given(mapper.map(any(Author.class))).willAnswer(it -> {
+      Author a = it.getArgument(0);
       return map(a);
     });
 
@@ -149,27 +149,33 @@ class TagRestControllerTest {
         .andExpect(status().isNotFound());
   }
 
-  private TagDTO map(Tag tag) {
-    return TagDTO.builder().id(tag.getId()).name(tag.getName()).create();
+  private AuthorDTO map(Author author) {
+    return AuthorDTO.builder().id(author.getId()).name(author.getName()).create();
   }
 
-  private Tag map(UniversalCreateDTO dto) {
-    Tag tag = new Tag();
-    tag.setId(Constants.DEFAULT_ID);
-    tag.setName(dto.getName());
-    tag.setSongs(new HashSet<>());
-    return tag;
+  private Author map(UniversalCreateDTO dto) {
+    Author author = new Author();
+    author.setId(Constants.DEFAULT_ID);
+    author.setName(dto.getName());
+    author.setCoauthorSongs(new HashSet<>());
+    author.setSongs(new HashSet<>());
+    author.setBiographyUrl(null);
+    author.setPhotoResource(null);
+    return author;
   }
 
-  private Tag map(TagDTO dto) {
-    Tag tag = new Tag();
-    tag.setId(dto.getId());
-    tag.setName(dto.getName());
-    tag.setSongs(new HashSet<>());
-    return tag;
+  private Author map(AuthorDTO dto) {
+    Author author = new Author();
+    author.setId(dto.getId());
+    author.setName(dto.getName());
+    author.setPhotoResource(null);
+    author.setBiographyUrl(null);
+    author.setSongs(new HashSet<>());
+    author.setCoauthorSongs(new HashSet<>());
+    return author;
   }
 
-  private String convertObjectToJsonString(TagDTO dto) throws JsonProcessingException {
+  private String convertObjectToJsonString(AuthorDTO dto) throws JsonProcessingException {
     ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
     return writer.writeValueAsString(dto);
   }

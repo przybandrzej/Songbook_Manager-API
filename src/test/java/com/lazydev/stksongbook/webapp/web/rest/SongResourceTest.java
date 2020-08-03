@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -33,10 +34,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -45,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-class SongRestControllerTest {
+class SongResourceTest {
   /**
    * Tests for all GET methods and DELETE make no sense since all the work is performed by mappers and services.
    * The only tested methods are the Create and Update.
@@ -64,7 +63,7 @@ class SongRestControllerTest {
   @Mock
   private FileSystemStorageService storageService;
   @InjectMocks
-  private SongRestController controller;
+  private SongResource controller;
 
   private MockMvc mockMvc;
   private static final String endpoint = "/api/songs";
@@ -213,13 +212,13 @@ class SongRestControllerTest {
     coauthor.setId(new SongsCoauthorsKey());
     coauthor.setAuthor(author2);
     coauthor.setSong(song);
-    coauthor.setFunction("muzyka");
+    coauthor.setCoauthorFunction("muzyka");
 
     SongCoauthor coauthor2 = new SongCoauthor();
     coauthor2.setId(new SongsCoauthorsKey());
     coauthor2.setAuthor(author3);
     coauthor2.setSong(song);
-    coauthor2.setFunction("tekst");
+    coauthor2.setCoauthorFunction("tekst");
 
     Category category = new Category();
     category.setId(5L);
@@ -227,7 +226,14 @@ class SongRestControllerTest {
     category.setSongs(new HashSet<>());
     song.setCategory(category);
 
-    song.setCreationTime(LocalDateTime.now());
+    SongAdd add = new SongAdd();
+    add.setId(1L);
+    add.setTimestamp(LocalDateTime.now());
+    song.setAdded(add);
+    User usr = new User();
+    usr.setId(1L);
+    usr.addAddedSong(add);
+
     song.addTag(getTag());
 
     UserSongRating rating = new UserSongRating();
@@ -259,6 +265,8 @@ class SongRestControllerTest {
     playlist.addSong(song);
     user.addPlaylist(playlist);
 
+    song.setAwaiting(true);
+
     return song;
   }
 
@@ -278,6 +286,7 @@ class SongRestControllerTest {
     author.setName(dto.getAuthor().getName());
     author.setSongs(new HashSet<>());
     author.addSong(song);
+    song.setAwaiting(dto.getIsAwaiting());
     song.setUsersSongs(new HashSet<>());
     Category category = new Category();
     category.setId(dto.getCategory().getId());
@@ -297,7 +306,7 @@ class SongRestControllerTest {
     dto.getCoauthors().forEach(it -> {
       SongCoauthor coauthor = new SongCoauthor();
       coauthor.setId(new SongsCoauthorsKey());
-      coauthor.setFunction(it.getFunction());
+      coauthor.setCoauthorFunction(it.getCoauthorFunction());
       coauthor.setAuthor(new Author(it.getAuthorId(), "dummy", null, null, new HashSet<>(), new HashSet<>()));
       coauthor.setSong(song);
     });
@@ -324,6 +333,7 @@ class SongRestControllerTest {
     song.setLyrics(dto.getLyrics());
     song.setGuitarTabs(dto.getGuitarTabs());
     song.setTags(new HashSet<>());
+    song.setAwaiting(true);
     dto.getTags().forEach(it -> {
       song.addTag(new Tag(2L, it, new HashSet<>()));
     });
@@ -331,10 +341,19 @@ class SongRestControllerTest {
     dto.getCoauthors().forEach(it -> {
       SongCoauthor coauthor = new SongCoauthor();
       coauthor.setId(new SongsCoauthorsKey());
-      coauthor.setFunction(it.getFunction());
+      coauthor.setCoauthorFunction(it.getCoauthorFunction());
       coauthor.setAuthor(new Author(2L, it.getAuthorName(), null, null, new HashSet<>(), new HashSet<>()));
       coauthor.setSong(song);
     });
+
+    User usr = new User();
+    usr.setId(1L);
+    SongAdd add = new SongAdd();
+    add.setTimestamp(LocalDateTime.now());
+    add.setId(Constants.DEFAULT_ID);
+    song.setAdded(add);
+    usr.addAddedSong(add);
+
     return song;
   }
 
@@ -343,9 +362,13 @@ class SongRestControllerTest {
     CategoryDTO categoryDTO = CategoryDTO.builder().id(song.getCategory().getId()).name(song.getCategory().getName()).build();
     List<TagDTO> tagDTOS = song.getTags().stream().map(it -> TagDTO.builder().id(it.getId()).name(it.getName()).build()).collect(Collectors.toList());
     Set<SongCoauthorDTO> coauthorDTOS = song.getCoauthors().stream().map(it -> SongCoauthorDTO.builder().songId(it.getSong().getId())
-        .authorId(it.getAuthor().getId()).function(it.getFunction()).build()).collect(Collectors.toSet());
+        .authorId(it.getAuthor().getId()).coauthorFunction(it.getCoauthorFunction()).build()).collect(Collectors.toSet());
     return SongDTO.builder().id(song.getId()).title(song.getTitle()).author(authorDTO).lyrics(song.getLyrics()).category(categoryDTO)
-        .averageRating(0.0).guitarTabs(song.getGuitarTabs()).tags(tagDTOS).coauthors(coauthorDTOS).build();
+        .averageRating(0.0).guitarTabs(song.getGuitarTabs()).tags(tagDTOS).coauthors(coauthorDTOS).edits(new ArrayList<>())
+        .isAwaiting(song.isAwaiting())
+        .addedBy(SongAddDTO.builder().addedBy(song.getAdded().getAddedBy().getId()).addedSong(song.getId())
+            .timestamp(song.getAdded().getTimestamp().format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMAT)))
+            .id(song.getAdded().getId()).build()).edits(new ArrayList<>()).build();
   }
 
   private String convertObjectToJsonString(SongDTO dto) throws JsonProcessingException {
@@ -354,9 +377,9 @@ class SongRestControllerTest {
   }
 
   private CreateSongDTO getDtoFromFile() {
-    CreateCoauthorDTO dto1 = CreateCoauthorDTO.builder().authorName("Generalo").function("muzyka").build();
-    CreateCoauthorDTO dto2 = CreateCoauthorDTO.builder().authorName("Andrzej").function("tekst").build();
+    CreateCoauthorDTO dto1 = CreateCoauthorDTO.builder().authorName("Generalo").coauthorFunction("muzyka").build();
+    CreateCoauthorDTO dto2 = CreateCoauthorDTO.builder().authorName("Andrzej").coauthorFunction("tekst").build();
     return CreateSongDTO.builder().authorName("Ziutek").categoryId(1L).trivia(null).guitarTabs("ABBA CD E F").lyrics("fjdksnfldsfnsdjklfndkl;sfndsl;kfndkls\ndsavdgsvbhaj")
-        .tags(List.of("tag1", "tag2", "tag4")).title("sample title").coauthors(Set.of(dto1, dto2)).build();
+        .tags(List.of("tag1", "tag2", "tag4")).title("sample title").coauthors(Set.of(dto1, dto2)).userIdAdded(1L).build();
   }
 }

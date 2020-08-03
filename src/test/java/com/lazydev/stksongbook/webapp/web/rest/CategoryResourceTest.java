@@ -29,7 +29,7 @@ import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class CategoryRestControllerTest {
+class CategoryResourceTest {
   /**
    * Tests for all GET methods and DELETE make no sense since all the work is performed by mappers and services.
    * The only tested methods are the Create and Update.
@@ -39,7 +39,7 @@ class CategoryRestControllerTest {
   private CategoryMapper mapper;
   private MockMvc mockMvc;
 
-  private CategoryRestController controller;
+  private CategoryResource controller;
   private static final String endpoint = "/api/categories";
 
   @BeforeEach
@@ -47,7 +47,7 @@ class CategoryRestControllerTest {
     service = mock(CategoryService.class);
     mapper = mock(CategoryMapper.class);
     SongMapper songMapper = mock(SongMapper.class);
-    controller = new CategoryRestController(service, mapper, songMapper);
+    controller = new CategoryResource(service, mapper, songMapper);
     mockMvc = MockMvcBuilders.standaloneSetup(controller).setControllerAdvice(ExceptionTranslator.class).build();
   }
 

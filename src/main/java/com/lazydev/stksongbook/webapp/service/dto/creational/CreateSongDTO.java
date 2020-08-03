@@ -57,6 +57,9 @@ public class CreateSongDTO {
       @Pattern(regexp = Constants.NAME_REGEX_SHORT, message = Constants.NAME_SHORT_INVALID_MESSAGE)
           String> tags;
 
+  @NotNull(message = "ID of the user that added the song must be specified.")
+  Long userIdAdded;
+
   @JsonPOJOBuilder(withPrefix = "")
   public static class Builder {
   }

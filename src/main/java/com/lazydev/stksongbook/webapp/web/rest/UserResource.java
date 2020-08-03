@@ -7,7 +7,10 @@ import com.lazydev.stksongbook.webapp.service.dto.PlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserSongRatingDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm;
-import com.lazydev.stksongbook.webapp.service.exception.*;
+import com.lazydev.stksongbook.webapp.service.exception.EmailAlreadyUsedException;
+import com.lazydev.stksongbook.webapp.service.exception.InvalidPasswordException;
+import com.lazydev.stksongbook.webapp.service.exception.UserNotExistsException;
+import com.lazydev.stksongbook.webapp.service.exception.UsernameAlreadyUsedException;
 import com.lazydev.stksongbook.webapp.service.mappers.PlaylistMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.UserSongRatingMapper;
@@ -24,7 +27,7 @@ import java.util.stream.Collectors;
 @CrossOrigin
 @RequestMapping("/api/users")
 @AllArgsConstructor
-public class UserRestController {
+public class UserResource {
 
   private UserMapper mapper;
   private UserService service;

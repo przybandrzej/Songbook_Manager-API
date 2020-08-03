@@ -24,7 +24,7 @@ public abstract class CategoryMapperDecorator implements CategoryMapper {
   @Override
   public Category map(CategoryDTO dto) {
     var category = delegate.map(dto);
-    category.setSongs(new HashSet<>(songService.findByCategoryId(dto.getId())));
+    category.setSongs(new HashSet<>(songService.findByCategoryId(dto.getId(), null, null)));
     return category;
   }
 

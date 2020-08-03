@@ -24,7 +24,7 @@ public abstract class TagMapperDecorator implements TagMapper {
   @Override
   public Tag map(TagDTO dto) {
     var tag = delegate.map(dto);
-    tag.setSongs(new HashSet<>(songService.findByTagId(dto.getId())));
+    tag.setSongs(new HashSet<>(songService.findByTagId(dto.getId(), null, null)));
     return tag;
   }
 

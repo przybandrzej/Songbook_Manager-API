@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @CrossOrigin
 @RequestMapping("/api/tags")
 @AllArgsConstructor
-public class TagRestController {
+public class TagResource {
 
   private TagService service;
   private TagMapper modelMapper;

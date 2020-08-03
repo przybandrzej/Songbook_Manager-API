@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @CrossOrigin
 @RequestMapping("/api/authors")
 @AllArgsConstructor
-public class AuthorRestController {
+public class AuthorResource {
 
   private AuthorService service;
   private AuthorMapper mapper;

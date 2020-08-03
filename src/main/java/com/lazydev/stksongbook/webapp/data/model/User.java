@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -22,7 +23,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @Check(constraints = "length(password) >= 6 AND length(username) >= 4")
-@EqualsAndHashCode(exclude = {"playlists", "userRatings"})
+@EqualsAndHashCode(exclude = {"playlists", "userRatings", "addedSongs", "editedSongs"})
 public class User {
 
   /**
@@ -83,6 +84,12 @@ public class User {
   @OneToMany(mappedBy = "owner", orphanRemoval = true)
   private Set<Playlist> playlists;
 
+  @OneToMany(mappedBy = "addedBy", orphanRemoval = true)
+  private Set<SongAdd> addedSongs = new HashSet<>();
+
+  @OneToMany(mappedBy = "editedBy", orphanRemoval = true)
+  private Set<SongEdit> editedSongs = new HashSet<>();
+
   public boolean removeSong(Song song) {
     return songs.remove(song);
   }
@@ -117,17 +124,27 @@ public class User {
     this.userRole = null;
   }
 
-  /**
-   * @param addedSongsCount counts songs added to the database by the user. New users have it automatically set to 0
-   */
-    /*@Column(name = "added_songs_count", nullable = false)
-    private int addedSongsCount;*/
+  public boolean addAddedSong(SongAdd timestamp) {
+    if(this.addedSongs.add(timestamp)) {
+      timestamp.setAddedBy(this);
+      return true;
+    }
+    return false;
+  }
 
-  /**
-   * @param addedSongsCount counts songs edited by the user. New users have automatically set to 0
-   */
-    /*@Column(name = "edited_songs_count", nullable = false)
-    private int editedSongsCount;*/
+  public boolean removeAddedSong(SongAdd timestamp) {
+    return addedSongs.remove(timestamp);
+  }
 
-  // TODO add lists of added songs and edited songs instead
+  public boolean addEditedSong(SongEdit timestamp) {
+    if(this.editedSongs.add(timestamp)) {
+      timestamp.setEditedBy(this);
+      return true;
+    }
+    return false;
+  }
+
+  public boolean removeEditedSong(SongEdit timestamp) {
+    return this.editedSongs.remove(timestamp);
+  }
 }

@@ -1,4 +1,4 @@
-package com.lazydev.stksongbook.webapp.service.dto;
+package com.lazydev.stksongbook.webapp.service.dto.creational;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -9,22 +9,23 @@ import lombok.Value;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import java.util.Set;
 
 @Value
-@JsonDeserialize(builder = UserDTO.Builder.class)
+@JsonDeserialize(builder = AddUserDTO.Builder.class)
 @Builder(builderClassName = "Builder", toBuilder = true)
-public class UserDTO {
+public class AddUserDTO {
 
-  @NotNull(message = "ID must be defined.")
-  Long id;
+  @NotNull(message = "Can't be null.")
+  @Pattern(regexp = Constants.EMAIL_REGEX, message = Constants.EMAIL_INVALID_MESSAGE)
+  String email;
+
+  @NotNull(message = "Can't be null.")
+  @Pattern(regexp = Constants.PASSWORD_REGEX, message = Constants.PASSWORD_INVALID_MESSAGE)
+  String password;
 
   @NotNull(message = "Can't be null.")
   @Pattern(regexp = Constants.USERNAME_REGEX, message = Constants.USERNAME_INVALID_MESSAGE)
   String username;
-
-  @NotNull(message = "User Role ID must be defined.")
-  Long userRoleId;
 
   @NameConstraint
   String firstName;
@@ -32,10 +33,8 @@ public class UserDTO {
   @NameConstraint
   String lastName;
 
-  @NotNull(message = "Songs list must be initialized.")
-  Set<
-      @NotNull(message = "Can't be null.")
-          Long> songs;
+  @NotNull
+  Long roleId;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class Builder {

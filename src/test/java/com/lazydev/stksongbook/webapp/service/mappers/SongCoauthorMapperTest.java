@@ -51,12 +51,12 @@ class SongCoauthorMapperTest {
 
     assertEquals(songCoauthor.getAuthor().getId(), dto.getAuthorId());
     assertEquals(songCoauthor.getSong().getId(), dto.getSongId());
-    assertEquals(songCoauthor.getFunction(), dto.getFunction());
+    assertEquals(songCoauthor.getCoauthorFunction(), dto.getCoauthorFunction());
   }
 
   @Test
   void testMapToEntity() {
-    SongCoauthorDTO dto = SongCoauthorDTO.builder().authorId(1L).songId(2L).function("muzyka").build();
+    SongCoauthorDTO dto = SongCoauthorDTO.builder().authorId(1L).songId(2L).coauthorFunction("muzyka").build();
     SongCoauthor coauthor = getSample();
 
     given(songService.findById(2L)).willReturn(coauthor.getSong());
@@ -66,7 +66,7 @@ class SongCoauthorMapperTest {
 
     assertEquals(dto.getAuthorId(), mapped.getAuthor().getId());
     assertEquals(dto.getSongId(), mapped.getSong().getId());
-    assertEquals(dto.getFunction(), mapped.getFunction());
+    assertEquals(dto.getCoauthorFunction(), mapped.getCoauthorFunction());
   }
 
   private SongCoauthor getSample() {
@@ -82,7 +82,7 @@ class SongCoauthorMapperTest {
     songCoauthor.setId(new SongsCoauthorsKey());
     songCoauthor.setSong(song);
     songCoauthor.setAuthor(author);
-    songCoauthor.setFunction("muzyka");
+    songCoauthor.setCoauthorFunction("muzyka");
     return songCoauthor;
   }
 }

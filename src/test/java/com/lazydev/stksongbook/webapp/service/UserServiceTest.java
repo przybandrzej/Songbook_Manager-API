@@ -36,7 +36,7 @@ class UserServiceTest {
   void findById() {
     UserRole role = new UserRole(1L, "admin", new HashSet<>());
     User user = new User(1L, "u@se.r", "password", "username", role,
-        null, null, new HashSet<>(), new HashSet<>(), new HashSet<>());
+        null, null, new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>());
     Mockito.when(repository.findById(2L)).thenReturn(Optional.empty());
     Mockito.when(repository.findById(1L)).thenReturn(Optional.of(user));
 
@@ -51,7 +51,7 @@ class UserServiceTest {
   void findByName() {
     UserRole role = new UserRole(1L, "admin", new HashSet<>());
     User user = new User(1L, "u@se.r", "password", "username", role,
-        null, null, new HashSet<>(), new HashSet<>(), new HashSet<>());
+        null, null, new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>());
 
     Mockito.when(repository.findByUsername("John")).thenReturn(Optional.empty());
     Mockito.when(repository.findByUsername("username")).thenReturn(Optional.of(user));
@@ -67,7 +67,7 @@ class UserServiceTest {
   void findByEmail() {
     UserRole role = new UserRole(1L, "admin", new HashSet<>());
     User user = new User(1L, "u@se.r", "password", "username", role,
-        null, null, new HashSet<>(), new HashSet<>(), new HashSet<>());
+        null, null, new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>());
 
     Mockito.when(repository.findByEmail("a@a.pl")).thenReturn(Optional.empty());
     Mockito.when(repository.findByEmail("u@se.r")).thenReturn(Optional.of(user));
@@ -83,7 +83,7 @@ class UserServiceTest {
   void deleteById() {
     UserRole role = new UserRole(1L, "admin", new HashSet<>());
     User user = new User(1L, "u@se.r", "password", "username", role,
-        null, null, new HashSet<>(), new HashSet<>(), new HashSet<>());
+        null, null, new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>());
 
 
     Mockito.when(repository.findById(1L)).thenReturn(Optional.of(user));
