@@ -37,6 +37,12 @@ After this application is finished I will create an Android app that will connec
 
 Full documentation is available on the server (the main page redirects directly to the documentation).
 
+### Init database
+
+There is **Flyway** for database migration. The DB will be initialized on application's first startup. The only thing to do is to create postgres database and give credentials in `application.properties`.
+
+The init data consists of user roles (user, moderator, admin and superuser) and **Superuser** credentials. The roles' names and Superuser credentials can be changed in `application.yml`. Please change the Superuser's password after first startup which is set to `superuser`.
+
 ### Wiki
 
 Feel free to read [Wiki](https://github.com/przybandrzej/Songbook_Manager-API/wiki) articles. You can find more useful information there. 
@@ -51,6 +57,7 @@ Feel free to read [Wiki](https://github.com/przybandrzej/Songbook_Manager-API/wi
   * [PDF Box]()
   * [Junit 5]()
   * [Mockito]()
+* [Flyway]()
 * [PostgreSQL]()
 * [Heroku]()
 * [Swagger]()

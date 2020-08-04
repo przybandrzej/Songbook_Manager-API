@@ -1,13 +1,20 @@
+spring:
+  flyway:
+    placeholders:
+      role:
+        user: user
+        moderator: moderator
+        admin: admin
+        superuser: superuser
+      superuser:
+        username: superuser
+        password-hash: $2a$10$rI7UAUIq8zUWo2x1uElO..dosFRWT4wZnEGypNd5Aql908E1MvZiO #the password value is 'superuser'
+        email: a@a.com
+        first-name: Super
+        last-name: User
 
 storage:
   location: ./storage
-
-application:
-  role:
-    user: user
-    moderator: moderator
-    admin: admin
-    superuser: superuser
 
 security:
   authentication:
@@ -23,3 +30,4 @@ security:
     #allow-credentials: true
     #max-age: 1800
 
+#application:

@@ -1,6 +1,6 @@
 package com.lazydev.stksongbook.webapp.web.rest;
 
-import com.lazydev.stksongbook.webapp.config.ApplicationProperties;
+import com.lazydev.stksongbook.webapp.config.FlywayProperties;
 import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.data.model.UserRole;
 import com.lazydev.stksongbook.webapp.service.UserRoleService;
@@ -28,7 +28,7 @@ public class AdminResource {
   private final UserMapper mapper;
   private final UserService service;
   private final UserRoleService roleService;
-  private final ApplicationProperties applicationProperties;
+  private final FlywayProperties flywayProperties;
   private final PasswordEncoder passwordEncoder;
 
   @GetMapping("/id/{id}")
@@ -45,7 +45,7 @@ public class AdminResource {
       throw new UsernameAlreadyUsedException(form.getUsername());
     }
     UserRole role = roleService.findById(form.getRoleId());
-    if(role.getName().equals(applicationProperties.getRole().getSuperuser()) && !role.getUsers().isEmpty()) {
+    if(role.getName().equals(flywayProperties.getPlaceholders().getRole().getSuperuser()) && !role.getUsers().isEmpty()) {
       throw new SuperUserAlreadyExistsException();
     }
     User user = mapper.mapFromAddUserDto(form);
