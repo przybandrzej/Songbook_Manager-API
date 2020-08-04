@@ -3,6 +3,7 @@ package com.lazydev.stksongbook.webapp.config;
 import com.lazydev.stksongbook.webapp.security.jwt.JWTConfigurer;
 import com.lazydev.stksongbook.webapp.security.jwt.TokenProvider;
 import org.springframework.beans.factory.BeanInitializationException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,13 +24,14 @@ import javax.annotation.PostConstruct;
 
 @Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final UserDetailsService userDetailsService;
   private final TokenProvider tokenProvider;
   private final CorsFilter corsFilter;
+  @Value("${spring.flyway.placeholders.role.superuser}")
+  private String superuser;
 
   public SecurityConfiguration(UserDetailsService userDetailsService, AuthenticationManagerBuilder authenticationManagerBuilder,
                                CorsFilter corsFilter, TokenProvider tokenProvider) {
@@ -88,21 +90,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeRequests()
-        //.antMatchers("/api/version").permitAll()
         .antMatchers("/api/register").permitAll()
-        //.antMatchers("/api/activate").permitAll()
+        .antMatchers("/api/activate").permitAll()
         .antMatchers("/api/authenticate").permitAll()
-        .antMatchers("/api/user_roles").permitAll()
-        .antMatchers("/api/admin/**").permitAll()
-        //.antMatchers("/api/account/reset-password/init").permitAll()
-        //.antMatchers("/api/account/reset-password/finish").permitAll()
-        //.antMatchers("/api/organisations")//.hasAuthority(AuthoritiesConstants.ADMIN)
-        //.antMatchers("/api/user-wrappers")//.hasAuthority(AuthoritiesConstants.ADMIN)
-        //.antMatchers("/api/user-wrapper-org-assignments")//.hasAuthority(AuthoritiesConstants.ADMIN)
         .antMatchers("/api/**").authenticated()
-        .antMatchers("/management/health").permitAll()
-        .antMatchers("/management/info").permitAll()
-        //.antMatchers("/management/**")//.hasAuthority(AuthoritiesConstants.ADMIN)
         .and()
         .apply(securityConfigurerAdapter());
   }
