@@ -32,13 +32,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   private final UserDetailsService userDetailsService;
   private final TokenProvider tokenProvider;
   private final CorsFilter corsFilter;
-  private final SecurityProperties securityProperties;
 
   public SecurityConfiguration(UserDetailsService userDetailsService, AuthenticationManagerBuilder authenticationManagerBuilder,
-                               SecurityProperties securityProperties, CorsFilter corsFilter, TokenProvider tokenProvider) {
+                               CorsFilter corsFilter, TokenProvider tokenProvider) {
     this.userDetailsService = userDetailsService;
     this.authenticationManagerBuilder = authenticationManagerBuilder;
-    this.securityProperties = securityProperties;
     this.corsFilter = corsFilter;
     this.tokenProvider = tokenProvider;
   }
@@ -63,18 +61,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Bean
   public AuthenticationManager authenticationManagerBean() throws Exception {
     return super.authenticationManagerBean();
-  }
-
-  @Bean
-  public CorsFilter corsFilter() {
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    CorsConfiguration config = securityProperties.getCors();
-    if (config.getAllowedOrigins() != null && !config.getAllowedOrigins().isEmpty()) {
-      source.registerCorsConfiguration("/api/**", config);
-      source.registerCorsConfiguration("/management/**", config);
-      source.registerCorsConfiguration("/v2/api-docs", config);
-    }
-    return new CorsFilter(source);
   }
 
   @Override
@@ -104,12 +90,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeRequests()
-        .antMatchers("/api/version").permitAll()
+        //.antMatchers("/api/version").permitAll()
         .antMatchers("/api/register").permitAll()
-        .antMatchers("/api/activate").permitAll()
+        //.antMatchers("/api/activate").permitAll()
         .antMatchers("/api/authenticate").permitAll()
-        .antMatchers("/api/account/reset-password/init").permitAll()
-        .antMatchers("/api/account/reset-password/finish").permitAll()
+        .antMatchers("/api/user_roles").permitAll()
+        .antMatchers("/api/admin/**").permitAll()
+        //.antMatchers("/api/account/reset-password/init").permitAll()
+        //.antMatchers("/api/account/reset-password/finish").permitAll()
         //.antMatchers("/api/organisations")//.hasAuthority(AuthoritiesConstants.ADMIN)
         //.antMatchers("/api/user-wrappers")//.hasAuthority(AuthoritiesConstants.ADMIN)
         //.antMatchers("/api/user-wrapper-org-assignments")//.hasAuthority(AuthoritiesConstants.ADMIN)

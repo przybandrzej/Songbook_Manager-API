@@ -115,9 +115,9 @@ class UserResourceTest {
 
   @Test
   void testLogin() throws Exception {
-    LoginForm form = LoginForm.builder().email("a@a.pl").password("aaaaaa").build();
-    LoginForm form2 = LoginForm.builder().email("ab@a.pl").password("aaaaaa").build();
-    LoginForm form3 = LoginForm.builder().email("a@a.pl").password("bbbbbbb").build();
+    LoginForm form = LoginForm.builder().login("a@a.pl").password("aaaaaa").build();
+    LoginForm form2 = LoginForm.builder().login("ab@a.pl").password("aaaaaa").build();
+    LoginForm form3 = LoginForm.builder().login("a@a.pl").password("bbbbbbb").build();
     User user = getSample();
 
     given(service.findByEmailNoException("a@a.pl")).willReturn(Optional.of(user));

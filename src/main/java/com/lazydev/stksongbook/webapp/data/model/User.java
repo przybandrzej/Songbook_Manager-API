@@ -95,6 +95,22 @@ public class User {
   @OneToMany(mappedBy = "editedBy", orphanRemoval = true)
   private Set<SongEdit> editedSongs = new HashSet<>();
 
+  public User(Long id, String email, String password, String username, UserRole userRole, String firstName, String lastName,
+              Set<Song> songs, Set<UserSongRating> userRatings, Set<Playlist> playlists, Set<SongAdd> addedSongs, Set<SongEdit> editedSongs) {
+    this.id = id;
+    this.email = email;
+    this.password = password;
+    this.username = username;
+    this.userRole = userRole;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.songs = songs;
+    this.userRatings = userRatings;
+    this.playlists = playlists;
+    this.addedSongs = addedSongs;
+    this.editedSongs = editedSongs;
+  }
+
   public boolean removeSong(Song song) {
     return songs.remove(song);
   }

@@ -64,31 +64,6 @@ public class UserResource {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
-  @PostMapping("/register")
-  public ResponseEntity<UserDTO> register(@RequestBody @Valid RegisterNewUserForm form) {
-    if(service.findByEmailNoException(form.getEmail()).isPresent()) {
-      throw new EmailAlreadyUsedException();
-    }
-    if(service.findByUsernameNoException(form.getUsername()).isPresent()) {
-      throw new UsernameAlreadyUsedException(form.getUsername());
-    }
-    User user = mapper.mapFromRegisterForm(form);
-    User created = service.save(user);
-    return new ResponseEntity<>(mapper.map(created), HttpStatus.CREATED);
-  }
-
-  @PostMapping("/login")
-  public ResponseEntity<UserDTO> login(@RequestBody @Valid LoginForm form) {
-    var optional = service.findByEmailNoException(form.getEmail());
-    if(optional.isEmpty()) {
-      throw new UserNotExistsException(form.getEmail());
-    }
-    if(!optional.get().getPassword().equals(form.getPassword())) {
-      throw new InvalidPasswordException();
-    }
-    return new ResponseEntity<>(mapper.map(optional.get()), HttpStatus.OK);
-  }
-
   @PutMapping
   public ResponseEntity<UserDTO> update(@RequestBody @Valid UserDTO dto) {
     if(service.findByIdNoException(dto.getId()).isEmpty()) {

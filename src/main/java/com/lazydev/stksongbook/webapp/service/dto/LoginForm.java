@@ -10,7 +10,7 @@ import lombok.Value;
 @Builder(builderClassName = "Builder", toBuilder = true)
 public class LoginForm {
 
-  String email;
+  String login;
   String password;
 
   @JsonPOJOBuilder(withPrefix = "")
