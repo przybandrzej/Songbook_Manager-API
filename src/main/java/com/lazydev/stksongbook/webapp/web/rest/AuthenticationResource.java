@@ -1,5 +1,6 @@
 package com.lazydev.stksongbook.webapp.web.rest;
 
+import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.security.jwt.JWTConfigurer;
 import com.lazydev.stksongbook.webapp.security.jwt.TokenProvider;
 import com.lazydev.stksongbook.webapp.service.UserService;
@@ -42,7 +43,10 @@ public class AuthenticationResource {
     if(service.findByUsernameNoException(form.getUsername()).isPresent()) {
       throw new UsernameAlreadyUsedException(form.getUsername());
     }
-    service.save(mapper.mapFromRegisterForm(form));
+    User user = mapper.mapFromRegisterForm(form);
+    // todo when mail activation is ready
+    user.setActivated(true);
+    service.save(user);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
