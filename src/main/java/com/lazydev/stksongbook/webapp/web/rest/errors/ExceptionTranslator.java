@@ -1,5 +1,6 @@
 package com.lazydev.stksongbook.webapp.web.rest.errors;
 
+import com.lazydev.stksongbook.webapp.security.UserNotActivatedException;
 import com.lazydev.stksongbook.webapp.service.exception.*;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -97,6 +98,13 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
       SuperUserAlreadyExistsException.class })
   protected ResponseEntity<Object> handleException(RuntimeException ex, WebRequest request) {
     Error apiError = new Error(BAD_REQUEST);
+    apiError.setMessage(ex.getMessage());
+    return buildResponseEntity(apiError);
+  }
+
+  @ExceptionHandler(UserNotActivatedException.class)
+  protected ResponseEntity<Object> handleNotActivated(UserNotActivatedException ex, WebRequest request) {
+    Error apiError = new Error(FORBIDDEN);
     apiError.setMessage(ex.getMessage());
     return buildResponseEntity(apiError);
   }

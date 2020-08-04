@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -72,6 +73,10 @@ public class User {
   @Column(name = "last_name")
   private String lastName;
 
+  @NotNull
+  @Column(name = "activated", nullable = false)
+  private boolean activated = false;
+
   @ManyToMany
   @JoinTable(name = "users_songs",
       joinColumns = @JoinColumn(name = "user_id"),
@@ -89,6 +94,22 @@ public class User {
 
   @OneToMany(mappedBy = "editedBy", orphanRemoval = true)
   private Set<SongEdit> editedSongs = new HashSet<>();
+
+  public User(Long id, String email, String password, String username, UserRole userRole, String firstName, String lastName,
+              Set<Song> songs, Set<UserSongRating> userRatings, Set<Playlist> playlists, Set<SongAdd> addedSongs, Set<SongEdit> editedSongs) {
+    this.id = id;
+    this.email = email;
+    this.password = password;
+    this.username = username;
+    this.userRole = userRole;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.songs = songs;
+    this.userRatings = userRatings;
+    this.playlists = playlists;
+    this.addedSongs = addedSongs;
+    this.editedSongs = editedSongs;
+  }
 
   public boolean removeSong(Song song) {
     return songs.remove(song);

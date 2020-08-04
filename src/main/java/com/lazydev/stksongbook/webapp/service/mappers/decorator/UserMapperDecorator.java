@@ -43,6 +43,7 @@ public abstract class UserMapperDecorator implements UserMapper {
     user.setPassword(found.getPassword());
     user.setEditedSongs(found.getEditedSongs());
     user.setAddedSongs(found.getAddedSongs());
+    user.setActivated(found.isActivated());
     return user;
   }
 
@@ -65,6 +66,7 @@ public abstract class UserMapperDecorator implements UserMapper {
     user.setSongs(new HashSet<>());
     user.setPlaylists(new HashSet<>());
     user.setUserRatings(new HashSet<>());
+    user.setActivated(true);
     return user;
   }
 }

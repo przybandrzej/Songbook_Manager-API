@@ -14,6 +14,7 @@ import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,6 +29,7 @@ public class AdminResource {
   private final UserService service;
   private final UserRoleService roleService;
   private final ApplicationProperties applicationProperties;
+  private final PasswordEncoder passwordEncoder;
 
   @GetMapping("/id/{id}")
   public ResponseEntity<UserDTO> getById(@PathVariable("id") Long id) {
@@ -47,6 +49,7 @@ public class AdminResource {
       throw new SuperUserAlreadyExistsException();
     }
     User user = mapper.mapFromAddUserDto(form);
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
     User created = service.save(user);
     return new ResponseEntity<>(mapper.map(created), HttpStatus.CREATED);
   }
