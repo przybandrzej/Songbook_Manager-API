@@ -5,6 +5,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "spring.flyway")
 public class FlywayProperties {
 
+  Placeholders placeholders = new Placeholders();
+
+  public Placeholders getPlaceholders() {
+    return placeholders;
+  }
+
+  public void setPlaceholders(Placeholders placeholders) {
+    this.placeholders = placeholders;
+  }
 
   public static class Placeholders {
 
