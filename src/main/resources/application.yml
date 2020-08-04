@@ -15,3 +15,11 @@ security:
       secret: 55d3de79e7b18c67f42f420e9065b980bba03659
       # Token is valid 24 hours
       token-validity-in-seconds: 86400
+  #cors:
+    #allowed-origins: "*"
+    #allowed-methods: "*"
+    #allowed-headers: "*"
+    #exposed-headers: "Authorization,Link,X-Total-Count"
+    #allow-credentials: true
+    #max-age: 1800
+

@@ -1,11 +1,21 @@
 package com.lazydev.stksongbook.webapp.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.web.cors.CorsConfiguration;
 
 @ConfigurationProperties(prefix = "security")
 public class SecurityProperties {
 
   private Authentication authentication = new Authentication();
+  private CorsConfiguration cors = new CorsConfiguration();
+
+  public CorsConfiguration getCors() {
+    return cors;
+  }
+
+  public void setCors(CorsConfiguration cors) {
+    this.cors = cors;
+  }
 
   public Authentication getAuthentication() {
     return authentication;

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -71,6 +72,10 @@ public class User {
    */
   @Column(name = "last_name")
   private String lastName;
+
+  @NotNull
+  @Column(name = "activated", nullable = false)
+  private boolean activated = false;
 
   @ManyToMany
   @JoinTable(name = "users_songs",

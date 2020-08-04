@@ -1,5 +1,7 @@
 package com.lazydev.stksongbook.webapp.config;
 
+import com.lazydev.stksongbook.webapp.security.jwt.JWTConfigurer;
+import com.lazydev.stksongbook.webapp.security.jwt.TokenProvider;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +17,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import javax.annotation.PostConstruct;
 
@@ -23,12 +28,19 @@ import javax.annotation.PostConstruct;
 //@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-  private final UserDetailsService userDetailsService;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
+  private final UserDetailsService userDetailsService;
+  private final TokenProvider tokenProvider;
+  private final CorsFilter corsFilter;
+  private final SecurityProperties securityProperties;
 
-  public SecurityConfiguration(UserDetailsService userDetailsService, AuthenticationManagerBuilder authenticationManagerBuilder) {
+  public SecurityConfiguration(UserDetailsService userDetailsService, AuthenticationManagerBuilder authenticationManagerBuilder,
+                               SecurityProperties securityProperties, CorsFilter corsFilter, TokenProvider tokenProvider) {
     this.userDetailsService = userDetailsService;
     this.authenticationManagerBuilder = authenticationManagerBuilder;
+    this.securityProperties = securityProperties;
+    this.corsFilter = corsFilter;
+    this.tokenProvider = tokenProvider;
   }
 
   @PostConstruct
@@ -53,6 +65,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     return super.authenticationManagerBean();
   }
 
+  @Bean
+  public CorsFilter corsFilter() {
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    CorsConfiguration config = securityProperties.getCors();
+    if (config.getAllowedOrigins() != null && !config.getAllowedOrigins().isEmpty()) {
+      source.registerCorsConfiguration("/api/**", config);
+      source.registerCorsConfiguration("/management/**", config);
+      source.registerCorsConfiguration("/v2/api-docs", config);
+    }
+    return new CorsFilter(source);
+  }
+
   @Override
   public void configure(WebSecurity web) throws Exception {
     web.ignoring()
@@ -69,6 +93,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     http
         .csrf()
         .disable()
+        .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
         .exceptionHandling()
         .and()
         .headers()
@@ -79,21 +104,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeRequests()
+        .antMatchers("/api/version").permitAll()
         .antMatchers("/api/register").permitAll()
         .antMatchers("/api/activate").permitAll()
         .antMatchers("/api/authenticate").permitAll()
         .antMatchers("/api/account/reset-password/init").permitAll()
         .antMatchers("/api/account/reset-password/finish").permitAll()
-        .antMatchers("/api/organisations").hasAuthority(AuthoritiesConstants.ADMIN)
-        .antMatchers("/api/user-wrappers").hasAuthority(AuthoritiesConstants.ADMIN)
-        .antMatchers("/api/user-wrapper-org-assignments").hasAuthority(AuthoritiesConstants.ADMIN)
+        //.antMatchers("/api/organisations")//.hasAuthority(AuthoritiesConstants.ADMIN)
+        //.antMatchers("/api/user-wrappers")//.hasAuthority(AuthoritiesConstants.ADMIN)
+        //.antMatchers("/api/user-wrapper-org-assignments")//.hasAuthority(AuthoritiesConstants.ADMIN)
         .antMatchers("/api/**").authenticated()
         .antMatchers("/management/health").permitAll()
         .antMatchers("/management/info").permitAll()
-        .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
-
+        //.antMatchers("/management/**")//.hasAuthority(AuthoritiesConstants.ADMIN)
         .and()
         .apply(securityConfigurerAdapter());
+  }
 
+  private JWTConfigurer securityConfigurerAdapter() {
+    return new JWTConfigurer(tokenProvider);
   }
 }
