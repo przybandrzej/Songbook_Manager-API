@@ -11,7 +11,8 @@ import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @ComponentScan(basePackages = "com.lazydev.stksongbook.webapp")
-@EnableConfigurationProperties({ StorageProperties.class, ApplicationProperties.class, SecurityProperties.class })
+@EnableConfigurationProperties({StorageProperties.class, ApplicationProperties.class, SecurityProperties.class,
+    FlywayProperties.class})
 @EnableTransactionManagement
 public class ApplicationConfiguration {
 
@@ -25,7 +26,7 @@ public class ApplicationConfiguration {
   public CorsFilter corsFilter() {
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     CorsConfiguration config = securityProperties.getCors();
-    if (config.getAllowedOrigins() != null && !config.getAllowedOrigins().isEmpty()) {
+    if(config.getAllowedOrigins() != null && !config.getAllowedOrigins().isEmpty()) {
       source.registerCorsConfiguration("/api/**", config);
       source.registerCorsConfiguration("/management/**", config);
       source.registerCorsConfiguration("/v2/api-docs", config);
