@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @ComponentScan(basePackages = "com.lazydev.stksongbook.webapp")
-@EnableConfigurationProperties({ StorageProperties.class, ApplicationProperties.class })
+@EnableConfigurationProperties({ StorageProperties.class, ApplicationProperties.class, SecurityProperties.class })
 @EnableTransactionManagement
 public class ApplicationConfiguration {
 
