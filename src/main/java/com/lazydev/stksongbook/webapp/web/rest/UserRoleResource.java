@@ -1,8 +1,7 @@
 package com.lazydev.stksongbook.webapp.web.rest;
 
 import com.lazydev.stksongbook.webapp.data.model.UserRole;
-import com.lazydev.stksongbook.webapp.service.dto.UserRoleDTO;
-import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
+import com.lazydev.stksongbook.webapp.service.UserRoleService;
 import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserRoleDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
@@ -10,8 +9,6 @@ import com.lazydev.stksongbook.webapp.service.exception.EntityAlreadyExistsExcep
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.UserRoleMapper;
-import com.lazydev.stksongbook.webapp.data.model.UserRole;
-import com.lazydev.stksongbook.webapp.service.UserRoleService;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,14 +20,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/api/user_roles")
 @AllArgsConstructor
 public class UserRoleResource {
 
-  private UserRoleService service;
-  private UserRoleMapper mapper;
-  private UserMapper userMapper;
+  private final UserRoleService service;
+  private final UserRoleMapper mapper;
+  private final UserMapper userMapper;
 
   @GetMapping
   public ResponseEntity<List<UserRoleDTO>> getAll() {
@@ -49,6 +45,11 @@ public class UserRoleResource {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
+  /**
+   * @deprecated This should not be implemented. User should not be loaded to UserRole (Lazy Loading) or UserRole should not have User list.
+   * Should use {@link UserResource#getByRole(Long, Integer)}
+   */
+  @Deprecated(since = "1.5.5", forRemoval = true)
   @GetMapping("/id/{id}/users")
   public ResponseEntity<List<UserDTO>> getUsersByUserRoleId(@PathVariable("id") Long id) {
     var tmp = service.findById(id);

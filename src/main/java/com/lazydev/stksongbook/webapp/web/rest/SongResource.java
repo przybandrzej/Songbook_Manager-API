@@ -27,17 +27,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/api/songs")
 @AllArgsConstructor
 public class SongResource {
 
-  private SongService service;
-  private SongMapper mapper;
-  private UserSongRatingMapper userSongRatingMapper;
-  private UserMapper userMapper;
-  private PlaylistMapper playlistMapper;
-  private FileSystemStorageService storageService;
+  private final SongService service;
+  private final SongMapper mapper;
+  private final UserSongRatingMapper userSongRatingMapper;
+  private final UserMapper userMapper;
+  private final PlaylistMapper playlistMapper;
+  private final FileSystemStorageService storageService;
 
   @GetMapping
   public ResponseEntity<List<SongDTO>> getAll(@RequestParam(value = "limit", required = false) Integer limit,
@@ -78,6 +77,13 @@ public class SongResource {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
+  @GetMapping("/author/{authorId}")
+  public ResponseEntity<List<SongDTO>> getByAuthor(@PathVariable("authorId") Long id,
+                                                     @RequestParam(value = "limit", required = false) Integer limit) {
+    List<SongDTO> list = service.findByAuthorId(id, false, limit).stream().map(mapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
+  }
+
   @GetMapping("/tag/{tagId}")
   public ResponseEntity<List<SongDTO>> getByTag(@PathVariable("tagId") Long id,
                                                 @RequestParam(value = "limit", required = false) Integer limit) {
@@ -113,6 +119,9 @@ public class SongResource {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
+  /**
+   * NOTE! This method is considered obsolete
+   */
   @GetMapping("/id/{id}/users")
   public ResponseEntity<List<UserDTO>> getSongUserLibraries(@PathVariable("id") Long id) {
     List<UserDTO> list = service.findById(id).getUsersSongs()
@@ -120,6 +129,9 @@ public class SongResource {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
+  /**
+   * NOTE! This method is considered obsolete
+   */
   @GetMapping("/id/{id}/playlists")
   public ResponseEntity<List<PlaylistDTO>> getSongPlaylists(@PathVariable("id") Long id) {
     List<PlaylistDTO> list = service.findById(id).getPlaylists()
@@ -130,6 +142,7 @@ public class SongResource {
   @PostMapping
   public ResponseEntity<SongDTO> create(@RequestBody @Valid CreateSongDTO obj) {
     var completeSong = service.createAndSaveSong(obj);
+    // todo song.setAddition();
     return new ResponseEntity<>(mapper.map(completeSong), HttpStatus.CREATED);
   }
 
@@ -140,7 +153,7 @@ public class SongResource {
       throw new EntityNotFoundException(Song.class, obj.getId());
     }
     var song = mapper.map(obj);
-    //song.addEdition();
+    // todo song.addEdition();
     var saved = service.save(song);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.OK);
   }

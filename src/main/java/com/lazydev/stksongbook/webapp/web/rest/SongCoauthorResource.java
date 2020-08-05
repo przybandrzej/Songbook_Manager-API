@@ -16,13 +16,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/api/coauthors")
 @AllArgsConstructor
 public class SongCoauthorResource {
 
-  private SongCoauthorMapper songCoauthorMapper;
-  private SongCoauthorService songCoauthorService;
+  private final SongCoauthorMapper songCoauthorMapper;
+  private final SongCoauthorService songCoauthorService;
 
   @GetMapping("/author/{id}")
   public ResponseEntity<List<SongCoauthorDTO>> getByAuthorId(@PathVariable("id") Long id) {

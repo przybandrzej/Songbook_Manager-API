@@ -20,14 +20,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/api/tags")
 @AllArgsConstructor
 public class TagResource {
 
-  private TagService service;
-  private TagMapper modelMapper;
-  private SongMapper songMapper;
+  private final TagService service;
+  private final TagMapper modelMapper;
+  private final SongMapper songMapper;
 
   @GetMapping
   public ResponseEntity<List<TagDTO>> getAll(@RequestParam(value = "limit", required = false) Integer limit) {
@@ -50,6 +49,11 @@ public class TagResource {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
+  /**
+   * @deprecated This should not be implemented. Songs should not be loaded to Tag (Lazy Loading) or Tag should not have Song list.
+   * Should use {@link SongResource#getByTag(Long, Integer)}
+   */
+  @Deprecated(since = "1.5.5", forRemoval = true)
   @GetMapping("/id/{id}/songs")
   public ResponseEntity<List<SongDTO>> getSongsByTagId(@PathVariable("id") Long id) {
     var tmp = service.findById(id);

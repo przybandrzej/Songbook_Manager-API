@@ -16,13 +16,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/api/ratings")
 @AllArgsConstructor
 public class UserSongRatingResource {
 
-  private UserSongRatingMapper mapper;
-  private UserSongRatingService service;
+  private final UserSongRatingMapper mapper;
+  private final UserSongRatingService service;
 
   @GetMapping("/user/{id}")
   public ResponseEntity<List<UserSongRatingDTO>> getByUserId(@PathVariable("id") Long userId) {
