@@ -1,5 +1,6 @@
 package com.lazydev.stksongbook.webapp.data.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -8,6 +9,9 @@ import org.hibernate.annotations.Check;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -73,9 +77,23 @@ public class User {
   @Column(name = "last_name")
   private String lastName;
 
-  @NotNull
   @Column(name = "activated", nullable = false)
   private boolean activated = false;
+
+  @Column(name = "registration_date", nullable = false)
+  private Instant registrationDate;
+
+  @Column(name = "image_url", length = 256)
+  private String imageUrl;
+
+  @Column(name = "activation_key", length = 20)
+  private String activationKey;
+
+  @Column(name = "reset_key", length = 20)
+  private String resetKey;
+
+  @Column(name = "reset_date")
+  private Instant resetDate = null;
 
   @ManyToMany
   @JoinTable(name = "users_songs",
