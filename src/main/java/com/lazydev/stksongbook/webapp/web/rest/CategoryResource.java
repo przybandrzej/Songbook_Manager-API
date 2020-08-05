@@ -20,14 +20,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/api/categories")
 @AllArgsConstructor
 public class CategoryResource {
 
-  private CategoryService service;
-  private CategoryMapper modelMapper;
-  private SongMapper songMapper;
+  private final CategoryService service;
+  private final CategoryMapper modelMapper;
+  private final SongMapper songMapper;
 
   @GetMapping
   public ResponseEntity<List<CategoryDTO>> getAll() {
@@ -46,6 +45,11 @@ public class CategoryResource {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
+  /**
+   * @deprecated This should not be implemented. Songs should not be loaded to Category (Lazy Loading) or Category should not have Song list.
+   * Should use {@link SongResource#getByCategory(Long, Integer)}
+   */
+  @Deprecated(since = "1.5.5", forRemoval = true)
   @GetMapping("/id/{id}/songs")
   public ResponseEntity<List<SongDTO>> getSongsByCategoryId(@PathVariable("id") Long id) {
     var tmp = service.findById(id);

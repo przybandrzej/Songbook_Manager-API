@@ -11,14 +11,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/awaiting-songs")
 @AllArgsConstructor
 public class AwaitingSongResource {
 
-  private SongService service;
-  private SongMapper mapper;
+  private final SongService service;
+  private final SongMapper mapper;
 
   @GetMapping
   public ResponseEntity<List<SongDTO>> getAll(@RequestParam(value = "limit", required = false) Integer limit) {

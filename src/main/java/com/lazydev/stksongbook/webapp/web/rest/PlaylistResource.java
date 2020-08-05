@@ -22,15 +22,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/api/playlists")
 @AllArgsConstructor
 public class PlaylistResource {
 
-  private PlaylistService service;
-  private PlaylistMapper mapper;
-  private PdfService pdfService;
-  private FileSystemStorageService storageService;
+  private final PlaylistService service;
+  private final PlaylistMapper mapper;
+  private final PdfService pdfService;
+  private final FileSystemStorageService storageService;
 
   @GetMapping
   public ResponseEntity<List<PlaylistDTO>> getAll(

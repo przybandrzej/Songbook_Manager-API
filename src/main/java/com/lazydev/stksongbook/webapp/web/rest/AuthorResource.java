@@ -19,14 +19,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/api/authors")
 @AllArgsConstructor
 public class AuthorResource {
 
-  private AuthorService service;
-  private AuthorMapper mapper;
-  private SongMapper songMapper;
+  private final AuthorService service;
+  private final AuthorMapper mapper;
+  private final SongMapper songMapper;
 
   @GetMapping
   public ResponseEntity<List<AuthorDTO>> getAll(@RequestParam(value = "limit", required = false) Integer limit) {
@@ -54,6 +53,11 @@ public class AuthorResource {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
+  /**
+   * @deprecated This should not be implemented. Songs should not be loaded to Author (Lazy Loading) or Author should not have Song list.
+   * Should use {@link SongResource#getByAuthor(Long, Integer)}
+   */
+  @Deprecated(since = "1.5.5", forRemoval = true)
   @GetMapping("/id/{id}/songs")
   public ResponseEntity<List<SongDTO>> getSongsByAuthorId(@PathVariable("id") Long id) {
     var tmp = service.findById(id);

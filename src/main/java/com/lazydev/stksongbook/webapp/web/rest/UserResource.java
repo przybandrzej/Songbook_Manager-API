@@ -18,15 +18,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/api/users")
 @AllArgsConstructor
 public class UserResource {
 
-  private UserMapper mapper;
-  private UserService service;
-  private UserSongRatingMapper userSongRatingMapper;
-  private PlaylistMapper playlistMapper;
+  private final UserMapper mapper;
+  private final UserService service;
+  private final UserSongRatingMapper userSongRatingMapper;
+  private final PlaylistMapper playlistMapper;
 
   @GetMapping
   public ResponseEntity<List<UserDTO>> getAll(@RequestParam(value = "limit", required = false) Integer limit) {
@@ -43,6 +42,9 @@ public class UserResource {
     return new ResponseEntity<>(mapper.map(service.findById(id)), HttpStatus.OK);
   }
 
+  /**
+   * NOTE! Should be changed (lazy loading)
+   */
   @GetMapping("/id/{id}/ratings")
   public ResponseEntity<List<UserSongRatingDTO>> getRatingsByUserId(@PathVariable("id") Long id) {
     var tmp = service.findById(id);
@@ -51,6 +53,9 @@ public class UserResource {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
+  /**
+   * NOTE! Should be changed (lazy loading)
+   */
   @GetMapping("/id/{id}/playlists")
   public ResponseEntity<List<PlaylistDTO>> getPlaylistsByUserId(@PathVariable("id") Long id) {
     var tmp = service.findById(id);
@@ -58,6 +63,9 @@ public class UserResource {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
+  /**
+   * NOTE! Should be changed. Cannot update whole User entity
+   */
   @PutMapping
   public ResponseEntity<UserDTO> update(@RequestBody @Valid UserDTO dto) {
     if(service.findByIdNoException(dto.getId()).isEmpty()) {
