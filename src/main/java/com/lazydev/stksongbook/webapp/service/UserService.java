@@ -5,6 +5,7 @@ import com.lazydev.stksongbook.webapp.repository.UserRepository;
 import com.lazydev.stksongbook.webapp.repository.UserRoleRepository;
 import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm;
 import com.lazydev.stksongbook.webapp.service.exception.EntityDependentNotInitialized;
+import com.lazydev.stksongbook.webapp.service.exception.SuperUserAlreadyExistsException;
 import com.lazydev.stksongbook.webapp.service.exception.UserNotExistsException;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,8 @@ public class UserService {
   private final UserRoleRepository roleRepository;
   @Value("${spring.flyway.placeholders.role.user}")
   private String userRoleName;
+  @Value("${spring.flyway.placeholders.role.superuser}")
+  private String superuserRoleName;
 
   public UserService(UserRepository repository, PlaylistService playlistService, PasswordEncoder passwordEncoder, UserRoleRepository roleRepository) {
     this.repository = repository;
@@ -79,6 +82,13 @@ public class UserService {
   }
 
   public User save(User saveUser) {
+    if(saveUser.getUserRole().getName().equals(superuserRoleName)) {
+      boolean superuserExists = !roleRepository.findByName(superuserRoleName).map(role -> role.getUsers().isEmpty())
+          .orElseThrow(() -> new EntityDependentNotInitialized(superuserRoleName));
+      if(superuserExists) {
+        throw new SuperUserAlreadyExistsException();
+      }
+    }
     return repository.save(saveUser);
   }
 
