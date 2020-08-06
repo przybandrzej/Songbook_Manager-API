@@ -66,7 +66,7 @@ public class UserResource {
   /**
    * NOTE! Should be changed. Cannot update whole User entity
    */
-  @PutMapping
+  /*@PutMapping
   public ResponseEntity<UserDTO> update(@RequestBody @Valid UserDTO dto) {
     if(service.findByIdNoException(dto.getId()).isEmpty()) {
       throw new UserNotExistsException(dto.getId());
@@ -74,7 +74,7 @@ public class UserResource {
     var user = mapper.map(dto);
     var saved = service.save(user);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.OK);
-  }
+  }*/
 
   @DeleteMapping("/id/{id}")
   public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
