@@ -14,7 +14,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserRoleService {
 
-  private UserRoleRepository repository;
+  private final UserRoleRepository repository;
 
   public Optional<UserRole> findByIdNoException(Long id) {
     return repository.findById(id);

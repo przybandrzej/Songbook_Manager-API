@@ -44,8 +44,6 @@ CREATE SEQUENCE playlists_id_seq
     NO MAXVALUE
     CACHE 1;
 
-ALTER SEQUENCE playlists_id_seq OWNED BY playlists.id;
-
 CREATE TABLE playlists_songs (
                                  playlist_id bigint NOT NULL,
                                  song_id bigint NOT NULL
@@ -141,16 +139,20 @@ CREATE SEQUENCE user_roles_id_seq
     NO MAXVALUE
     CACHE 1;
 
-
 ALTER SEQUENCE user_roles_id_seq OWNED BY user_roles.id;
 
 CREATE TABLE users (
                        id bigint NOT NULL,
                        activated boolean NOT NULL,
+                       activation_key character varying(20),
                        e_mail character varying(255) NOT NULL,
                        first_name character varying(255),
+                       image_url character varying(256),
                        last_name character varying(255),
                        password character varying(255) NOT NULL,
+                       registration_date timestamp without time zone NOT NULL,
+                       reset_date timestamp without time zone,
+                       reset_key character varying(20),
                        username character varying(255) NOT NULL,
                        user_role_id bigint NOT NULL,
                        CONSTRAINT users_check CHECK (((length((password)::text) >= 6) AND (length((username)::text) >= 4)))

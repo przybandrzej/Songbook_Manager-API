@@ -47,7 +47,7 @@ public class UserRoleResource {
 
   /**
    * @deprecated This should not be implemented. User should not be loaded to UserRole (Lazy Loading) or UserRole should not have User list.
-   * Should use {@link UserResource#getByRole(Long, Integer)}
+   * Should use {@link UserResource#getByRole(Long, Integer)} todo
    */
   @Deprecated(since = "1.5.5", forRemoval = true)
   @GetMapping("/id/{id}/users")

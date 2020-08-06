@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
 public class UserService {
 
   private final UserRepository repository;
@@ -26,7 +25,14 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
   private final UserRoleRepository roleRepository;
   @Value("${spring.flyway.placeholders.role.user}")
-  private final String userRoleName;
+  private String userRoleName;
+
+  public UserService(UserRepository repository, PlaylistService playlistService, PasswordEncoder passwordEncoder, UserRoleRepository roleRepository) {
+    this.repository = repository;
+    this.playlistService = playlistService;
+    this.passwordEncoder = passwordEncoder;
+    this.roleRepository = roleRepository;
+  }
 
   public Optional<User> findByIdNoException(Long id) {
     return repository.findById(id);

@@ -12,6 +12,7 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -46,7 +47,7 @@ public abstract class PlaylistMapperDecorator implements PlaylistMapper {
     dto.getSongs().forEach(s -> songs.add(songService.findById(s)));
     playlist.setSongs(songs);
     playlist.setId(Constants.DEFAULT_ID);
-    playlist.setCreationTime(LocalDateTime.now());
+    playlist.setCreationTime(Instant.now());
     playlist.setPrivate(dto.getIsPrivate());
     return playlist;
   }

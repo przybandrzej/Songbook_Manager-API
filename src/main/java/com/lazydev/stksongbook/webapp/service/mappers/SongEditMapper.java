@@ -14,7 +14,6 @@ public interface SongEditMapper {
 
   @Mapping(target = "editedSong", source = "editedSong.id")
   @Mapping(target = "editedBy", source = "editedBy.id")
-  @Mapping(target = "timestamp", source = "timestamp", dateFormat = "dd-MM-yyyy HH:mm:ss")
   SongEditDTO map(SongEdit entity);
 
   @Mapping(target = "editedSong", ignore = true)

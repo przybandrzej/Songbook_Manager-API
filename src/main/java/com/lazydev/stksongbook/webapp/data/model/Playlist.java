@@ -6,7 +6,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -60,13 +61,13 @@ public class Playlist {
    * @param creationTime stores the date and time of the playlist's creation.
    */
   @Column(name = "creation_time", nullable = false, columnDefinition = "TIMESTAMP default NOW()")
-  private LocalDateTime creationTime;
+  private Instant creationTime;
 
   @ManyToMany
   @JoinTable(name = "playlists_songs",
       joinColumns = @JoinColumn(name = "playlist_id"),
       inverseJoinColumns = @JoinColumn(name = "song_id"))
-  private Set<Song> songs;
+  private Set<Song> songs = new HashSet<>();
 
   public void addSong(Song song) {
     songs.add(song);

@@ -43,7 +43,7 @@ class UserResourceTest {
    * The only tested methods are the Create, Update and one GET.
    */
 
-  @Mock
+  /*@Mock
   private PlaylistMapper playlistMapper;
   @Mock
   private UserSongRatingMapper userSongRatingMapper;
@@ -62,7 +62,7 @@ class UserResourceTest {
     mockMvc = MockMvcBuilders.standaloneSetup(controller).setControllerAdvice(ExceptionTranslator.class).build();
   }
 
-  /*@Test
+  @Test
   void testRegister() throws Exception {
     RegisterNewUserForm validDto = RegisterNewUserForm.builder().email("a@aa.pl").firstName("First").lastName(null)
         .password("Abcdef12").username("username").build();
@@ -136,7 +136,7 @@ class UserResourceTest {
         .andExpect(status().isUnauthorized());
   }*/
 
-  @Test
+  /*@Test
   void testUpdate() throws Exception {
     User user = getSample();
     UserDTO validDto = map(user);
@@ -218,5 +218,5 @@ class UserResourceTest {
   private String convertObjectToJsonString(UserDTO dto) throws JsonProcessingException {
     ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
     return writer.writeValueAsString(dto);
-  }
+  }*/
 }

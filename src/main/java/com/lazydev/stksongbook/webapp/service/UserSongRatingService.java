@@ -13,7 +13,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserSongRatingService {
 
-  private UserSongRatingRepository repository;
+  private final UserSongRatingRepository repository;
 
   public List<UserSongRating> findAll() {
     return repository.findAll();

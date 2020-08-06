@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -101,7 +102,7 @@ class SongMapperTest {
     coauthorDTOS.add(firstCoauthor);
     coauthorDTOS.add(secondCoauthor);
     SongAddDTO timestampDTO = SongAddDTO.builder().addedSong(1L).addedBy(2L).id(1L)
-        .timestamp(song.getAdded().getTimestamp().format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMAT))).build();
+        .timestamp(song.getAdded().getTimestamp()).build();
     SongDTO dto = SongDTO.builder().id(1L).title("dummy title").lyrics("dasdafsgsdg gfdasgsd").guitarTabs("ddddddddd")
         .author(authorDTO).tags(List.of(tagDTO)).averageRating(0.75).category(categoryDTO).trivia(null)
         .addedBy(timestampDTO)
@@ -185,7 +186,7 @@ class SongMapperTest {
     User usero = new User();
     usero.setId(2L);
     SongAdd timestamp = new SongAdd();
-    timestamp.setTimestamp(LocalDateTime.now());
+    timestamp.setTimestamp(Instant.now());
     timestamp.setId(1L);
     song.setAdded(timestamp);
     usero.addAddedSong(timestamp);

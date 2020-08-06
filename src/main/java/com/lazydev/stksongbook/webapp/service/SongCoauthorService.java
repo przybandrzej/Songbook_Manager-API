@@ -16,7 +16,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class SongCoauthorService {
 
-  private SongCoauthorRepository repository;
+  private final SongCoauthorRepository repository;
 
   public Optional<SongCoauthor> findBySongIdAndAuthorIdNoException(Long songId, Long authorId) {
     return repository.findBySongIdAndAuthorId(songId, authorId);

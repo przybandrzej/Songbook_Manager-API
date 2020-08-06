@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 @DecoratedWith(PlaylistMapperDecorator.class)
 public interface PlaylistMapper {
 
-    @Mapping(target="creationTime", source = "creationTime", dateFormat = "dd-MM-yyyy HH:mm:ss")
     @Mapping(target = "songs", expression = "java(getIds(entity.getSongs()))")
     @Mapping(target = "ownerId", source = "owner.id")
     @Mapping(target = "isPrivate", expression = "java(entity.isPrivate())")
