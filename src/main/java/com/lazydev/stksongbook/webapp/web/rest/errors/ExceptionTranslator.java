@@ -13,7 +13,6 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -62,12 +61,12 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
                                                                 HttpStatus status, WebRequest request) {
     List<SubError> errors = new ArrayList<>();
-    for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+    for(FieldError error : ex.getBindingResult().getFieldErrors()) {
       errors.add(new ApiValidationError(error.getField(),
           error.getRejectedValue() == null ? "null" : error.getRejectedValue().toString(), error.getDefaultMessage()));
     }
-    for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
-      errors.add(new ApiValidationError(error.getObjectName(), null,  error.getDefaultMessage()));
+    for(ObjectError error : ex.getBindingResult().getGlobalErrors()) {
+      errors.add(new ApiValidationError(error.getObjectName(), null, error.getDefaultMessage()));
     }
     Error apiError = new Error(HttpStatus.BAD_REQUEST, "Validation failed", errors);
     return buildResponseEntity(apiError);
@@ -76,9 +75,9 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
   @ExceptionHandler(ConstraintViolationException.class)
   protected ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex, WebRequest request) {
     List<SubError> errors = new ArrayList<>();
-    for (ConstraintViolation<?> error : ex.getConstraintViolations()) {
+    for(ConstraintViolation<?> error : ex.getConstraintViolations()) {
       String field = null;
-      for (Path.Node node : error.getPropertyPath()) {
+      for(Path.Node node : error.getPropertyPath()) {
         field = node.getName();
       }
       errors.add(new ApiValidationError(field,
@@ -88,14 +87,14 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
     return buildResponseEntity(apiError);
   }
 
-  @ExceptionHandler({ EmailAlreadyUsedException.class,
+  @ExceptionHandler({EmailAlreadyUsedException.class,
       UsernameAlreadyUsedException.class,
       EntityAlreadyExistsException.class,
       FileNotFoundException.class,
       StorageException.class,
       ParameterNotDefinedException.class,
       CannotDeleteEntityException.class,
-      SuperUserAlreadyExistsException.class })
+      SuperUserAlreadyExistsException.class})
   protected ResponseEntity<Object> handleException(RuntimeException ex, WebRequest request) {
     Error apiError = new Error(BAD_REQUEST);
     apiError.setMessage(ex.getMessage());
@@ -109,8 +108,9 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
     return buildResponseEntity(apiError);
   }
 
-  @ExceptionHandler(EntityDependentNotInitialized.class)
-  protected ResponseEntity<Object> handleDependentEntitiesNotFound(EntityDependentNotInitialized ex, WebRequest request) {
+  @ExceptionHandler({EntityDependentNotInitialized.class,
+      AuthenticationException.class})
+  protected ResponseEntity<Object> handleDependentEntitiesNotFound(RuntimeException ex, WebRequest request) {
     Error apiError = new Error(INTERNAL_SERVER_ERROR);
     apiError.setMessage(ex.getMessage());
     return buildResponseEntity(apiError);

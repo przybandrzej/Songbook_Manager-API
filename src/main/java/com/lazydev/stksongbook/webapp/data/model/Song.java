@@ -38,7 +38,7 @@ public class Song {
   private Author author;
 
   @OneToMany(mappedBy = "song")
-  private Set<SongCoauthor> coauthors;
+  private Set<SongCoauthor> coauthors = new HashSet<>();
 
   /**
    * @param title stores the song's title.
