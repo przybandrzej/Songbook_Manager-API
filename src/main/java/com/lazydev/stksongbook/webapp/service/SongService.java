@@ -1,10 +1,7 @@
 package com.lazydev.stksongbook.webapp.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lazydev.stksongbook.webapp.data.model.Author;
-import com.lazydev.stksongbook.webapp.data.model.Song;
-import com.lazydev.stksongbook.webapp.data.model.SongAdd;
-import com.lazydev.stksongbook.webapp.data.model.Tag;
+import com.lazydev.stksongbook.webapp.data.model.*;
 import com.lazydev.stksongbook.webapp.repository.SongAddRepository;
 import com.lazydev.stksongbook.webapp.repository.SongEditRepository;
 import com.lazydev.stksongbook.webapp.repository.SongRepository;
@@ -206,10 +203,6 @@ public class SongService {
     return repository.findByAddedTimestampLessThanEqual(val);
   }
 
-  public Song save(Song saveSong) {
-    return repository.save(saveSong);
-  }
-
   public void deleteById(Long id) {
     var song = findById(id);
     song.getCoauthors().forEach(coauthorService::delete);
@@ -223,15 +216,18 @@ public class SongService {
     repository.deleteById(id);
   }
 
+  public Song updateSong(Song song) {
+    SongEdit edit = new SongEdit();
+    edit.setId(Constants.DEFAULT_ID);
+    userService.getCurrentUser().addEditedSong(edit);
+    song.addEdit(edit);
+    return repository.save(song);
+  }
+
   public Song createAndSaveSong(@Valid CreateSongDTO obj) {
     Song song = new Song();
     song.setId(Constants.DEFAULT_ID);
     song.setCategory(categoryService.findById(obj.getCategoryId()));
-    song.setUsersSongs(new HashSet<>());
-    song.setRatings(new HashSet<>());
-    song.setPlaylists(new HashSet<>());
-    song.setCoauthors(new HashSet<>());
-    song.setTags(new HashSet<>());
     song.setTitle(obj.getTitle());
     song.setLyrics(obj.getLyrics());
     song.setGuitarTabs(obj.getGuitarTabs());
@@ -254,7 +250,7 @@ public class SongService {
     SongAdd timestamp = new SongAdd();
     timestamp.setId(Constants.DEFAULT_ID);
     timestamp.setTimestamp(Instant.now());
-    userService.findById(obj.getUserIdAdded()).addAddedSong(timestamp);
+    userService.getCurrentUser().addAddedSong(timestamp);
     savedSong.setAdded(timestamp);
     songAddRepository.save(timestamp);
 

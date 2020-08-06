@@ -153,8 +153,7 @@ public class SongResource {
       throw new EntityNotFoundException(Song.class, obj.getId());
     }
     var song = mapper.map(obj);
-    // todo song.addEdition();
-    var saved = service.save(song);
+    var saved = service.updateSong(song);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.OK);
   }
 
