@@ -1,6 +1,5 @@
 package com.lazydev.stksongbook.webapp.data.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -8,10 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -99,13 +95,13 @@ public class User {
   @JoinTable(name = "users_songs",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "song_id"))
-  private Set<Song> songs;
+  private Set<Song> songs = new HashSet<>();
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<UserSongRating> userRatings;
+  private Set<UserSongRating> userRatings = new HashSet<>();
 
   @OneToMany(mappedBy = "owner", orphanRemoval = true)
-  private Set<Playlist> playlists;
+  private Set<Playlist> playlists = new HashSet<>();
 
   @OneToMany(mappedBy = "addedBy", orphanRemoval = true)
   private Set<SongAdd> addedSongs = new HashSet<>();

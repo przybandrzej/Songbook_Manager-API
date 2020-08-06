@@ -109,6 +109,13 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
     return buildResponseEntity(apiError);
   }
 
+  @ExceptionHandler(EntityDependentNotInitialized.class)
+  protected ResponseEntity<Object> handleDependentEntitiesNotFound(EntityDependentNotInitialized ex, WebRequest request) {
+    Error apiError = new Error(INTERNAL_SERVER_ERROR);
+    apiError.setMessage(ex.getMessage());
+    return buildResponseEntity(apiError);
+  }
+
   @Override
   protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
                                                                 HttpHeaders headers, HttpStatus status,

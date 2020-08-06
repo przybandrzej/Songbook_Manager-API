@@ -2,11 +2,18 @@ package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.repository.UserRepository;
+import com.lazydev.stksongbook.webapp.repository.UserRoleRepository;
+import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm;
+import com.lazydev.stksongbook.webapp.service.exception.EntityDependentNotInitialized;
 import com.lazydev.stksongbook.webapp.service.exception.UserNotExistsException;
+import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,8 +21,12 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserService {
 
-  private UserRepository repository;
-  private PlaylistService playlistService;
+  private final UserRepository repository;
+  private final PlaylistService playlistService;
+  private final PasswordEncoder passwordEncoder;
+  private final UserRoleRepository roleRepository;
+  @Value("${spring.flyway.placeholders.role.user}")
+  private final String userRoleName;
 
   public Optional<User> findByIdNoException(Long id) {
     return repository.findById(id);
@@ -69,5 +80,21 @@ public class UserService {
     var user = findById(id);
     user.getPlaylists().forEach(it -> playlistService.deleteById(it.getId()));
     repository.deleteById(id);
+  }
+
+  public User register(RegisterNewUserForm form) {
+    User user = new User();
+    user.setRegistrationDate(Instant.now());
+    // todo user.setActivationKey();
+    user.setId(Constants.DEFAULT_ID);
+    user.setUsername(form.getUsername());
+    user.setEmail(form.getEmail());
+    // todo user.setActivated(false);
+    user.setActivated(true);
+    user.setFirstName(form.getFirstName());
+    user.setLastName(form.getLastName());
+    user.setPassword(passwordEncoder.encode(form.getPassword()));
+    user.setUserRole(roleRepository.findByName(userRoleName).orElseThrow(() -> new EntityDependentNotInitialized(userRoleName)));
+    return repository.save(user);
   }
 }
