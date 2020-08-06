@@ -88,7 +88,7 @@ class SongServiceTest {
     CreateCoauthorDTO coauthorDTO2 = CreateCoauthorDTO.builder().authorName("coauthor2").coauthorFunction("tekst").build();
     CreateSongDTO dto = CreateSongDTO.builder().authorName("author").categoryId(1L).title("title s").trivia(null)
         .lyrics("dsa fa fda").tags(List.of("tag1", "tag2")).guitarTabs("gfsdgsjhifs")
-        .coauthors(Set.of(coauthorDTO, coauthorDTO2)).userIdAdded(1L).build();
+        .coauthors(Set.of(coauthorDTO, coauthorDTO2)).build();
 
     Tag tag1 = new Tag(1L, "tag1", new HashSet<>());
     Tag tag2 = new Tag(2L, "tag2", new HashSet<>());

@@ -1,5 +1,6 @@
 package com.lazydev.stksongbook.webapp.security;
 
+import com.lazydev.stksongbook.webapp.data.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
