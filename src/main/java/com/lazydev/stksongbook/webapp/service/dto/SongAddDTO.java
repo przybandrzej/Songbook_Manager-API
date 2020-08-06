@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Value;
 
 import javax.validation.constraints.NotNull;
+import java.time.Instant;
 
 @Value
 @JsonDeserialize(builder = SongAddDTO.Builder.class)
@@ -21,7 +22,7 @@ public class SongAddDTO {
   @NotNull(message = "User ID must be defined.")
   Long addedBy;
 
-  String timestamp;
+  Instant timestamp;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class Builder {

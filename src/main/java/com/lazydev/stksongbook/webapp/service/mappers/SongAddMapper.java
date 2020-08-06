@@ -14,7 +14,6 @@ public interface SongAddMapper {
 
   @Mapping(target = "addedSong", source = "addedSong.id")
   @Mapping(target = "addedBy", source = "addedBy.id")
-  @Mapping(target = "timestamp", source = "timestamp", dateFormat = "dd-MM-yyyy HH:mm:ss")
   SongAddDTO map(SongAdd entity);
 
   @Mapping(target = "addedSong", ignore = true)

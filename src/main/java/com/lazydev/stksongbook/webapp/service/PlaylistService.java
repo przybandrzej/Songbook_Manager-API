@@ -14,7 +14,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class PlaylistService {
 
-  private PlaylistRepository repository;
+  private final PlaylistRepository repository;
 
   public Optional<Playlist> findByIdNoException(Long id, boolean includePrivate) {
     if(!includePrivate) {

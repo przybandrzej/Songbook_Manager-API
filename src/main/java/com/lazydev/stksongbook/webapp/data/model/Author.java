@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -44,10 +45,10 @@ public class Author {
   private String photoResource;
 
   @OneToMany(mappedBy = "author")
-  private Set<SongCoauthor> coauthorSongs;
+  private Set<SongCoauthor> coauthorSongs = new HashSet<>();
 
   @OneToMany(mappedBy = "author")
-  private Set<Song> songs;
+  private Set<Song> songs = new HashSet<>();
 
   public void addCoauthorSong(SongCoauthor coauthor) {
     coauthorSongs.add(coauthor);

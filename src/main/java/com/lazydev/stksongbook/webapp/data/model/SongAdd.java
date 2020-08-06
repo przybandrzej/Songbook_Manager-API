@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "song_adds")
@@ -28,5 +28,5 @@ public class SongAdd {
   private Song addedSong;
 
   @Column(name = "timestamp", nullable = false)
-  private LocalDateTime timestamp;
+  private Instant timestamp;
 }

@@ -9,6 +9,7 @@ import lombok.Value;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.time.Instant;
 import java.util.Set;
 
 @Value
@@ -31,6 +32,12 @@ public class UserDTO {
 
   @NameConstraint
   String lastName;
+
+  boolean activated;
+
+  Instant registrationDate;
+
+  String imageUrl;
 
   @NotNull(message = "Songs list must be initialized.")
   Set<

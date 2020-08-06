@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -73,21 +73,35 @@ public class User {
   @Column(name = "last_name")
   private String lastName;
 
-  @NotNull
   @Column(name = "activated", nullable = false)
   private boolean activated = false;
+
+  @Column(name = "registration_date", nullable = false)
+  private Instant registrationDate;
+
+  @Column(name = "image_url", length = 256)
+  private String imageUrl;
+
+  @Column(name = "activation_key", length = 20)
+  private String activationKey;
+
+  @Column(name = "reset_key", length = 20)
+  private String resetKey;
+
+  @Column(name = "reset_date")
+  private Instant resetDate = null;
 
   @ManyToMany
   @JoinTable(name = "users_songs",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "song_id"))
-  private Set<Song> songs;
+  private Set<Song> songs = new HashSet<>();
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<UserSongRating> userRatings;
+  private Set<UserSongRating> userRatings = new HashSet<>();
 
   @OneToMany(mappedBy = "owner", orphanRemoval = true)
-  private Set<Playlist> playlists;
+  private Set<Playlist> playlists = new HashSet<>();
 
   @OneToMany(mappedBy = "addedBy", orphanRemoval = true)
   private Set<SongAdd> addedSongs = new HashSet<>();

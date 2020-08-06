@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -39,7 +40,7 @@ public class Category {
   private String name;
 
   @OneToMany(mappedBy = "category")
-  private Set<Song> songs;
+  private Set<Song> songs = new HashSet<>();
 
   public boolean addSong(Song song) {
     return this.songs.add(song);

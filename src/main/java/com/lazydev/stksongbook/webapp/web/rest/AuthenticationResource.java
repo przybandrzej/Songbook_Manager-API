@@ -43,9 +43,7 @@ public class AuthenticationResource {
     if(service.findByUsernameNoException(form.getUsername()).isPresent()) {
       throw new UsernameAlreadyUsedException(form.getUsername());
     }
-    User user = mapper.mapFromRegisterForm(form);
-    // todo when mail activation is ready
-    user.setActivated(true);
+    User user = service.register(form);
     service.save(user);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }

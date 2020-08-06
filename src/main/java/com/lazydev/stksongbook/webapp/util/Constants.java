@@ -6,11 +6,6 @@ public class Constants {
 
   public static final Long DEFAULT_ID = 0L;
 
-  public static final Long CONST_SUPERUSER_ID = 1L;
-  public static final Long CONST_ADMIN_ID = 2L;
-  public static final Long CONST_MODERATOR_ID = 3L;
-  public static final Long CONST_USER_ID = 4L;
-
   public static final String DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm:ss";
 
   public static final String NAME_REGEX_SHORT = "^[a-zA-Z 0-9]{2,20}$";

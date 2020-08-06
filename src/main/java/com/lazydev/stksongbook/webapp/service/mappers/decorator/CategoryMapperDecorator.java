@@ -31,7 +31,6 @@ public abstract class CategoryMapperDecorator implements CategoryMapper {
   @Override
   public Category map(UniversalCreateDTO dto) {
     var category = delegate.map(dto);
-    category.setSongs(new HashSet<>());
     category.setId(Constants.DEFAULT_ID);
     return category;
   }

@@ -34,9 +34,9 @@ public class PdfService {
   private static final String DOCUMENT_SUBJECT = "STK AZS UEP Songbook";
   private static final String DOCUMENT_APPLICATION = "STK Songbook";
 
-  private static String FILE_PARSED = "{playlistId}_{playlistName}_{time}.pdf";
+  private static final String FILE_PARSED = "{playlistId}_{playlistName}_{time}.pdf";
 
-  private FileSystemStorageService fileSystemStorageService;
+  private final FileSystemStorageService fileSystemStorageService;
   private PDFont regularLato;
   private PDFont boldLato;
   private PDFont italicsLato;

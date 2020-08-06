@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -228,7 +229,7 @@ class SongResourceTest {
 
     SongAdd add = new SongAdd();
     add.setId(1L);
-    add.setTimestamp(LocalDateTime.now());
+    add.setTimestamp(Instant.now());
     song.setAdded(add);
     User usr = new User();
     usr.setId(1L);
@@ -349,7 +350,7 @@ class SongResourceTest {
     User usr = new User();
     usr.setId(1L);
     SongAdd add = new SongAdd();
-    add.setTimestamp(LocalDateTime.now());
+    add.setTimestamp(Instant.now());
     add.setId(Constants.DEFAULT_ID);
     song.setAdded(add);
     usr.addAddedSong(add);
@@ -367,7 +368,7 @@ class SongResourceTest {
         .averageRating(0.0).guitarTabs(song.getGuitarTabs()).tags(tagDTOS).coauthors(coauthorDTOS).edits(new ArrayList<>())
         .isAwaiting(song.isAwaiting())
         .addedBy(SongAddDTO.builder().addedBy(song.getAdded().getAddedBy().getId()).addedSong(song.getId())
-            .timestamp(song.getAdded().getTimestamp().format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMAT)))
+            .timestamp(song.getAdded().getTimestamp())
             .id(song.getAdded().getId()).build()).edits(new ArrayList<>()).build();
   }
 

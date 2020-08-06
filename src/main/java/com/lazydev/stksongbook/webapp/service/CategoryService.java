@@ -14,7 +14,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class CategoryService {
 
-  private CategoryRepository repository;
+  private final CategoryRepository repository;
 
   public Optional<Category> findByIdNoException(Long id) {
     return repository.findById(id);

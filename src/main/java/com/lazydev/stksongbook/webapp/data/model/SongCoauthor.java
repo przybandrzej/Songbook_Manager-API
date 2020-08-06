@@ -31,9 +31,7 @@ public class SongCoauthor {
   @JoinColumn(name = "author_id")
   private Author author;
 
-  /**
-   * if null then it is the main author displayed with the title
-   */
+  // todo change to an Enum
   @Column(name = "coauthor_function", nullable = false)
   private String coauthorFunction;
 

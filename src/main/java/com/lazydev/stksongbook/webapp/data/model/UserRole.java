@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -38,7 +39,7 @@ public class UserRole {
   private String name;
 
   @OneToMany(mappedBy = "userRole", orphanRemoval = true)
-  private Set<User> users;
+  private Set<User> users = new HashSet<>();
 
   public boolean addUser(User user) {
     return this.users.add(user);

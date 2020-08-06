@@ -82,16 +82,16 @@ public class Song {
   @JoinTable(name = "songs_tags",
       joinColumns = @JoinColumn(name = "song_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
-  private Set<Tag> tags;
+  private Set<Tag> tags = new HashSet<>();
 
   @ManyToMany(mappedBy = "songs")
-  private Set<User> usersSongs;
+  private Set<User> usersSongs = new HashSet<>();
 
   @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<UserSongRating> ratings;
+  private Set<UserSongRating> ratings = new HashSet<>();
 
   @ManyToMany(mappedBy = "songs")
-  private Set<Playlist> playlists;
+  private Set<Playlist> playlists = new HashSet<>();
 
   @OneToOne(mappedBy = "addedSong", orphanRemoval = true)
   private SongAdd added;

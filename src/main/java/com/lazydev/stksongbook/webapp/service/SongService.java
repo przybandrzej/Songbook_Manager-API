@@ -20,7 +20,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -32,21 +32,21 @@ import java.util.Set;
 @Validated
 public class SongService {
 
-  private SongRepository repository;
-  private TagService tagService;
-  private AuthorService authorService;
-  private SongCoauthorService coauthorService;
-  private CategoryService categoryService;
-  private FileSystemStorageService storageService;
-  private UserSongRatingService ratingService;
-  private UserService userService;
-  private SongAddRepository songAddRepository;
-  private SongEditRepository songEditRepository;
+  private final SongRepository repository;
+  private final TagService tagService;
+  private final AuthorService authorService;
+  private final SongCoauthorService coauthorService;
+  private final CategoryService categoryService;
+  private final FileSystemStorageService storageService;
+  private final UserSongRatingService ratingService;
+  private final UserService userService;
+  private final SongAddRepository songAddRepository;
+  private final SongEditRepository songEditRepository;
 
   public List<Song> findAll(Boolean awaiting, Boolean includeAwaiting, Integer limit) {
     if(limit != null) {
       if(includeAwaiting != null) {
-        if(includeAwaiting) {
+        if(Boolean.TRUE.equals(includeAwaiting)) {
           return findAll(limit);
         } else {
           return repository.findByIsAwaiting(false);
@@ -191,7 +191,7 @@ public class SongService {
     return repository.findByRatingsRatingLessThanEqualAndIsAwaiting(val, false);
   }
 
-  public List<Song> findByCreationTimeEqualGreater(LocalDateTime val, Boolean awaiting) {
+  public List<Song> findByCreationTimeEqualGreater(Instant val, Boolean awaiting) {
     if(awaiting != null) {
       return repository.findByAddedTimestampGreaterThanEqualAndIsAwaiting(val, awaiting);
     } else {
@@ -199,7 +199,7 @@ public class SongService {
     }
   }
 
-  public List<Song> findByCreationTimeEqualLess(LocalDateTime val, Boolean awaiting) {
+  public List<Song> findByCreationTimeEqualLess(Instant val, Boolean awaiting) {
     if(awaiting != null) {
       return repository.findByAddedTimestampLessThanEqualAndIsAwaiting(val, awaiting);
     }
@@ -212,10 +212,10 @@ public class SongService {
 
   public void deleteById(Long id) {
     var song = findById(id);
-    song.getCoauthors().forEach(it -> coauthorService.delete(it));
+    song.getCoauthors().forEach(coauthorService::delete);
     song.getPlaylists().forEach(it -> it.removeSong(song));
     song.getUsersSongs().forEach(it -> it.removeSong(song));
-    song.getRatings().forEach(it -> ratingService.delete(it));
+    song.getRatings().forEach(ratingService::delete);
     song.getTags().forEach(song::removeTag);
     song.removeCategory();
     songAddRepository.delete(song.getAdded());
@@ -253,7 +253,7 @@ public class SongService {
 
     SongAdd timestamp = new SongAdd();
     timestamp.setId(Constants.DEFAULT_ID);
-    timestamp.setTimestamp(LocalDateTime.now());
+    timestamp.setTimestamp(Instant.now());
     userService.findById(obj.getUserIdAdded()).addAddedSong(timestamp);
     savedSong.setAdded(timestamp);
     songAddRepository.save(timestamp);
@@ -266,6 +266,7 @@ public class SongService {
         storageService.getLocation().resolve(fileName).toUri().toURL(), CreateSongDTO.class);
   }
 
+  // todo ERROR! NOT UP TO DATE 'creationTime' does not exist
   public List<Song> findLatestLimited(int limit, Boolean awaiting) {
     String properties = "creationTime";
     if(awaiting != null) {

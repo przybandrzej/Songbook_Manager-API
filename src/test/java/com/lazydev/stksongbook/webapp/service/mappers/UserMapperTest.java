@@ -4,9 +4,6 @@ import com.lazydev.stksongbook.webapp.StkSongbookApplication;
 import com.lazydev.stksongbook.webapp.data.model.*;
 import com.lazydev.stksongbook.webapp.service.*;
 import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
-import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm;
-import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
-import com.lazydev.stksongbook.webapp.util.Constants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,9 +16,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -131,28 +127,5 @@ class UserMapperTest {
     assertTrue(mapped.getPlaylists().contains(playlist));
     assertEquals(1, mapped.getUserRatings().size());
     assertTrue(mapped.getUserRatings().contains(rating));
-  }
-
-  @Test
-  void testMapFromRegisterForm() {
-    RegisterNewUserForm dto = RegisterNewUserForm.builder().email("a@a.pl").firstName("First")
-        .lastName("Last").password("password").username("username").build();
-
-    UserRole role = new UserRole();
-    role.setName("user");
-    role.setId(3L);
-    role.setUsers(new HashSet<>());
-    given(userRoleService.findById(Constants.CONST_USER_ID)).willReturn(role);
-    User user = mapper.mapFromRegisterForm(dto);
-
-    assertEquals(dto.getUsername(), user.getUsername());
-    assertEquals(Constants.DEFAULT_ID, user.getId());
-    assertEquals(dto.getEmail(), user.getEmail());
-    assertEquals(dto.getFirstName(), user.getFirstName());
-    assertEquals(dto.getLastName(), user.getLastName());
-    assertEquals(dto.getPassword(), user.getPassword());
-    assertTrue(user.getUserRatings().isEmpty());
-    assertTrue(user.getPlaylists().isEmpty());
-    assertTrue(user.getSongs().isEmpty());
   }
 }
