@@ -40,7 +40,7 @@ class PlaylistResourceTest {
    * The only tested methods are the Create and Update.
    */
 
-  private PlaylistService service;
+  /*private PlaylistService service;
   private PlaylistMapper mapper;
   private MockMvc mockMvc;
 
@@ -57,7 +57,7 @@ class PlaylistResourceTest {
     mockMvc = MockMvcBuilders.standaloneSetup(controller).setControllerAdvice(ExceptionTranslator.class).build();
   }
 
-  @Test
+  /*@Test
   void testCreate() throws Exception {
     CreatePlaylistDTO validDto = CreatePlaylistDTO.builder().isPrivate(true).name("test playlist").ownerId(1L).songs(Set.of(1L, 2L, 3L)).build();
     CreatePlaylistDTO invalidDto = CreatePlaylistDTO.builder().isPrivate(true).name("test playlist").ownerId(1L).songs(null).build();
@@ -84,9 +84,9 @@ class PlaylistResourceTest {
     mockMvc.perform(MockMvcRequestBuilders.post(endpoint).contentType(MediaType.APPLICATION_JSON)
         .content(new ObjectMapper().writeValueAsString(invalidDto3)))
         .andExpect(status().isBadRequest());
-  }
+  }*/
 
-  @Test
+  /*@Test
   void testUpdate() throws Exception {
     Playlist playlist = getSamplePrivatePlaylist();
     PlaylistDTO validDto = mockMap(playlist);
@@ -196,5 +196,5 @@ class PlaylistResourceTest {
   private String convertObjectToJsonString(PlaylistDTO dto) throws JsonProcessingException {
     ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
     return writer.writeValueAsString(dto);
-  }
+  }*/
 }

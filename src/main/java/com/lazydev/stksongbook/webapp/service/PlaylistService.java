@@ -1,20 +1,29 @@
 package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.data.model.Playlist;
+import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.repository.PlaylistRepository;
+import com.lazydev.stksongbook.webapp.security.UserContextService;
+import com.lazydev.stksongbook.webapp.service.dto.creational.CreatePlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
+import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
 public class PlaylistService {
 
   private final PlaylistRepository repository;
+  private final SongService songService;
+  private final UserContextService userContextService;
 
   public Optional<Playlist> findByIdNoException(Long id, boolean includePrivate) {
     if(!includePrivate) {
@@ -26,7 +35,7 @@ public class PlaylistService {
   public Playlist findById(Long id, boolean includePrivate) {
     if(!includePrivate) {
       return repository.findByIdAndIsPrivate(id, false)
-              .orElseThrow(() -> new EntityNotFoundException(Playlist.class, id));
+          .orElseThrow(() -> new EntityNotFoundException(Playlist.class, id));
     }
     return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(Playlist.class, id));
   }
@@ -80,5 +89,18 @@ public class PlaylistService {
   public void deleteById(Long id) {
     findById(id, true);
     repository.deleteById(id);
+  }
+
+  public Playlist createPlaylist(CreatePlaylistDTO dto) {
+    Playlist playlist = new Playlist();
+    playlist.setId(Constants.DEFAULT_ID);
+    playlist.setName(dto.getName());
+    playlist.setPrivate(dto.getIsPrivate());
+    playlist.setCreationTime(Instant.now());
+    playlist.setOwner(userContextService.getCurrentUser());
+    Set<Song> songs = new HashSet<>();
+    dto.getSongs().forEach(s -> songs.add(songService.findById(s)));
+    playlist.setSongs(songs);
+    return repository.save(playlist);
   }
 }

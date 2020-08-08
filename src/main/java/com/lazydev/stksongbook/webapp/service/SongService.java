@@ -5,6 +5,7 @@ import com.lazydev.stksongbook.webapp.data.model.*;
 import com.lazydev.stksongbook.webapp.repository.SongAddRepository;
 import com.lazydev.stksongbook.webapp.repository.SongEditRepository;
 import com.lazydev.stksongbook.webapp.repository.SongRepository;
+import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.util.Constants;
@@ -36,7 +37,7 @@ public class SongService {
   private final CategoryService categoryService;
   private final FileSystemStorageService storageService;
   private final UserSongRatingService ratingService;
-  private final UserService userService;
+  private final UserContextService userContextService;
   private final SongAddRepository songAddRepository;
   private final SongEditRepository songEditRepository;
 
@@ -219,7 +220,7 @@ public class SongService {
   public Song updateSong(Song song) {
     SongEdit edit = new SongEdit();
     edit.setId(Constants.DEFAULT_ID);
-    userService.getCurrentUser().addEditedSong(edit);
+    userContextService.getCurrentUser().addEditedSong(edit);
     song.addEdit(edit);
     return repository.save(song);
   }
@@ -250,7 +251,7 @@ public class SongService {
     SongAdd timestamp = new SongAdd();
     timestamp.setId(Constants.DEFAULT_ID);
     timestamp.setTimestamp(Instant.now());
-    userService.getCurrentUser().addAddedSong(timestamp);
+    userContextService.getCurrentUser().addAddedSong(timestamp);
     savedSong.setAdded(timestamp);
     songAddRepository.save(timestamp);
 

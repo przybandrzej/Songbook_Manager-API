@@ -20,9 +20,6 @@ public class CreatePlaylistDTO {
   @Pattern(regexp = Constants.NAME_REGEX_SHORT, message = Constants.NAME_SHORT_INVALID_MESSAGE)
   String name;
 
-  @NotNull(message = "Owner ID must be defined.")
-  Long ownerId;
-
   @NotNull(message = "isPrivate field must be set.")
   Boolean isPrivate;
 

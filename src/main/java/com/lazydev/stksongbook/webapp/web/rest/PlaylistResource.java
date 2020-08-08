@@ -1,6 +1,7 @@
 package com.lazydev.stksongbook.webapp.web.rest;
 
 import com.lazydev.stksongbook.webapp.data.model.Playlist;
+import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.service.FileSystemStorageService;
 import com.lazydev.stksongbook.webapp.service.PdfService;
 import com.lazydev.stksongbook.webapp.service.PlaylistService;
@@ -74,8 +75,7 @@ public class PlaylistResource {
 
   @PostMapping
   public ResponseEntity<PlaylistDTO> create(@RequestBody @Valid CreatePlaylistDTO dto) {
-    var playlist = mapper.map(dto);
-    var saved = service.save(playlist);
+    var saved = service.createPlaylist(dto);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.CREATED);
   }
 

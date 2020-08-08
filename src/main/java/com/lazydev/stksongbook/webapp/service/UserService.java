@@ -3,14 +3,11 @@ package com.lazydev.stksongbook.webapp.service;
 import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.repository.UserRepository;
 import com.lazydev.stksongbook.webapp.repository.UserRoleRepository;
-import com.lazydev.stksongbook.webapp.security.SecurityUtils;
 import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm;
-import com.lazydev.stksongbook.webapp.service.exception.AuthenticationException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityDependentNotInitialized;
 import com.lazydev.stksongbook.webapp.service.exception.SuperUserAlreadyExistsException;
 import com.lazydev.stksongbook.webapp.service.exception.UserNotExistsException;
 import com.lazydev.stksongbook.webapp.util.Constants;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -114,11 +111,5 @@ public class UserService {
     user.setPassword(passwordEncoder.encode(form.getPassword()));
     user.setUserRole(roleRepository.findByName(userRoleName).orElseThrow(() -> new EntityDependentNotInitialized(userRoleName)));
     return repository.save(user);
-  }
-
-  public User getCurrentUser() {
-    return SecurityUtils.getCurrentUserLogin().map(login ->
-      repository.findByUsername(login).or(() -> repository.findByEmail(login)).orElseThrow(AuthenticationException::new))
-        .orElseThrow(AuthenticationException::new);
   }
 }
