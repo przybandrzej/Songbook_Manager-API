@@ -3,6 +3,7 @@ package com.lazydev.stksongbook.webapp.service;
 import com.lazydev.stksongbook.webapp.data.model.Playlist;
 import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.repository.PlaylistRepository;
+import com.lazydev.stksongbook.webapp.security.SecurityUtils;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreatePlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -26,24 +26,23 @@ public class PlaylistService {
   private final SongService songService;
   private final UserContextService userContextService;
 
-  public Optional<Playlist> findByIdNoException(Long id, boolean includePrivate) {
-    if(!includePrivate) {
-      return repository.findByIdAndIsPrivate(id, false);
+  public Playlist findById(Long id) {
+    var playlist = repository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException(Playlist.class, id));
+    if(playlist.isPrivate()
+        && playlist.getOwner() != userContextService.getCurrentUser()
+        && (!SecurityUtils.isCurrentUserAdmin() || !SecurityUtils.isCurrentUserSuperuser())) {
+      throw new ForbiddenOperationException("This playlist is private.");
     }
-    return repository.findById(id);
-  }
-
-  public Playlist findById(Long id, boolean includePrivate) {
-    if(!includePrivate) {
-      return repository.findByIdAndIsPrivate(id, false)
-          .orElseThrow(() -> new EntityNotFoundException(Playlist.class, id));
-    }
-    return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(Playlist.class, id));
+    return playlist;
   }
 
   public List<Playlist> findByNameFragment(String name, boolean includePrivate) {
     if(!includePrivate) {
       return repository.findByNameContainingIgnoreCaseAndIsPrivate(name, false);
+    }
+    if(!SecurityUtils.isCurrentUserAdmin() || !SecurityUtils.isCurrentUserSuperuser()) {
+      throw new ForbiddenOperationException("Cannot get private playlists.");
     }
     return repository.findByNameContainingIgnoreCase(name);
   }
@@ -52,12 +51,19 @@ public class PlaylistService {
     if(!includePrivate) {
       return repository.findByNameContainingIgnoreCaseAndIsPrivate(name, false, PageRequest.of(0, limit)).toList();
     }
+    if(!SecurityUtils.isCurrentUserAdmin() || !SecurityUtils.isCurrentUserSuperuser()) {
+      throw new ForbiddenOperationException("Cannot get private playlists.");
+    }
     return repository.findByNameContainingIgnoreCase(name, PageRequest.of(0, limit)).toList();
   }
 
   public List<Playlist> findByOwnerId(Long id, boolean includePrivate) {
     if(!includePrivate) {
       return repository.findByOwnerIdAndIsPrivate(id, false);
+    }
+    if(!id.equals(userContextService.getCurrentUser().getId())
+        && (!SecurityUtils.isCurrentUserAdmin() || !SecurityUtils.isCurrentUserSuperuser())) {
+      throw new ForbiddenOperationException("Cannot get private playlists.");
     }
     return repository.findByOwnerId(id);
   }
@@ -66,6 +72,9 @@ public class PlaylistService {
     if(!includePrivate) {
       return repository.findBySongsIdAndIsPrivate(id, false);
     }
+    if(!SecurityUtils.isCurrentUserAdmin() || !SecurityUtils.isCurrentUserSuperuser()) {
+      throw new ForbiddenOperationException("Cannot get private playlists.");
+    }
     return repository.findBySongsId(id);
   }
 
@@ -73,12 +82,18 @@ public class PlaylistService {
     if(!includePrivate) {
       return repository.findByIsPrivate(false);
     }
+    if(!SecurityUtils.isCurrentUserAdmin() || !SecurityUtils.isCurrentUserSuperuser()) {
+      throw new ForbiddenOperationException("Cannot get private playlists.");
+    }
     return repository.findAll();
   }
 
   public List<Playlist> findAll(boolean includePrivate, int limit) {
     if(!includePrivate) {
       return repository.findByIsPrivate(false, PageRequest.of(0, limit)).toList();
+    }
+    if(!SecurityUtils.isCurrentUserAdmin() || !SecurityUtils.isCurrentUserSuperuser()) {
+      throw new ForbiddenOperationException("Cannot get private playlists.");
     }
     return repository.findAll(PageRequest.of(0, limit)).toList();
   }
@@ -91,7 +106,7 @@ public class PlaylistService {
   }
 
   public void deleteById(Long id) {
-    var playlist = findById(id, true);
+    var playlist = findById(id);
     if(userContextService.getCurrentUser() != playlist.getOwner()) {
       throw new ForbiddenOperationException("Cannot delete playlist of another user.");
     }

@@ -80,12 +80,8 @@ public class PlaylistResource {
 
   @PutMapping
   public ResponseEntity<PlaylistDTO> update(@RequestBody @Valid PlaylistDTO dto) {
-    Optional<Playlist> optional = service.findByIdNoException(dto.getId(), true);
-    if(optional.isEmpty()) {
-      throw new EntityNotFoundException(Playlist.class, dto.getId());
-    }
+    var found = service.findById(dto.getId()); // this is here for EntityNotFound check
     var playlist = mapper.map(dto);
-    playlist.setCreationTime(optional.get().getCreationTime());
     var saved = service.update(playlist);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.OK);
   }

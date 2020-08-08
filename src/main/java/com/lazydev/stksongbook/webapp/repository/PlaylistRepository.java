@@ -15,7 +15,7 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
   List<Playlist> findByIsPrivate(boolean isPrivate);
   Page<Playlist> findByIsPrivate(boolean isPrivate, Pageable req);
 
-  Optional<Playlist> findByIdAndIsPrivate(Long id, boolean isPrivate);
+  Optional<Playlist> findById(Long id);
 
   List<Playlist> findByOwnerId(Long ownerId);
 

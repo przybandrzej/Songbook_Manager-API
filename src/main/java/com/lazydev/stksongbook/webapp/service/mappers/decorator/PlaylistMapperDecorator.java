@@ -2,6 +2,7 @@ package com.lazydev.stksongbook.webapp.service.mappers.decorator;
 
 import com.lazydev.stksongbook.webapp.data.model.Playlist;
 import com.lazydev.stksongbook.webapp.data.model.Song;
+import com.lazydev.stksongbook.webapp.service.PlaylistService;
 import com.lazydev.stksongbook.webapp.service.SongService;
 import com.lazydev.stksongbook.webapp.service.UserService;
 import com.lazydev.stksongbook.webapp.service.dto.PlaylistDTO;
@@ -23,6 +24,8 @@ public abstract class PlaylistMapperDecorator implements PlaylistMapper {
   private SongService songService;
   @Autowired
   private UserService userService;
+  @Autowired
+  private PlaylistService playlistService;
 
   @Override
   public Playlist map(PlaylistDTO dto) {
@@ -32,6 +35,8 @@ public abstract class PlaylistMapperDecorator implements PlaylistMapper {
     dto.getSongs().forEach(s -> songs.add(songService.findById(s)));
     playlist.setSongs(songs);
     playlist.setPrivate(dto.getIsPrivate());
+    var found = playlistService.findById(dto.getId());
+    playlist.setCreationTime(found.getCreationTime());
     return playlist;
   }
 }
