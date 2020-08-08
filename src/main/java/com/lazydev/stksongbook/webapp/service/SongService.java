@@ -211,6 +211,8 @@ public class SongService {
     if(!song.isAwaiting()
         && !(SecurityUtils.isCurrentUserModerator() || SecurityUtils.isCurrentUserAdmin() || SecurityUtils.isCurrentUserSuperuser())) {
       throw new ForbiddenOperationException("Approved song can be deleted only by a moderator or admin.");
+    } else if(song.isAwaiting() && song.getAdded().getAddedBy() != userContextService.getCurrentUser()) {
+      throw new ForbiddenOperationException("Awaiting song can be deleted only by its author, moderator or admin.");
     }
     song.getCoauthors().forEach(coauthorService::delete);
     song.getPlaylists().forEach(it -> it.removeSong(song));

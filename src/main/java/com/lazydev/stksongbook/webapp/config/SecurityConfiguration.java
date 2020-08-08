@@ -36,6 +36,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   private String admin;
   @Value("${spring.flyway.placeholders.role.moderator}")
   private String moderator;
+  @Value("${spring.flyway.placeholders.role.user}")
+  private String user;
 
   public SecurityConfiguration(UserDetailsService userDetailsService, AuthenticationManagerBuilder authenticationManagerBuilder,
                                CorsFilter corsFilter, TokenProvider tokenProvider) {
@@ -99,6 +101,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .antMatchers("/api/authenticate").permitAll()
         .antMatchers(HttpMethod.GET, "/api/**").permitAll()
         .antMatchers("/api/songs/approve").hasAnyAuthority(superuser, admin, moderator)
+        .antMatchers(HttpMethod.PUT, "/api/authors/**").hasAnyAuthority(superuser, admin, moderator)
+        .antMatchers(HttpMethod.DELETE, "/api/authors/**").hasAnyAuthority(superuser, admin, moderator)
+        .antMatchers(HttpMethod.PUT, "/api/categories/**").hasAnyAuthority(superuser, admin, moderator)
+        .antMatchers(HttpMethod.DELETE, "/api/categories/**").hasAnyAuthority(superuser, admin, moderator)
+        .antMatchers(HttpMethod.POST, "/api/categories/**").hasAnyAuthority(superuser, admin, moderator)
+        .antMatchers(HttpMethod.GET, "/api/user_roles/**").hasAnyAuthority(user)
+        .antMatchers("/api/user_roles/**").hasAnyAuthority(superuser)
+        .antMatchers(HttpMethod.PUT, "/api/tags/**").hasAnyAuthority(superuser, admin, moderator)
+        .antMatchers(HttpMethod.DELETE, "/api/tags/**").hasAnyAuthority(superuser, admin, moderator)
         .antMatchers("/api/**").authenticated()
         .and()
         .apply(securityConfigurerAdapter());

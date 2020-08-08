@@ -6,6 +6,7 @@ import com.lazydev.stksongbook.webapp.repository.PlaylistRepository;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreatePlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
+import com.lazydev.stksongbook.webapp.service.exception.ForbiddenOperationException;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -82,12 +83,18 @@ public class PlaylistService {
     return repository.findAll(PageRequest.of(0, limit)).toList();
   }
 
-  public Playlist save(Playlist savePlaylist) {
+  public Playlist update(Playlist savePlaylist) {
+    if(userContextService.getCurrentUser() != savePlaylist.getOwner()) {
+      throw new ForbiddenOperationException("Cannot update playlist of another user.");
+    }
     return repository.save(savePlaylist);
   }
 
   public void deleteById(Long id) {
-    findById(id, true);
+    var playlist = findById(id, true);
+    if(userContextService.getCurrentUser() != playlist.getOwner()) {
+      throw new ForbiddenOperationException("Cannot delete playlist of another user.");
+    }
     repository.deleteById(id);
   }
 
