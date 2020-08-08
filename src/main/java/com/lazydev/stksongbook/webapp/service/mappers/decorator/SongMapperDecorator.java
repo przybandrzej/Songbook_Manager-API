@@ -31,13 +31,13 @@ public abstract class SongMapperDecorator implements SongMapper {
   @Override
   public Song map(SongDTO dto) {
     Song song = delegate.map(dto);
-    song.setAwaiting(dto.getIsAwaiting());
     song.setUsersSongs(new HashSet<>(userService.findBySong(dto.getId())));
     song.setRatings(new HashSet<>(userSongRatingService.findBySongId(dto.getId())));
     song.setPlaylists(new HashSet<>(playlistService.findBySongId(dto.getId(), true)));
     Song found = songService.findById(song.getId());
     song.setAdded(found.getAdded());
     song.setEdits(found.getEdits());
+    song.setAwaiting(found.getIsAwaiting());
     return song;
   }
 }

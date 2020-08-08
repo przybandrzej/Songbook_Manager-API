@@ -272,4 +272,9 @@ public class SongService {
       return repository.findAll(PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, properties))).toList();
     }
   }
+
+  public Song approveSong(Song song) {
+    song.setAwaiting(false);
+    return repository.save(song);
+  }
 }

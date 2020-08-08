@@ -79,7 +79,7 @@ public class SongResource {
 
   @GetMapping("/author/{authorId}")
   public ResponseEntity<List<SongDTO>> getByAuthor(@PathVariable("authorId") Long id,
-                                                     @RequestParam(value = "limit", required = false) Integer limit) {
+                                                   @RequestParam(value = "limit", required = false) Integer limit) {
     List<SongDTO> list = service.findByAuthorId(id, false, limit).stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
@@ -142,7 +142,6 @@ public class SongResource {
   @PostMapping
   public ResponseEntity<SongDTO> create(@RequestBody @Valid CreateSongDTO obj) {
     var completeSong = service.createAndSaveSong(obj);
-    // todo song.setAddition();
     return new ResponseEntity<>(mapper.map(completeSong), HttpStatus.CREATED);
   }
 
@@ -169,5 +168,14 @@ public class SongResource {
     CreateSongDTO dto = service.readSongFromFile(name);
     Song song = service.createAndSaveSong(dto);
     return new ResponseEntity<>(mapper.map(song), HttpStatus.OK);
+  }
+
+  @PutMapping("/approve")
+  public ResponseEntity<SongDTO> approveSong(@RequestBody @Valid SongDTO songDTO) {
+    Optional<Song> optional = service.findByIdNoException(songDTO.getId());
+    if(optional.isEmpty()) {
+      throw new EntityNotFoundException(Song.class, songDTO.getId());
+    }
+    return new ResponseEntity<>(mapper.map(service.approveSong(mapper.map(songDTO))), HttpStatus.OK);
   }
 }
