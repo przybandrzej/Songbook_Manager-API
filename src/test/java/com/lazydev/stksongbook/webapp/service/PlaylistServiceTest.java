@@ -5,7 +5,7 @@ import com.lazydev.stksongbook.webapp.data.model.Playlist;
 import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.repository.PlaylistRepository;
-import com.lazydev.stksongbook.webapp.service.exception.CannotDeleteEntityException;
+import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,20 +27,24 @@ class PlaylistServiceTest {
 
   @Mock
   PlaylistRepository repository;
+  @Mock
+  SongService songService;
+  @Mock
+  UserContextService userService;
 
   @InjectMocks
-  PlaylistService service = new PlaylistService(repository);
+  PlaylistService service = new PlaylistService(repository, songService, userService);
 
   @Test
   void findById() {
     Mockito.when(repository.findById(2L)).thenReturn(Optional.empty());
     Mockito.when(repository.findById(1L)).thenReturn(Optional.of(getSamplePrivatePlaylist(1L)));
 
-    assertDoesNotThrow(() -> service.findById(1L, true));
-    assertNotNull(service.findById(1L, true));
-    assertEquals(getSamplePrivatePlaylist(1L), service.findById(1L, true));
+    assertDoesNotThrow(() -> service.findById(1L));
+    assertNotNull(service.findById(1L));
+    assertEquals(getSamplePrivatePlaylist(1L), service.findById(1L));
 
-    assertThrows(EntityNotFoundException.class, () -> service.findById(2L, true));
+    assertThrows(EntityNotFoundException.class, () -> service.findById(2L));
   }
 
   @Test

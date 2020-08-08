@@ -4,13 +4,13 @@ import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.repository.UserRepository;
 import com.lazydev.stksongbook.webapp.repository.UserRoleRepository;
 import com.lazydev.stksongbook.webapp.security.SecurityUtils;
+import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm;
-import com.lazydev.stksongbook.webapp.service.exception.AuthenticationException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityDependentNotInitialized;
+import com.lazydev.stksongbook.webapp.service.exception.ForbiddenOperationException;
 import com.lazydev.stksongbook.webapp.service.exception.SuperUserAlreadyExistsException;
 import com.lazydev.stksongbook.webapp.service.exception.UserNotExistsException;
 import com.lazydev.stksongbook.webapp.util.Constants;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,12 +31,15 @@ public class UserService {
   private String userRoleName;
   @Value("${spring.flyway.placeholders.role.superuser}")
   private String superuserRoleName;
+  private final UserContextService userContextService;
 
-  public UserService(UserRepository repository, PlaylistService playlistService, PasswordEncoder passwordEncoder, UserRoleRepository roleRepository) {
+  public UserService(UserRepository repository, PlaylistService playlistService, PasswordEncoder passwordEncoder, UserRoleRepository roleRepository,
+                     UserContextService userContextService) {
     this.repository = repository;
     this.playlistService = playlistService;
     this.passwordEncoder = passwordEncoder;
     this.roleRepository = roleRepository;
+    this.userContextService = userContextService;
   }
 
   public Optional<User> findByIdNoException(Long id) {
@@ -84,6 +87,9 @@ public class UserService {
   }
 
   public User save(User saveUser) {
+    if(saveUser != userContextService.getCurrentUser() || !SecurityUtils.isCurrentUserSuperuser() || !SecurityUtils.isCurrentUserAdmin()) {
+      throw new ForbiddenOperationException("No permission.");
+    }
     if(saveUser.getUserRole().getName().equals(superuserRoleName)) {
       boolean superuserExists = !roleRepository.findByName(superuserRoleName).map(role -> role.getUsers().isEmpty())
           .orElseThrow(() -> new EntityDependentNotInitialized(superuserRoleName));
@@ -96,6 +102,9 @@ public class UserService {
 
   public void deleteById(Long id) {
     var user = findById(id);
+    if(user != userContextService.getCurrentUser() || !SecurityUtils.isCurrentUserSuperuser() || !SecurityUtils.isCurrentUserAdmin()) {
+      throw new ForbiddenOperationException("No permission.");
+    }
     user.getPlaylists().forEach(it -> playlistService.deleteById(it.getId()));
     repository.deleteById(id);
   }
@@ -114,11 +123,5 @@ public class UserService {
     user.setPassword(passwordEncoder.encode(form.getPassword()));
     user.setUserRole(roleRepository.findByName(userRoleName).orElseThrow(() -> new EntityDependentNotInitialized(userRoleName)));
     return repository.save(user);
-  }
-
-  public User getCurrentUser() {
-    return SecurityUtils.getCurrentUserLogin().map(login ->
-      repository.findByUsername(login).or(() -> repository.findByEmail(login)).orElseThrow(AuthenticationException::new))
-        .orElseThrow(AuthenticationException::new);
   }
 }

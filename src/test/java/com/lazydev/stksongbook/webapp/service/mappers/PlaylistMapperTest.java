@@ -77,23 +77,6 @@ class PlaylistMapperTest {
     assertEquals(playlist.getOwner(), mapped.getOwner());
   }
 
-  @Test
-  void testMapFromCreatePlaylistDTO() {
-    CreatePlaylistDTO dto = CreatePlaylistDTO.builder().name("dummy name").isPrivate(true).ownerId(4L).songs(Set.of(getSong().getId())).build();
-
-    given(songService.findById(2L)).willReturn(getSong());
-    given(userService.findById(4L)).willReturn(getOwner());
-
-    Playlist playlist = mapper.map(dto);
-
-    assertEquals(dto.getName(), playlist.getName());
-    assertEquals(Constants.DEFAULT_ID, playlist.getId());
-    assertEquals(1, playlist.getSongs().size());
-    assertTrue(playlist.getSongs().contains(getSong()));
-    assertEquals(playlist.getOwner(), getOwner());
-    assertEquals(dto.getIsPrivate(), playlist.isPrivate());
-  }
-
   private Playlist getSample() {
     Playlist playlist = new Playlist();
     playlist.setId(1L);

@@ -5,8 +5,11 @@ import com.lazydev.stksongbook.webapp.data.model.*;
 import com.lazydev.stksongbook.webapp.repository.SongAddRepository;
 import com.lazydev.stksongbook.webapp.repository.SongEditRepository;
 import com.lazydev.stksongbook.webapp.repository.SongRepository;
+import com.lazydev.stksongbook.webapp.security.SecurityUtils;
+import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
+import com.lazydev.stksongbook.webapp.service.exception.ForbiddenOperationException;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -36,7 +39,7 @@ public class SongService {
   private final CategoryService categoryService;
   private final FileSystemStorageService storageService;
   private final UserSongRatingService ratingService;
-  private final UserService userService;
+  private final UserContextService userContextService;
   private final SongAddRepository songAddRepository;
   private final SongEditRepository songEditRepository;
 
@@ -205,6 +208,12 @@ public class SongService {
 
   public void deleteById(Long id) {
     var song = findById(id);
+    if(!song.isAwaiting()
+        && !(SecurityUtils.isCurrentUserModerator() || SecurityUtils.isCurrentUserAdmin() || SecurityUtils.isCurrentUserSuperuser())) {
+      throw new ForbiddenOperationException("Approved song can be deleted only by a moderator or admin.");
+    } else if(song.isAwaiting() && song.getAdded().getAddedBy() != userContextService.getCurrentUser()) {
+      throw new ForbiddenOperationException("Awaiting song can be deleted only by its author, moderator or admin.");
+    }
     song.getCoauthors().forEach(coauthorService::delete);
     song.getPlaylists().forEach(it -> it.removeSong(song));
     song.getUsersSongs().forEach(it -> it.removeSong(song));
@@ -217,9 +226,13 @@ public class SongService {
   }
 
   public Song updateSong(Song song) {
+    if(!song.isAwaiting()
+        && !(SecurityUtils.isCurrentUserModerator() || SecurityUtils.isCurrentUserAdmin() || SecurityUtils.isCurrentUserSuperuser())) {
+      throw new ForbiddenOperationException("Approved song can be updated only by a moderator or admin.");
+    }
     SongEdit edit = new SongEdit();
     edit.setId(Constants.DEFAULT_ID);
-    userService.getCurrentUser().addEditedSong(edit);
+    userContextService.getCurrentUser().addEditedSong(edit);
     song.addEdit(edit);
     return repository.save(song);
   }
@@ -250,7 +263,7 @@ public class SongService {
     SongAdd timestamp = new SongAdd();
     timestamp.setId(Constants.DEFAULT_ID);
     timestamp.setTimestamp(Instant.now());
-    userService.getCurrentUser().addAddedSong(timestamp);
+    userContextService.getCurrentUser().addAddedSong(timestamp);
     savedSong.setAdded(timestamp);
     songAddRepository.save(timestamp);
 
@@ -270,5 +283,10 @@ public class SongService {
     } else {
       return repository.findAll(PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, properties))).toList();
     }
+  }
+
+  public Song approveSong(Song song) {
+    song.setAwaiting(false);
+    return repository.save(song);
   }
 }

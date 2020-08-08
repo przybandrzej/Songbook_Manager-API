@@ -5,6 +5,7 @@ import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.data.model.UserSongRating;
 import com.lazydev.stksongbook.webapp.data.model.UsersSongsRatingsKey;
 import com.lazydev.stksongbook.webapp.repository.UserSongRatingRepository;
+import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.service.exception.CannotDeleteEntityException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -29,9 +30,11 @@ class UserSongRatingServiceTest {
 
   @Mock
   UserSongRatingRepository repository;
+  @Mock
+  UserContextService userContextService;
 
   @InjectMocks
-  UserSongRatingService service = new UserSongRatingService(repository);
+  UserSongRatingService service = new UserSongRatingService(repository, userContextService);
 
   @Test
   void findByUserIdAndSongIdNoException() {

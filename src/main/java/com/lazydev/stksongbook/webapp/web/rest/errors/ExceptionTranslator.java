@@ -101,8 +101,8 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
     return buildResponseEntity(apiError);
   }
 
-  @ExceptionHandler(UserNotActivatedException.class)
-  protected ResponseEntity<Object> handleNotActivated(UserNotActivatedException ex, WebRequest request) {
+  @ExceptionHandler({UserNotActivatedException.class, ForbiddenOperationException.class})
+  protected ResponseEntity<Object> handleNotActivated(RuntimeException ex, WebRequest request) {
     Error apiError = new Error(FORBIDDEN);
     apiError.setMessage(ex.getMessage());
     return buildResponseEntity(apiError);
