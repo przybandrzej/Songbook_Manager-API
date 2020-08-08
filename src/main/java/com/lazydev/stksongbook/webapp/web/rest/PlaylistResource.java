@@ -1,12 +1,10 @@
 package com.lazydev.stksongbook.webapp.web.rest;
 
-import com.lazydev.stksongbook.webapp.data.model.Playlist;
 import com.lazydev.stksongbook.webapp.service.FileSystemStorageService;
 import com.lazydev.stksongbook.webapp.service.PdfService;
 import com.lazydev.stksongbook.webapp.service.PlaylistService;
 import com.lazydev.stksongbook.webapp.service.dto.PlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreatePlaylistDTO;
-import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.PlaylistMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -44,10 +41,8 @@ public class PlaylistResource {
   }
 
   @GetMapping("/id/{id}")
-  public ResponseEntity<PlaylistDTO> getById(@PathVariable("id") Long id,
-                                             @RequestParam(value = "include_private",
-                                                 required = false, defaultValue = "false") boolean includePrivate) {
-    var found = service.findById(id, includePrivate);
+  public ResponseEntity<PlaylistDTO> getById(@PathVariable("id") Long id) {
+    var found = service.findById(id);
     return new ResponseEntity<>(mapper.map(found), HttpStatus.OK);
   }
 
@@ -94,7 +89,7 @@ public class PlaylistResource {
 
   @GetMapping("/download/{id}")
   public ResponseEntity<Resource> downloadPlaylistPdfSongbook(@PathVariable("id") Long id) throws IOException {
-    var playlist = service.findById(id, true);
+    var playlist = service.findById(id);
     String fileName = pdfService.createPdfFromPlaylist(playlist);
     Resource resource = storageService.loadAsResource(fileName);
     return ResponseEntity.ok()

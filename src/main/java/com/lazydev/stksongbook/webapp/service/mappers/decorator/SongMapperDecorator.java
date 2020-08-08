@@ -37,7 +37,7 @@ public abstract class SongMapperDecorator implements SongMapper {
     Song found = songService.findById(song.getId());
     song.setAdded(found.getAdded());
     song.setEdits(found.getEdits());
-    song.setAwaiting(found.getIsAwaiting());
+    song.setAwaiting(found.isAwaiting());
     return song;
   }
 }

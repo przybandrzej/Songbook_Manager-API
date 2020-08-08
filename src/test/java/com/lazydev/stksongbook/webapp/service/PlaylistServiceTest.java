@@ -40,11 +40,11 @@ class PlaylistServiceTest {
     Mockito.when(repository.findById(2L)).thenReturn(Optional.empty());
     Mockito.when(repository.findById(1L)).thenReturn(Optional.of(getSamplePrivatePlaylist(1L)));
 
-    assertDoesNotThrow(() -> service.findById(1L, true));
-    assertNotNull(service.findById(1L, true));
-    assertEquals(getSamplePrivatePlaylist(1L), service.findById(1L, true));
+    assertDoesNotThrow(() -> service.findById(1L));
+    assertNotNull(service.findById(1L));
+    assertEquals(getSamplePrivatePlaylist(1L), service.findById(1L));
 
-    assertThrows(EntityNotFoundException.class, () -> service.findById(2L, true));
+    assertThrows(EntityNotFoundException.class, () -> service.findById(2L));
   }
 
   @Test
