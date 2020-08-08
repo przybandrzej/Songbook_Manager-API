@@ -32,6 +32,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   private final CorsFilter corsFilter;
   @Value("${spring.flyway.placeholders.role.superuser}")
   private String superuser;
+  @Value("${spring.flyway.placeholders.role.admin}")
+  private String admin;
+  @Value("${spring.flyway.placeholders.role.moderator}")
+  private String moderator;
 
   public SecurityConfiguration(UserDetailsService userDetailsService, AuthenticationManagerBuilder authenticationManagerBuilder,
                                CorsFilter corsFilter, TokenProvider tokenProvider) {
@@ -94,6 +98,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .antMatchers("/api/activate").permitAll()
         .antMatchers("/api/authenticate").permitAll()
         .antMatchers(HttpMethod.GET, "/api/**").permitAll()
+        .antMatchers("/api/songs/approve").hasAnyAuthority(superuser, admin, moderator)
         .antMatchers("/api/**").authenticated()
         .and()
         .apply(securityConfigurerAdapter());
