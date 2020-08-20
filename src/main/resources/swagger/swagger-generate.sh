@@ -8,4 +8,7 @@ java -jar swagger-codegen-cli.jar generate \
   --artifact-version 0.0.1-SNAPSHOT \
   -l java \
   --library resttemplate \
-  -o ../../../../../
+  -o ../../../../
+
+rm -rf ../../../../gradle
+rm -rf ../../../../.swagger-codegen
