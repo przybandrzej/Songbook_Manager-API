@@ -1,6 +1,6 @@
 docs/*
 .travis.yml
-.swagger-codegen
+.swagger-codegen/*
 gradle/*
 .gitignore
 .swagger-codegen-ignore
@@ -13,3 +13,5 @@ gradlew.bat
 pom.xml
 README.md
 settings.gradle
+AndroidManifest.xml
+test/*
