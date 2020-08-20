@@ -1,0 +1,15 @@
+docs/*
+.travis.yml
+.swagger-codegen
+gradle/*
+.gitignore
+.swagger-codegen-ignore
+build.gradle
+build.sbt
+git_push.sh
+gradle.properties
+gradlew
+gradlew.bat
+pom.xml
+README.md
+settings.gradle
