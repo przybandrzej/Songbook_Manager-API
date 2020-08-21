@@ -16,7 +16,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class TagService {
 
-  private TagRepository repository;
+  private final TagRepository repository;
 
   public Optional<Tag> findByIdNoException(Long id) {
     return repository.findById(id);

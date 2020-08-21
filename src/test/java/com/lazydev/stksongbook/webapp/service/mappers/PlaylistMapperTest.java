@@ -17,12 +17,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,13 +56,13 @@ class PlaylistMapperTest {
     assertEquals(playlist.getName(), dto.getName());
     assertEquals(playlist.getId(), dto.getId());
     assertEquals(playlist.getOwner().getId(), dto.getOwnerId());
-    assertEquals(playlist.getCreationTime().format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMAT)), dto.getCreationTime());
+    assertEquals(playlist.getCreationTime(), dto.getCreationTime());
     assertEquals(playlist.getSongs().size(), dto.getSongs().size());
   }
 
   @Test
   void testMapToEntity() {
-    PlaylistDTO dto = PlaylistDTO.builder().id(1L).name("dummy name").creationTime("16-05-2020 16:00:00").isPrivate(true).ownerId(4L).songs(Set.of(2L)).build();
+    PlaylistDTO dto = PlaylistDTO.builder().id(1L).name("dummy name").creationTime(Instant.now()).isPrivate(true).ownerId(4L).songs(Set.of(2L)).build();
     Playlist playlist = getSample();
 
     given(songService.findById(2L)).willReturn(getSong());
@@ -77,29 +77,12 @@ class PlaylistMapperTest {
     assertEquals(playlist.getOwner(), mapped.getOwner());
   }
 
-  @Test
-  void testMapFromCreatePlaylistDTO() {
-    CreatePlaylistDTO dto = CreatePlaylistDTO.builder().name("dummy name").isPrivate(true).ownerId(4L).songs(Set.of(getSong().getId())).build();
-
-    given(songService.findById(2L)).willReturn(getSong());
-    given(userService.findById(4L)).willReturn(getOwner());
-
-    Playlist playlist = mapper.map(dto);
-
-    assertEquals(dto.getName(), playlist.getName());
-    assertEquals(Constants.DEFAULT_ID, playlist.getId());
-    assertEquals(1, playlist.getSongs().size());
-    assertTrue(playlist.getSongs().contains(getSong()));
-    assertEquals(playlist.getOwner(), getOwner());
-    assertEquals(dto.getIsPrivate(), playlist.isPrivate());
-  }
-
   private Playlist getSample() {
     Playlist playlist = new Playlist();
     playlist.setId(1L);
     playlist.setName("dummy name");
     playlist.setPrivate(true);
-    playlist.setCreationTime(LocalDateTime.now());
+    playlist.setCreationTime(Instant.now());
     playlist.setSongs(Set.of(getSong()));
     User user = getOwner();
     user.addPlaylist(playlist);

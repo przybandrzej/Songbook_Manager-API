@@ -2,20 +2,45 @@ package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.repository.UserRepository;
+import com.lazydev.stksongbook.webapp.repository.UserRoleRepository;
+import com.lazydev.stksongbook.webapp.security.SecurityUtils;
+import com.lazydev.stksongbook.webapp.security.UserContextService;
+import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm;
+import com.lazydev.stksongbook.webapp.service.exception.EntityDependentNotInitialized;
+import com.lazydev.stksongbook.webapp.service.exception.ForbiddenOperationException;
+import com.lazydev.stksongbook.webapp.service.exception.SuperUserAlreadyExistsException;
 import com.lazydev.stksongbook.webapp.service.exception.UserNotExistsException;
-import lombok.AllArgsConstructor;
+import com.lazydev.stksongbook.webapp.util.Constants;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
 public class UserService {
 
-  private UserRepository repository;
-  private PlaylistService playlistService;
+  private final UserRepository repository;
+  private final PlaylistService playlistService;
+  private final PasswordEncoder passwordEncoder;
+  private final UserRoleRepository roleRepository;
+  @Value("${spring.flyway.placeholders.role.user}")
+  private String userRoleName;
+  @Value("${spring.flyway.placeholders.role.superuser}")
+  private String superuserRoleName;
+  private final UserContextService userContextService;
+
+  public UserService(UserRepository repository, PlaylistService playlistService, PasswordEncoder passwordEncoder, UserRoleRepository roleRepository,
+                     UserContextService userContextService) {
+    this.repository = repository;
+    this.playlistService = playlistService;
+    this.passwordEncoder = passwordEncoder;
+    this.roleRepository = roleRepository;
+    this.userContextService = userContextService;
+  }
 
   public Optional<User> findByIdNoException(Long id) {
     return repository.findById(id);
@@ -62,12 +87,41 @@ public class UserService {
   }
 
   public User save(User saveUser) {
+    if(saveUser != userContextService.getCurrentUser() || !SecurityUtils.isCurrentUserSuperuser() || !SecurityUtils.isCurrentUserAdmin()) {
+      throw new ForbiddenOperationException("No permission.");
+    }
+    if(saveUser.getUserRole().getName().equals(superuserRoleName)) {
+      boolean superuserExists = !roleRepository.findByName(superuserRoleName).map(role -> role.getUsers().isEmpty())
+          .orElseThrow(() -> new EntityDependentNotInitialized(superuserRoleName));
+      if(superuserExists) {
+        throw new SuperUserAlreadyExistsException();
+      }
+    }
     return repository.save(saveUser);
   }
 
   public void deleteById(Long id) {
     var user = findById(id);
+    if(user != userContextService.getCurrentUser() || !SecurityUtils.isCurrentUserSuperuser() || !SecurityUtils.isCurrentUserAdmin()) {
+      throw new ForbiddenOperationException("No permission.");
+    }
     user.getPlaylists().forEach(it -> playlistService.deleteById(it.getId()));
     repository.deleteById(id);
+  }
+
+  public User register(RegisterNewUserForm form) {
+    User user = new User();
+    user.setRegistrationDate(Instant.now());
+    // todo user.setActivationKey();
+    user.setId(Constants.DEFAULT_ID);
+    user.setUsername(form.getUsername());
+    user.setEmail(form.getEmail());
+    // todo user.setActivated(false);
+    user.setActivated(true);
+    user.setFirstName(form.getFirstName());
+    user.setLastName(form.getLastName());
+    user.setPassword(passwordEncoder.encode(form.getPassword()));
+    user.setUserRole(roleRepository.findByName(userRoleName).orElseThrow(() -> new EntityDependentNotInitialized(userRoleName)));
+    return repository.save(user);
   }
 }

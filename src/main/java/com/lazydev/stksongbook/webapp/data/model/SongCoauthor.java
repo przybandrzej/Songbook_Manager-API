@@ -11,7 +11,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "songs_coauthors")
-@Check(constraints = "function IN (" + Constants._Function_Music_Polish + ", " + Constants._Function_Text_Polish + ")")
+@Check(constraints = "coauthor_function IN (" + Constants._Function_Music_Polish + ", " + Constants._Function_Text_Polish + ")")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -31,11 +31,9 @@ public class SongCoauthor {
   @JoinColumn(name = "author_id")
   private Author author;
 
-  /**
-   * if null then it is the main author displayed with the title
-   */
-  @Column(name = "function", nullable = false)
-  private String function;
+  // todo change to an Enum
+  @Column(name = "coauthor_function", nullable = false)
+  private String coauthorFunction;
 
   public void setSong(Song song) {
     this.song = song;

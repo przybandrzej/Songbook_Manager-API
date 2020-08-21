@@ -20,12 +20,12 @@ public class SongCoauthorDTO {
   Long authorId;
 
   @CoauthorFunctionConstraint
-  String function;
+  String coauthorFunction;
 
-  private SongCoauthorDTO(Long songId, Long authorId, String function) {
+  private SongCoauthorDTO(Long songId, Long authorId, String coauthorFunction) {
     this.songId = songId;
     this.authorId = authorId;
-    this.function = function;
+    this.coauthorFunction = coauthorFunction;
   }
 
   public static SongCoauthorDTO.Builder builder() {
@@ -34,27 +34,5 @@ public class SongCoauthorDTO {
 
   @JsonPOJOBuilder(withPrefix = "")
   public static final class Builder {
-    private Long songId;
-    private Long authorId;
-    private String function;
-
-    public SongCoauthorDTO create() {
-      return new SongCoauthorDTO(songId, authorId, function);
-    }
-
-    public SongCoauthorDTO.Builder songId(Long id) {
-      this.songId = id;
-      return this;
-    }
-
-    public SongCoauthorDTO.Builder authorId(Long id) {
-      this.authorId = id;
-      return this;
-    }
-
-    public SongCoauthorDTO.Builder function(String function) {
-      this.function = function;
-      return this;
-    }
   }
 }

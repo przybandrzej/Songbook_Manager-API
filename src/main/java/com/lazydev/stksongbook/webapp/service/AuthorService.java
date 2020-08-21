@@ -17,7 +17,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class AuthorService {
 
-  private AuthorRepository authorRepository;
+  private final AuthorRepository authorRepository;
 
   public List<Author> findAll() {
     return authorRepository.findAll();

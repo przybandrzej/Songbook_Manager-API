@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -21,7 +21,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode(exclude = {"coauthors", "tags", "usersSongs", "playlists", "ratings"})
+@EqualsAndHashCode(exclude = {"coauthors", "tags", "usersSongs", "playlists", "ratings", "added", "edits"})
 public class Song {
 
   /**
@@ -38,7 +38,7 @@ public class Song {
   private Author author;
 
   @OneToMany(mappedBy = "song")
-  private Set<SongCoauthor> coauthors;
+  private Set<SongCoauthor> coauthors = new HashSet<>();
 
   /**
    * @param title stores the song's title.
@@ -53,6 +53,12 @@ public class Song {
   private String lyrics;
 
   /**
+   * Column that indicates whether the song is waiting for being accepted, edited or deleted
+   */
+  @Column(name = "is_awaiting", nullable = false)
+  private boolean isAwaiting;
+
+  /**
    * @param guitar_tabs stores the guitar tabs.
    */
   @Column(name = "guitar_tabs", columnDefinition = "TEXT", nullable = false)
@@ -63,12 +69,6 @@ public class Song {
    */
   @Column(name = "trivia", columnDefinition = "TEXT")
   private String trivia;
-
-  /**
-   * @param addition_time stores the date and time of the song's insertion to the database.
-   */
-  @Column(name = "creation_time", nullable = false, columnDefinition = "TIMESTAMP default NOW()")
-  private LocalDateTime creationTime;
 
   /**
    * @param categoryId is the Foreign Key referencing the ID in the CATEGORIES table.
@@ -82,16 +82,22 @@ public class Song {
   @JoinTable(name = "songs_tags",
       joinColumns = @JoinColumn(name = "song_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
-  private Set<Tag> tags;
+  private Set<Tag> tags = new HashSet<>();
 
   @ManyToMany(mappedBy = "songs")
-  private Set<User> usersSongs;
+  private Set<User> usersSongs = new HashSet<>();
 
   @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<UserSongRating> ratings;
+  private Set<UserSongRating> ratings = new HashSet<>();
 
   @ManyToMany(mappedBy = "songs")
-  private Set<Playlist> playlists;
+  private Set<Playlist> playlists = new HashSet<>();
+
+  @OneToOne(mappedBy = "addedSong", orphanRemoval = true)
+  private SongAdd added;
+
+  @OneToMany(mappedBy = "editedSong", orphanRemoval = true)
+  private Set<SongEdit> edits = new HashSet<>();
 
   public void setAuthor(Author author) {
     this.author = author;
@@ -136,5 +142,22 @@ public class Song {
 
   public void removeCoauthor(SongCoauthor coauthor) {
     this.coauthors.remove(coauthor);
+  }
+
+  public boolean addEdit(SongEdit timestamp) {
+    if(this.edits.add(timestamp)) {
+      timestamp.setEditedSong(this);
+      return true;
+    }
+    return false;
+  }
+
+  public boolean removeEdit(SongEdit timestamp) {
+    return this.edits.remove(timestamp);
+  }
+
+  public void setAdded(SongAdd timestamp) {
+    this.added = timestamp;
+    this.added.setAddedSong(this);
   }
 }

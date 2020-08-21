@@ -2,10 +2,8 @@ package com.lazydev.stksongbook.webapp.service.mappers.decorator;
 
 import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.service.*;
-import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm;
 import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
-import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -30,6 +28,7 @@ public abstract class UserMapperDecorator implements UserMapper {
   @Autowired
   private UserService userService;
 
+  // todo change to transactional
   @Override
   public User map(UserDTO dto) {
     var user = delegate.map(dto);
@@ -40,17 +39,13 @@ public abstract class UserMapperDecorator implements UserMapper {
     user.setPlaylists(new HashSet<>(playlistService.findByOwnerId(dto.getId(), true)));
     user.setEmail(found.getEmail());
     user.setPassword(found.getPassword());
-    return user;
-  }
-
-  @Override
-  public User mapFromRegisterForm(RegisterNewUserForm form) {
-    var user = delegate.mapFromRegisterForm(form);
-    user.setUserRole(userRoleService.findById(Constants.CONST_USER_ID));
-    user.setId(Constants.DEFAULT_ID);
-    user.setSongs(new HashSet<>());
-    user.setPlaylists(new HashSet<>());
-    user.setUserRatings(new HashSet<>());
+    user.setEditedSongs(found.getEditedSongs());
+    user.setAddedSongs(found.getAddedSongs());
+    user.setActivated(found.isActivated());
+    user.setActivationKey(found.getActivationKey());
+    user.setRegistrationDate(found.getRegistrationDate());
+    user.setResetDate(found.getResetDate());
+    user.setResetKey(found.getResetKey());
     return user;
   }
 }

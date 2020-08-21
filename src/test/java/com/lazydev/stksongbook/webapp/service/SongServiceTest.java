@@ -1,6 +1,8 @@
 package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.data.model.*;
+import com.lazydev.stksongbook.webapp.repository.SongAddRepository;
+import com.lazydev.stksongbook.webapp.repository.SongEditRepository;
 import com.lazydev.stksongbook.webapp.repository.SongRepository;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateCoauthorDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
@@ -14,14 +16,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 
@@ -42,6 +44,12 @@ class SongServiceTest {
   private FileSystemStorageService storageService;
   @Mock
   private UserSongRatingService ratingService;
+  @Mock
+  private UserService userService;
+  @Mock
+  private SongAddRepository songAddRepository;
+  @Mock
+  private SongEditRepository songEditRepository;
   @InjectMocks
   private SongService songService;
 
@@ -76,8 +84,8 @@ class SongServiceTest {
 
   @Test
   void testCreateAndSaveSong() {
-    CreateCoauthorDTO coauthorDTO = CreateCoauthorDTO.builder().authorName("coauthor").function("muzyka").build();
-    CreateCoauthorDTO coauthorDTO2 = CreateCoauthorDTO.builder().authorName("coauthor2").function("tekst").build();
+    CreateCoauthorDTO coauthorDTO = CreateCoauthorDTO.builder().authorName("coauthor").coauthorFunction("muzyka").build();
+    CreateCoauthorDTO coauthorDTO2 = CreateCoauthorDTO.builder().authorName("coauthor2").coauthorFunction("tekst").build();
     CreateSongDTO dto = CreateSongDTO.builder().authorName("author").categoryId(1L).title("title s").trivia(null)
         .lyrics("dsa fa fda").tags(List.of("tag1", "tag2")).guitarTabs("gfsdgsjhifs")
         .coauthors(Set.of(coauthorDTO, coauthorDTO2)).build();
@@ -89,6 +97,9 @@ class SongServiceTest {
     Author author3 = new Author(1L, "coauthor2", null, null, new HashSet<>(), new HashSet<>());
     Category category = new Category(1L, "category", new HashSet<>());
 
+    User user = new User();
+    user.setId(1L);
+    given(userService.findById(1L)).willReturn(user);
     given(categoryService.findById(1L)).willReturn(category);
     given(tagService.findOrCreateTag("tag1")).willReturn(tag1);
     given(tagService.findOrCreateTag("tag2")).willReturn(tag2);
@@ -106,7 +117,7 @@ class SongServiceTest {
       coauthor.setId(new SongsCoauthorsKey());
       coauthor.setAuthor(result.getArgument(1));
       coauthor.setSong(song);
-      coauthor.setFunction(result.getArgument(2));
+      coauthor.setCoauthorFunction(result.getArgument(2));
       return coauthor;
     });
     given(coauthorService.findOrCreate(any(Song.class), eq(author3), eq("tekst"))).willAnswer(result -> {
@@ -115,7 +126,7 @@ class SongServiceTest {
       coauthor.setId(new SongsCoauthorsKey());
       coauthor.setAuthor(result.getArgument(1));
       coauthor.setSong(song);
-      coauthor.setFunction(result.getArgument(2));
+      coauthor.setCoauthorFunction(result.getArgument(2));
       return coauthor;
     });
 
@@ -129,7 +140,7 @@ class SongServiceTest {
     assertEquals(dto.getLyrics(), created.getLyrics());
     for(CreateCoauthorDTO entry : dto.getCoauthors()) {
       assertTrue(created.getCoauthors().stream().anyMatch(it -> it.getAuthor().getName().equals(entry.getAuthorName())));
-      assertTrue(created.getCoauthors().stream().anyMatch(it -> it.getFunction().equals(entry.getFunction())));
+      assertTrue(created.getCoauthors().stream().anyMatch(it -> it.getCoauthorFunction().equals(entry.getCoauthorFunction())));
     }
     for(String entry : dto.getTags()) {
       assertTrue(created.getTags().stream().anyMatch(it -> it.getName().equals(entry)));
@@ -188,13 +199,13 @@ class SongServiceTest {
     coauthor.setId(new SongsCoauthorsKey());
     coauthor.setAuthor(author2);
     coauthor.setSong(song);
-    coauthor.setFunction("muzyka");
+    coauthor.setCoauthorFunction("muzyka");
 
     SongCoauthor coauthor2 = new SongCoauthor();
     coauthor2.setId(new SongsCoauthorsKey());
     coauthor2.setAuthor(author3);
     coauthor2.setSong(song);
-    coauthor2.setFunction("tekst");
+    coauthor2.setCoauthorFunction("tekst");
 
     Category category = new Category();
     category.setId(5L);
@@ -202,7 +213,7 @@ class SongServiceTest {
     category.setSongs(new HashSet<>());
     song.setCategory(category);
 
-    song.setCreationTime(LocalDateTime.now());
+    //song.setCreationTime(LocalDateTime.now());
     song.addTag(getTag());
 
     UserSongRating rating = new UserSongRating();

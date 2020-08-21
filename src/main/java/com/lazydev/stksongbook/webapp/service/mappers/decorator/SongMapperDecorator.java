@@ -2,6 +2,7 @@ package com.lazydev.stksongbook.webapp.service.mappers.decorator;
 
 import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.service.PlaylistService;
+import com.lazydev.stksongbook.webapp.service.SongService;
 import com.lazydev.stksongbook.webapp.service.UserService;
 import com.lazydev.stksongbook.webapp.service.UserSongRatingService;
 import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
@@ -24,6 +25,8 @@ public abstract class SongMapperDecorator implements SongMapper {
   private UserSongRatingService userSongRatingService;
   @Autowired
   private PlaylistService playlistService;
+  @Autowired
+  private SongService songService;
 
   @Override
   public Song map(SongDTO dto) {
@@ -31,6 +34,10 @@ public abstract class SongMapperDecorator implements SongMapper {
     song.setUsersSongs(new HashSet<>(userService.findBySong(dto.getId())));
     song.setRatings(new HashSet<>(userSongRatingService.findBySongId(dto.getId())));
     song.setPlaylists(new HashSet<>(playlistService.findBySongId(dto.getId(), true)));
+    Song found = songService.findById(song.getId());
+    song.setAdded(found.getAdded());
+    song.setEdits(found.getEdits());
+    song.setAwaiting(found.isAwaiting());
     return song;
   }
 }

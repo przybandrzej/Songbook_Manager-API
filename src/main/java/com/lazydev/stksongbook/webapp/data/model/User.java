@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
 
 import javax.persistence.*;
+import java.time.Instant;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -22,7 +24,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @Check(constraints = "length(password) >= 6 AND length(username) >= 4")
-@EqualsAndHashCode(exclude = {"playlists", "userRatings"})
+@EqualsAndHashCode(exclude = {"playlists", "userRatings", "addedSongs", "editedSongs"})
 public class User {
 
   /**
@@ -71,17 +73,57 @@ public class User {
   @Column(name = "last_name")
   private String lastName;
 
+  @Column(name = "activated", nullable = false)
+  private boolean activated = false;
+
+  @Column(name = "registration_date", nullable = false)
+  private Instant registrationDate;
+
+  @Column(name = "image_url", length = 256)
+  private String imageUrl;
+
+  @Column(name = "activation_key", length = 20)
+  private String activationKey;
+
+  @Column(name = "reset_key", length = 20)
+  private String resetKey;
+
+  @Column(name = "reset_date")
+  private Instant resetDate = null;
+
   @ManyToMany
   @JoinTable(name = "users_songs",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "song_id"))
-  private Set<Song> songs;
+  private Set<Song> songs = new HashSet<>();
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<UserSongRating> userRatings;
+  private Set<UserSongRating> userRatings = new HashSet<>();
 
   @OneToMany(mappedBy = "owner", orphanRemoval = true)
-  private Set<Playlist> playlists;
+  private Set<Playlist> playlists = new HashSet<>();
+
+  @OneToMany(mappedBy = "addedBy", orphanRemoval = true)
+  private Set<SongAdd> addedSongs = new HashSet<>();
+
+  @OneToMany(mappedBy = "editedBy", orphanRemoval = true)
+  private Set<SongEdit> editedSongs = new HashSet<>();
+
+  public User(Long id, String email, String password, String username, UserRole userRole, String firstName, String lastName,
+              Set<Song> songs, Set<UserSongRating> userRatings, Set<Playlist> playlists, Set<SongAdd> addedSongs, Set<SongEdit> editedSongs) {
+    this.id = id;
+    this.email = email;
+    this.password = password;
+    this.username = username;
+    this.userRole = userRole;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.songs = songs;
+    this.userRatings = userRatings;
+    this.playlists = playlists;
+    this.addedSongs = addedSongs;
+    this.editedSongs = editedSongs;
+  }
 
   public boolean removeSong(Song song) {
     return songs.remove(song);
@@ -117,17 +159,27 @@ public class User {
     this.userRole = null;
   }
 
-  /**
-   * @param addedSongsCount counts songs added to the database by the user. New users have it automatically set to 0
-   */
-    /*@Column(name = "added_songs_count", nullable = false)
-    private int addedSongsCount;*/
+  public boolean addAddedSong(SongAdd timestamp) {
+    if(this.addedSongs.add(timestamp)) {
+      timestamp.setAddedBy(this);
+      return true;
+    }
+    return false;
+  }
 
-  /**
-   * @param addedSongsCount counts songs edited by the user. New users have automatically set to 0
-   */
-    /*@Column(name = "edited_songs_count", nullable = false)
-    private int editedSongsCount;*/
+  public boolean removeAddedSong(SongAdd timestamp) {
+    return addedSongs.remove(timestamp);
+  }
 
-  // TODO add lists of added songs and edited songs instead
+  public boolean addEditedSong(SongEdit timestamp) {
+    if(this.editedSongs.add(timestamp)) {
+      timestamp.setEditedBy(this);
+      return true;
+    }
+    return false;
+  }
+
+  public boolean removeEditedSong(SongEdit timestamp) {
+    return this.editedSongs.remove(timestamp);
+  }
 }

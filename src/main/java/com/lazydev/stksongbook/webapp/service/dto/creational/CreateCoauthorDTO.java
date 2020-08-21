@@ -20,7 +20,7 @@ public class CreateCoauthorDTO {
   String authorName;
 
   @CoauthorFunctionConstraint
-  String function;
+  String coauthorFunction;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class Builder {

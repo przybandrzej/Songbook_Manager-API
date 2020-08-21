@@ -11,9 +11,9 @@ import java.util.Optional;
 public interface SongCoauthorRepository extends JpaRepository<SongCoauthor, Long> {
 
   Optional<SongCoauthor> findBySongIdAndAuthorId(Long songId, Long authorId);
-  Optional<SongCoauthor> findBySongIdAndAuthorIdAndFunction(Long songId, Long authorId, String function);
+  Optional<SongCoauthor> findBySongIdAndAuthorIdAndCoauthorFunction(Long songId, Long authorId, String function);
   List<SongCoauthor> findBySongId(Long id);
   List<SongCoauthor> findByAuthorId(Long id);
-  List<SongCoauthor> findByFunctionIgnoreCase(String function);
-  List<SongCoauthor> findByFunctionContainingIgnoreCase(String function);
+  List<SongCoauthor> findByCoauthorFunctionIgnoreCase(String function);
+  List<SongCoauthor> findByCoauthorFunctionContainingIgnoreCase(String function);
 }

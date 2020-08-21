@@ -67,7 +67,7 @@ class AuthorMapperTest {
     song1.setId(1L);
     song1.setTitle("title song1");
 
-    given(songService.findByAuthorId(1L)).willReturn(List.of(new Song[]{song1}));
+    given(songService.findByAuthorId(1L, null, null)).willReturn(List.of(new Song[]{song1}));
     given(songCoauthorService.findByAuthorId(1L)).willReturn(Collections.emptyList());
 
     Author mapped = mapper.map(author);

@@ -6,36 +6,76 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SongRepository extends JpaRepository<Song, Long> {
 
+  Optional<Song> findByIdAndIsAwaiting(Long id, boolean awaiting);
+
+  List<Song> findByIsAwaiting(boolean isAwaiting);
+
+  Page<Song> findByIsAwaiting(boolean isAwaiting, Pageable req);
+
   List<Song> findByTitleIgnoreCase(String title);
 
+  List<Song> findByTitleIgnoreCaseAndIsAwaiting(String title, boolean isAwaiting);
+
   List<Song> findByTitleContainingIgnoreCase(String text);
+
   Page<Song> findByTitleContainingIgnoreCase(String text, Pageable req);
 
+  List<Song> findByTitleContainingIgnoreCaseAndIsAwaiting(String text, boolean isAwaiting);
+
+  Page<Song> findByTitleContainingIgnoreCaseAndIsAwaiting(String text, boolean isAwaiting, Pageable req);
+
   List<Song> findByLyricsContainingIgnoreCase(String text);
+
   Page<Song> findByLyricsContainingIgnoreCase(String text, Pageable req);
 
+  List<Song> findByLyricsContainingIgnoreCaseAndIsAwaiting(String text, boolean isAwaiting);
+
+  Page<Song> findByLyricsContainingIgnoreCaseAndIsAwaiting(String text, boolean isAwaiting, Pageable req);
+
   List<Song> findByCategoryId(Long categoryId);
+
   Page<Song> findByCategoryId(Long categoryId, Pageable req);
+
+  List<Song> findByCategoryIdAndIsAwaiting(Long categoryId, boolean isAwaiting);
+
+  Page<Song> findByCategoryIdAndIsAwaiting(Long categoryId, boolean isAwaiting, Pageable req);
 
   List<Song> findByTagsId(Long tagId);
 
+  List<Song> findByTagsIdAndIsAwaiting(Long tagId, boolean isAwaiting);
+
+  Page<Song> findByTagsIdAndIsAwaiting(Long tagId, boolean isAwaiting, Pageable req);
+
   List<Song> findByAuthorId(Long authorId);
+
   Page<Song> findByAuthorId(Long authorId, Pageable req);
 
-  List<Song> findByPlaylistsIdAndPlaylistsIsPrivate(Long authorId, boolean isPrivate);
+  List<Song> findByAuthorIdAndIsAwaiting(Long authorId, boolean isAwaiting);
 
-  List<Song> findByRatings(Double value);
-  List<Song> findByRatingsRatingGreaterThanEqual(Double value);
-  List<Song> findByRatingsRatingLessThanEqual(Double value);
+  Page<Song> findByAuthorIdAndIsAwaiting(Long authorId, boolean isAwaiting, Pageable req);
 
-  List<Song> findByCreationTimeGreaterThanEqual(LocalDateTime date);
-  List<Song> findByCreationTimeLessThanEqual(LocalDateTime date);
+  List<Song> findByPlaylistsIdAndIsAwaitingAndPlaylistsIsPrivate(Long authorId, boolean isAwaiting, boolean isPrivate);
 
-  List<Song> findByUsersSongsId(Long userId);
+  List<Song> findByRatingsAndIsAwaiting(Double value, boolean isAwaiting);
+
+  List<Song> findByRatingsRatingGreaterThanEqualAndIsAwaiting(Double value, boolean isAwaiting);
+
+  List<Song> findByRatingsRatingLessThanEqualAndIsAwaiting(Double value, boolean isAwaiting);
+
+  List<Song> findByAddedTimestampGreaterThanEqual(Instant date);
+
+  List<Song> findByAddedTimestampLessThanEqual(Instant date);
+
+  List<Song> findByAddedTimestampGreaterThanEqualAndIsAwaiting(Instant date, boolean isAwaiting);
+
+  List<Song> findByAddedTimestampLessThanEqualAndIsAwaiting(Instant date, boolean isAwaiting);
+
+  List<Song> findByUsersSongsIdAndIsAwaiting(Long userId, boolean isAwaiting);
 }

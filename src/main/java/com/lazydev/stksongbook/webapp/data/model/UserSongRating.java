@@ -29,6 +29,7 @@ public class UserSongRating {
   @JoinColumn(name = "song_id")
   private Song song;
 
+  // todo change to BigDecimal
   @Column(name = "rating", nullable = false)
   private Double rating;
 

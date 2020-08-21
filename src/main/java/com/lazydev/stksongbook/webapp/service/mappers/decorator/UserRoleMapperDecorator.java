@@ -31,7 +31,6 @@ public abstract class UserRoleMapperDecorator implements UserRoleMapper {
   @Override
   public UserRole map(UniversalCreateDTO dto) {
     var role = delegate.map(dto);
-    role.setUsers(new HashSet<>());
     role.setId(Constants.DEFAULT_ID);
     return role;
   }

@@ -61,7 +61,7 @@ class CategoryMapperTest {
     song1.setId(1L);
     song1.setTitle("title song1");
 
-    given(songService.findByCategoryId(1L)).willReturn(List.of(new Song[]{song1}));
+    given(songService.findByCategoryId(1L, null, null)).willReturn(List.of(new Song[]{song1}));
 
     Category mapped = mapper.map(category);
 
