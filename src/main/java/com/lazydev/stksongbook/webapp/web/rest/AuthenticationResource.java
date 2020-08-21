@@ -9,7 +9,7 @@ import com.lazydev.stksongbook.webapp.service.dto.TokenDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm;
 import com.lazydev.stksongbook.webapp.service.exception.EmailAlreadyUsedException;
 import com.lazydev.stksongbook.webapp.service.exception.UsernameAlreadyUsedException;
-import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
+import com.lazydev.stksongbook.webapp.service.mailer.MailerService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,10 +30,10 @@ import javax.validation.Valid;
 @AllArgsConstructor
 public class AuthenticationResource {
 
-  private final UserMapper mapper;
   private final UserService service;
   private final AuthenticationManager authenticationManager;
   private final TokenProvider tokenProvider;
+  private final MailerService mailerService;
 
   @PostMapping("/register")
   public ResponseEntity<Void> register(@RequestBody @Valid RegisterNewUserForm form) {
@@ -44,7 +44,7 @@ public class AuthenticationResource {
       throw new UsernameAlreadyUsedException(form.getUsername());
     }
     User user = service.register(form);
-    service.save(user);
+    mailerService.sendActivationMail(user);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 

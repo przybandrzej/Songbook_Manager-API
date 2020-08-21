@@ -23,7 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2020-08-20T22:04:32.944+02:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2020-08-21T21:10:33.333+02:00")
 @Component("com.lazydev.stksongbook.mailer.client.api.UnsupportedPathsApi")
 public class UnsupportedPathsApi {
     private ApiClient apiClient;
