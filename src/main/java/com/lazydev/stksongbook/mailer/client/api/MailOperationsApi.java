@@ -2,6 +2,8 @@ package com.lazydev.stksongbook.mailer.client.api;
 
 import com.lazydev.stksongbook.mailer.client.invoker.ApiClient;
 
+import com.lazydev.stksongbook.mailer.client.model.Email;
+import com.lazydev.stksongbook.mailer.client.model.MailSentResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2020-08-21T21:10:33.333+02:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2020-08-25T00:05:28.841+02:00")
 @Component("com.lazydev.stksongbook.mailer.client.api.MailOperationsApi")
 public class MailOperationsApi {
     private ApiClient apiClient;
@@ -49,21 +51,29 @@ public class MailOperationsApi {
      * 
      * Send email
      * <p><b>200</b> - Email was sent
+     * @param mail  (required)
+     * @return MailSentResponse
      * @throws RestClientException if an error occurs while attempting to invoke the API
      */
-    public void sendMail() throws RestClientException {
-        sendMailWithHttpInfo();
+    public MailSentResponse sendMail(Email mail) throws RestClientException {
+        return sendMailWithHttpInfo(mail).getBody();
     }
 
     /**
      * 
      * Send email
      * <p><b>200</b> - Email was sent
-     * @return ResponseEntity&lt;Void&gt;
+     * @param mail  (required)
+     * @return ResponseEntity&lt;MailSentResponse&gt;
      * @throws RestClientException if an error occurs while attempting to invoke the API
      */
-    public ResponseEntity<Void> sendMailWithHttpInfo() throws RestClientException {
-        Object postBody = null;
+    public ResponseEntity<MailSentResponse> sendMailWithHttpInfo(Email mail) throws RestClientException {
+        Object postBody = mail;
+        
+        // verify the required parameter 'mail' is set
+        if (mail == null) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Missing the required parameter 'mail' when calling sendMail");
+        }
         
         String path = UriComponentsBuilder.fromPath("/mail/send").build().toUriString();
 
@@ -82,7 +92,7 @@ public class MailOperationsApi {
 
         String[] authNames = new String[] {  };
 
-        ParameterizedTypeReference<Void> returnType = new ParameterizedTypeReference<Void>() {};
+        ParameterizedTypeReference<MailSentResponse> returnType = new ParameterizedTypeReference<MailSentResponse>() {};
         return apiClient.invokeAPI(path, HttpMethod.POST, queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
     }
 }
