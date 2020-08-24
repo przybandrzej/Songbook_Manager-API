@@ -12,7 +12,6 @@ public class UserContextService {
 
   private final UserRepository repository;
 
-
   public User getCurrentUser() {
     return SecurityUtils.getCurrentUserLogin().map(login ->
         repository.findByUsername(login).or(() -> repository.findByEmail(login)).orElseThrow(AuthenticationException::new))

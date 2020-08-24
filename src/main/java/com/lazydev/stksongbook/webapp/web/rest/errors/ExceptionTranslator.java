@@ -94,7 +94,8 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
       StorageException.class,
       ParameterNotDefinedException.class,
       CannotDeleteEntityException.class,
-      SuperUserAlreadyExistsException.class})
+      SuperUserAlreadyExistsException.class,
+      BadRequestErrorException.class})
   protected ResponseEntity<Object> handleException(RuntimeException ex, WebRequest request) {
     Error apiError = new Error(BAD_REQUEST);
     apiError.setMessage(ex.getMessage());
@@ -109,7 +110,8 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
   }
 
   @ExceptionHandler({EntityDependentNotInitialized.class,
-      AuthenticationException.class})
+      AuthenticationException.class,
+      InternalServerErrorException.class})
   protected ResponseEntity<Object> handleDependentEntitiesNotFound(RuntimeException ex, WebRequest request) {
     Error apiError = new Error(INTERNAL_SERVER_ERROR);
     apiError.setMessage(ex.getMessage());
