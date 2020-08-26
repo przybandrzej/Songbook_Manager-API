@@ -3,7 +3,6 @@ package com.lazydev.stksongbook.webapp.service;
 import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.repository.UserRepository;
 import com.lazydev.stksongbook.webapp.repository.UserRoleRepository;
-import com.lazydev.stksongbook.webapp.security.SecurityUtils;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm;
 import com.lazydev.stksongbook.webapp.service.exception.EntityDependentNotInitialized;
@@ -31,6 +30,8 @@ public class UserService {
   private String userRoleName;
   @Value("${spring.flyway.placeholders.role.superuser}")
   private String superuserRoleName;
+  @Value("${spring.flyway.placeholders.role.admin}")
+  private String adminRoleName;
   private final UserContextService userContextService;
 
   public UserService(UserRepository repository, PlaylistService playlistService, PasswordEncoder passwordEncoder, UserRoleRepository roleRepository,
@@ -87,7 +88,9 @@ public class UserService {
   }
 
   public User save(User saveUser) {
-    if(saveUser != userContextService.getCurrentUser() || !SecurityUtils.isCurrentUserSuperuser() || !SecurityUtils.isCurrentUserAdmin()) {
+    User currentUser = userContextService.getCurrentUser();
+    if(!saveUser.getId().equals(currentUser.getId()) && !currentUser.getUserRole().getName().equals(superuserRoleName)
+        && !currentUser.getUserRole().getName().equals(adminRoleName)) {
       throw new ForbiddenOperationException("No permission.");
     }
     if(saveUser.getUserRole().getName().equals(superuserRoleName)) {
@@ -102,7 +105,9 @@ public class UserService {
 
   public void deleteById(Long id) {
     var user = findById(id);
-    if(user != userContextService.getCurrentUser() || !SecurityUtils.isCurrentUserSuperuser() || !SecurityUtils.isCurrentUserAdmin()) {
+    User currentUser = userContextService.getCurrentUser();
+    if(!id.equals(currentUser.getId()) && !currentUser.getUserRole().getName().equals(superuserRoleName)
+        && !currentUser.getUserRole().getName().equals(adminRoleName)) {
       throw new ForbiddenOperationException("No permission.");
     }
     user.getPlaylists().forEach(it -> playlistService.deleteById(it.getId()));

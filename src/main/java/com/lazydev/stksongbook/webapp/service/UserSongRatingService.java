@@ -52,14 +52,14 @@ public class UserSongRatingService {
   }
 
   public UserSongRating save(UserSongRating rating) {
-    if(rating.getUser() != userContextService.getCurrentUser()) {
+    if(!rating.getUser().getId().equals(userContextService.getCurrentUser().getId())) {
       throw new ForbiddenOperationException("No permission.");
     }
     return repository.save(rating);
   }
 
   public void delete(UserSongRating obj) {
-    if(obj.getUser() != userContextService.getCurrentUser()) {
+    if(!obj.getUser().getId().equals(userContextService.getCurrentUser().getId())) {
       throw new ForbiddenOperationException("No permission.");
     }
     findByUserIdAndSongId(obj.getUser().getId(), obj.getSong().getId());
