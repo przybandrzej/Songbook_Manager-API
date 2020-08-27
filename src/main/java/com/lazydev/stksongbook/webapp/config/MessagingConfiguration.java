@@ -1,7 +1,6 @@
 package com.lazydev.stksongbook.webapp.config;
 
-import org.springframework.amqp.core.AmqpAdmin;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -21,13 +20,20 @@ public class MessagingConfiguration {
   @Value("${queue.mails-results}")
   private String resultsQueue;
 
+  static final String topicExchangeName = "spring-boot-exchange";
+
   @Autowired
   private ConnectionFactory connectionFactory;
 
-  @Bean
-  public AmqpAdmin amqpAdmin() {
-    return new RabbitAdmin(this.connectionFactory);
+ /* @Bean
+  TopicExchange exchange() {
+    return new TopicExchange(topicExchangeName);
   }
+
+  @Bean
+  Binding binding(Queue queue, TopicExchange exchange) {
+    return BindingBuilder.bind(queue).to(exchange).with("foo.bar.#");
+  }*/
 
   @Bean
   public MessageConverter messageConverter() {
