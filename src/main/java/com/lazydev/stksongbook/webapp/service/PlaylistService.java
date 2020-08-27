@@ -4,13 +4,11 @@ import com.lazydev.stksongbook.webapp.data.model.Playlist;
 import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.repository.PlaylistRepository;
-import com.lazydev.stksongbook.webapp.security.SecurityUtils;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreatePlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.exception.ForbiddenOperationException;
 import com.lazydev.stksongbook.webapp.util.Constants;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -21,7 +19,6 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-@AllArgsConstructor
 public class PlaylistService {
 
   private final PlaylistRepository repository;
@@ -31,6 +28,12 @@ public class PlaylistService {
   private String superuserRoleName;
   @Value("${spring.flyway.placeholders.role.admin}")
   private String adminRoleName;
+
+  public PlaylistService(PlaylistRepository repository, SongService songService, UserContextService userContextService) {
+    this.repository = repository;
+    this.songService = songService;
+    this.userContextService = userContextService;
+  }
 
   public Playlist findById(Long id) {
     var playlist = repository.findById(id)
