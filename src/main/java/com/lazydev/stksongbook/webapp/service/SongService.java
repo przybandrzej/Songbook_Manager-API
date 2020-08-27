@@ -10,7 +10,6 @@ import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.exception.ForbiddenOperationException;
 import com.lazydev.stksongbook.webapp.util.Constants;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -28,7 +27,6 @@ import java.util.Set;
 
 @Service
 @Transactional
-@AllArgsConstructor
 @Validated
 public class SongService {
 
@@ -48,6 +46,19 @@ public class SongService {
   private String adminRoleName;
   @Value("${spring.flyway.placeholders.role.moderator}")
   private String moderatorRoleName;
+
+  public SongService(SongRepository repository, TagService tagService, AuthorService authorService, SongCoauthorService coauthorService, CategoryService categoryService, FileSystemStorageService storageService, UserSongRatingService ratingService, UserContextService userContextService, SongAddRepository songAddRepository, SongEditRepository songEditRepository) {
+    this.repository = repository;
+    this.tagService = tagService;
+    this.authorService = authorService;
+    this.coauthorService = coauthorService;
+    this.categoryService = categoryService;
+    this.storageService = storageService;
+    this.ratingService = ratingService;
+    this.userContextService = userContextService;
+    this.songAddRepository = songAddRepository;
+    this.songEditRepository = songEditRepository;
+  }
 
   public List<Song> findAll(Boolean awaiting, Boolean includeAwaiting, Integer limit) {
     if(limit != null) {
