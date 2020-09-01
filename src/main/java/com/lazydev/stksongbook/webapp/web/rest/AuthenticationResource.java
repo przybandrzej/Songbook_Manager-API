@@ -3,6 +3,7 @@ package com.lazydev.stksongbook.webapp.web.rest;
 import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.security.jwt.JWTConfigurer;
 import com.lazydev.stksongbook.webapp.security.jwt.TokenProvider;
+import com.lazydev.stksongbook.webapp.service.MailerService;
 import com.lazydev.stksongbook.webapp.service.UserService;
 import com.lazydev.stksongbook.webapp.service.dto.LoginForm;
 import com.lazydev.stksongbook.webapp.service.dto.TokenDTO;
@@ -34,6 +35,7 @@ public class AuthenticationResource {
   private final UserService service;
   private final AuthenticationManager authenticationManager;
   private final TokenProvider tokenProvider;
+  private final MailerService mailerService;
 
   @PostMapping("/register")
   public ResponseEntity<Void> register(@RequestBody @Valid RegisterNewUserForm form) {
@@ -44,7 +46,7 @@ public class AuthenticationResource {
       throw new UsernameAlreadyUsedException(form.getUsername());
     }
     User user = service.register(form);
-    service.save(user);
+    mailerService.sendActivationEmail(user);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
