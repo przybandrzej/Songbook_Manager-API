@@ -20,20 +20,8 @@ public class MessagingConfiguration {
   @Value("${queue.mails-results}")
   private String resultsQueue;
 
-  static final String topicExchangeName = "spring-boot-exchange";
-
   @Autowired
   private ConnectionFactory connectionFactory;
-
- /* @Bean
-  TopicExchange exchange() {
-    return new TopicExchange(topicExchangeName);
-  }
-
-  @Bean
-  Binding binding(Queue queue, TopicExchange exchange) {
-    return BindingBuilder.bind(queue).to(exchange).with("foo.bar.#");
-  }*/
 
   @Bean
   public MessageConverter messageConverter() {
@@ -45,8 +33,6 @@ public class MessagingConfiguration {
     final SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
     factory.setConnectionFactory(this.connectionFactory);
     factory.setMessageConverter(messageConverter());
-    factory.setConcurrentConsumers(3);
-    factory.setMaxConcurrentConsumers(10);
     return factory;
   }
 
