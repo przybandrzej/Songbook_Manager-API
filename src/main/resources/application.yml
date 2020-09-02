@@ -30,4 +30,5 @@ security:
     #allow-credentials: true
     #max-age: 1800
 
-#application:
+application:
+  gui-base-url: http://localhost:4200

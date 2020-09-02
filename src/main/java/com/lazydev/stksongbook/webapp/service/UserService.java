@@ -10,6 +10,7 @@ import com.lazydev.stksongbook.webapp.service.exception.ForbiddenOperationExcept
 import com.lazydev.stksongbook.webapp.service.exception.SuperUserAlreadyExistsException;
 import com.lazydev.stksongbook.webapp.service.exception.UserNotExistsException;
 import com.lazydev.stksongbook.webapp.util.Constants;
+import com.lazydev.stksongbook.webapp.util.RandomUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -117,16 +118,15 @@ public class UserService {
   public User register(RegisterNewUserForm form) {
     User user = new User();
     user.setRegistrationDate(Instant.now());
-    // todo user.setActivationKey();
     user.setId(Constants.DEFAULT_ID);
     user.setUsername(form.getUsername());
     user.setEmail(form.getEmail());
-    // todo user.setActivated(false);
-    user.setActivated(true);
     user.setFirstName(form.getFirstName());
     user.setLastName(form.getLastName());
     user.setPassword(passwordEncoder.encode(form.getPassword()));
     user.setUserRole(roleRepository.findByName(userRoleName).orElseThrow(() -> new EntityDependentNotInitialized(userRoleName)));
+    user.setActivated(false);
+    user.setActivationKey(RandomUtil.generateActivationKey());
     return repository.save(user);
   }
 }
