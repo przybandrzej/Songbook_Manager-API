@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class TokenDTO {
 
+  @JsonProperty("idToken")
   private String idToken;
 
   public TokenDTO(String idToken) {
     this.idToken = idToken;
   }
 
-  @JsonProperty("id_token")
   String getIdToken() {
     return idToken;
   }
