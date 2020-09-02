@@ -95,8 +95,7 @@ CREATE TABLE songs (
 CREATE TABLE songs_coauthors (
                                  author_id bigint NOT NULL,
                                  song_id bigint NOT NULL,
-                                 coauthor_function character varying(255) NOT NULL,
-                                 CONSTRAINT songs_coauthors_coauthor_function_check CHECK (((coauthor_function)::text = ANY ((ARRAY['muzyka'::character varying, 'tekst'::character varying])::text[])))
+                                 coauthor_function character varying(255) NOT NULL
 );
 
 CREATE SEQUENCE songs_id_seq

@@ -1,17 +1,15 @@
 package com.lazydev.stksongbook.webapp.data.model;
 
-import com.lazydev.stksongbook.webapp.util.Constants;
+import com.lazydev.stksongbook.webapp.data.model.enumeration.CoauthorFunction;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Check;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "songs_coauthors")
-@Check(constraints = "coauthor_function IN (" + Constants._Function_Music_Polish + ", " + Constants._Function_Text_Polish + ")")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -31,9 +29,8 @@ public class SongCoauthor {
   @JoinColumn(name = "author_id")
   private Author author;
 
-  // todo change to an Enum
   @Column(name = "coauthor_function", nullable = false)
-  private String coauthorFunction;
+  private CoauthorFunction coauthorFunction;
 
   public void setSong(Song song) {
     this.song = song;

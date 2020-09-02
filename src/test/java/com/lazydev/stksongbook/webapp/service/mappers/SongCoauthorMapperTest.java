@@ -5,6 +5,7 @@ import com.lazydev.stksongbook.webapp.data.model.Author;
 import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.data.model.SongCoauthor;
 import com.lazydev.stksongbook.webapp.data.model.SongsCoauthorsKey;
+import com.lazydev.stksongbook.webapp.data.model.enumeration.CoauthorFunction;
 import com.lazydev.stksongbook.webapp.service.AuthorService;
 import com.lazydev.stksongbook.webapp.service.SongService;
 import com.lazydev.stksongbook.webapp.service.dto.SongCoauthorDTO;
@@ -56,7 +57,7 @@ class SongCoauthorMapperTest {
 
   @Test
   void testMapToEntity() {
-    SongCoauthorDTO dto = SongCoauthorDTO.builder().authorId(1L).songId(2L).coauthorFunction("muzyka").build();
+    SongCoauthorDTO dto = SongCoauthorDTO.builder().authorId(1L).songId(2L).coauthorFunction(CoauthorFunction.MUSIC).build();
     SongCoauthor coauthor = getSample();
 
     given(songService.findById(2L)).willReturn(coauthor.getSong());
@@ -82,7 +83,7 @@ class SongCoauthorMapperTest {
     songCoauthor.setId(new SongsCoauthorsKey());
     songCoauthor.setSong(song);
     songCoauthor.setAuthor(author);
-    songCoauthor.setCoauthorFunction("muzyka");
+    songCoauthor.setCoauthorFunction(CoauthorFunction.MUSIC);
     return songCoauthor;
   }
 }

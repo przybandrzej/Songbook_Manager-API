@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.lazydev.stksongbook.webapp.data.model.*;
+import com.lazydev.stksongbook.webapp.data.model.enumeration.CoauthorFunction;
 import com.lazydev.stksongbook.webapp.service.FileSystemStorageService;
 import com.lazydev.stksongbook.webapp.service.SongService;
 import com.lazydev.stksongbook.webapp.service.dto.*;
@@ -213,13 +214,13 @@ class SongResourceTest {
     coauthor.setId(new SongsCoauthorsKey());
     coauthor.setAuthor(author2);
     coauthor.setSong(song);
-    coauthor.setCoauthorFunction("muzyka");
+    coauthor.setCoauthorFunction(CoauthorFunction.MUSIC);
 
     SongCoauthor coauthor2 = new SongCoauthor();
     coauthor2.setId(new SongsCoauthorsKey());
     coauthor2.setAuthor(author3);
     coauthor2.setSong(song);
-    coauthor2.setCoauthorFunction("tekst");
+    coauthor2.setCoauthorFunction(CoauthorFunction.TEXT);
 
     Category category = new Category();
     category.setId(5L);
@@ -378,8 +379,8 @@ class SongResourceTest {
   }
 
   private CreateSongDTO getDtoFromFile() {
-    CreateCoauthorDTO dto1 = CreateCoauthorDTO.builder().authorName("Generalo").coauthorFunction("muzyka").build();
-    CreateCoauthorDTO dto2 = CreateCoauthorDTO.builder().authorName("Andrzej").coauthorFunction("tekst").build();
+    CreateCoauthorDTO dto1 = CreateCoauthorDTO.builder().authorName("Generalo").coauthorFunction(CoauthorFunction.MUSIC).build();
+    CreateCoauthorDTO dto2 = CreateCoauthorDTO.builder().authorName("Andrzej").coauthorFunction(CoauthorFunction.TEXT).build();
     return CreateSongDTO.builder().authorName("Ziutek").categoryId(1L).trivia(null).guitarTabs("ABBA CD E F").lyrics("fjdksnfldsfnsdjklfndkl;sfndsl;kfndkls\ndsavdgsvbhaj")
         .tags(List.of("tag1", "tag2", "tag4")).title("sample title").coauthors(Set.of(dto1, dto2)).build();
   }

@@ -1,6 +1,7 @@
 package com.lazydev.stksongbook.webapp.web.rest;
 
 import com.lazydev.stksongbook.webapp.data.model.SongCoauthor;
+import com.lazydev.stksongbook.webapp.data.model.enumeration.CoauthorFunction;
 import com.lazydev.stksongbook.webapp.service.SongCoauthorService;
 import com.lazydev.stksongbook.webapp.service.dto.SongCoauthorDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityAlreadyExistsException;
@@ -38,7 +39,7 @@ public class SongCoauthorResource {
   }
 
   @GetMapping("/function/{function}")
-  public ResponseEntity<List<SongCoauthorDTO>> getByFunction(@PathVariable("function") String function) {
+  public ResponseEntity<List<SongCoauthorDTO>> getByFunction(@PathVariable("function") CoauthorFunction function) {
     List<SongCoauthorDTO> list = songCoauthorService.findByFunction(function)
         .stream().map(songCoauthorMapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);

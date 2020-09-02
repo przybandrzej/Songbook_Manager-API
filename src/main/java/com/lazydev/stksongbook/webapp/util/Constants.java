@@ -21,7 +21,4 @@ public class Constants {
   public static final String EMAIL_INVALID_MESSAGE = "Email invalid.";
   public static final String PASSWORD_INVALID_MESSAGE = "Password length must be minimum 6 and maximum 128 characters.";
   public static final String NAME_INVALID_MESSAGE = "The name must consist of letters and spaces and be 2-15 characters long.";
-
-  public static final String _Function_Music_Polish = "'muzyka'";
-  public static final String _Function_Text_Polish = "'tekst'";
 }

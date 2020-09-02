@@ -2,6 +2,7 @@ package com.lazydev.stksongbook.webapp.service.mappers;
 
 import com.lazydev.stksongbook.webapp.StkSongbookApplication;
 import com.lazydev.stksongbook.webapp.data.model.*;
+import com.lazydev.stksongbook.webapp.data.model.enumeration.CoauthorFunction;
 import com.lazydev.stksongbook.webapp.service.PlaylistService;
 import com.lazydev.stksongbook.webapp.service.SongService;
 import com.lazydev.stksongbook.webapp.service.UserService;
@@ -169,13 +170,13 @@ class SongMapperTest {
     coauthor.setId(new SongsCoauthorsKey());
     coauthor.setAuthor(author2);
     coauthor.setSong(song);
-    coauthor.setCoauthorFunction("muzyka");
+    coauthor.setCoauthorFunction(CoauthorFunction.MUSIC);
 
     SongCoauthor coauthor2 = new SongCoauthor();
     coauthor2.setId(new SongsCoauthorsKey());
     coauthor2.setAuthor(author3);
     coauthor2.setSong(song);
-    coauthor2.setCoauthorFunction("tekst");
+    coauthor2.setCoauthorFunction(CoauthorFunction.TEXT);
 
     Category category = new Category();
     category.setId(5L);
