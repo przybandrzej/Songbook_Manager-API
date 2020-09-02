@@ -31,6 +31,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -240,7 +241,7 @@ class SongResourceTest {
 
     UserSongRating rating = new UserSongRating();
     rating.setId(new UsersSongsRatingsKey());
-    rating.setRating(0.9);
+    rating.setRating(BigDecimal.valueOf(0.9));
     User user = new User();
     user.setId(1L);
     user.setUserRatings(new HashSet<>());
@@ -251,7 +252,7 @@ class SongResourceTest {
     user.addSong(song);
 
     UserSongRating rating2 = new UserSongRating();
-    rating2.setRating(0.8);
+    rating2.setRating(BigDecimal.valueOf(0.8));
     rating2.setId(new UsersSongsRatingsKey());
     User user2 = new User();
     user2.setUserRatings(new HashSet<>());
@@ -366,7 +367,7 @@ class SongResourceTest {
     Set<SongCoauthorDTO> coauthorDTOS = song.getCoauthors().stream().map(it -> SongCoauthorDTO.builder().songId(it.getSong().getId())
         .authorId(it.getAuthor().getId()).coauthorFunction(it.getCoauthorFunction()).build()).collect(Collectors.toSet());
     return SongDTO.builder().id(song.getId()).title(song.getTitle()).author(authorDTO).lyrics(song.getLyrics()).category(categoryDTO)
-        .averageRating(0.0).guitarTabs(song.getGuitarTabs()).tags(tagDTOS).coauthors(coauthorDTOS).edits(new ArrayList<>())
+        .averageRating(BigDecimal.valueOf(0.0)).guitarTabs(song.getGuitarTabs()).tags(tagDTOS).coauthors(coauthorDTOS).edits(new ArrayList<>())
         .isAwaiting(song.isAwaiting())
         .addedBy(SongAddDTO.builder().addedBy(song.getAdded().getAddedBy().getId()).addedSong(song.getId())
             .timestamp(song.getAdded().getTimestamp())

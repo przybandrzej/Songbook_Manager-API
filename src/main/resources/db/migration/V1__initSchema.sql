@@ -174,8 +174,8 @@ CREATE TABLE users_songs (
 CREATE TABLE users_songs_ratings (
                                      song_id bigint NOT NULL,
                                      user_id bigint NOT NULL,
-                                     rating double precision NOT NULL,
-                                     CONSTRAINT users_songs_ratings_rating_check CHECK (((rating >= (0)::double precision) AND (rating <= (1)::double precision)))
+                                     rating numeric(3, 2) NOT NULL,
+                                     CONSTRAINT users_songs_ratings_rating_check CHECK (((rating >= (0)::numeric(3,2)) AND (rating <= (1)::numeric(3,2))))
 );
 
 ALTER TABLE ONLY authors ALTER COLUMN id SET DEFAULT nextval('authors_id_seq'::regclass);

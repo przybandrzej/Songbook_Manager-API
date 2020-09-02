@@ -46,7 +46,7 @@ class UserSongRatingMapperTest {
 
     assertEquals(userSongRating.getUser().getId(), dto.getUserId());
     assertEquals(userSongRating.getSong().getId(), dto.getSongId());
-    assertEquals(userSongRating.getRating(), dto.getRating().doubleValue());
+    assertEquals(userSongRating.getRating(), dto.getRating());
   }
 
   @Test
@@ -61,7 +61,7 @@ class UserSongRatingMapperTest {
 
     assertEquals(dto.getUserId(), mapped.getUser().getId());
     assertEquals(dto.getSongId(), mapped.getSong().getId());
-    assertEquals(dto.getRating().doubleValue(), mapped.getRating());
+    assertEquals(dto.getRating(), mapped.getRating());
   }
 
   private UserSongRating getSample() {
@@ -77,7 +77,7 @@ class UserSongRatingMapperTest {
     userSongRating.setId(new UsersSongsRatingsKey());
     userSongRating.setSong(song);
     userSongRating.setUser(user);
-    userSongRating.setRating(0.9);
+    userSongRating.setRating(BigDecimal.valueOf(0.9));
     return userSongRating;
   }
 }

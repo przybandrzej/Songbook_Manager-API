@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
@@ -219,7 +220,7 @@ class SongServiceTest {
 
     UserSongRating rating = new UserSongRating();
     rating.setId(new UsersSongsRatingsKey());
-    rating.setRating(0.9);
+    rating.setRating(BigDecimal.valueOf(0.9));
     User user = new User();
     user.setId(1L);
     user.setUserRatings(new HashSet<>());
@@ -230,7 +231,7 @@ class SongServiceTest {
     user.addSong(song);
 
     UserSongRating rating2 = new UserSongRating();
-    rating2.setRating(0.8);
+    rating2.setRating(BigDecimal.valueOf(0.8));
     rating2.setId(new UsersSongsRatingsKey());
     User user2 = new User();
     user2.setUserRatings(new HashSet<>());

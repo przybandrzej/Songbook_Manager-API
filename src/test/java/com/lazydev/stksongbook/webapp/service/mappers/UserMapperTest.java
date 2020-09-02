@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -102,7 +103,7 @@ class UserMapperTest {
     rating.setId(new UsersSongsRatingsKey());
     rating.setSong(song);
     rating.setUser(user);
-    rating.setRating(0.9);
+    rating.setRating(BigDecimal.valueOf(0.9));
 
     UserDTO dto = UserDTO.builder().id(1L).username("dummy name").firstName("First").lastName("Last").userRoleId(2L)
         .songs(Set.of(3L)).build();

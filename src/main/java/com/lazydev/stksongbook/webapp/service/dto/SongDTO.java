@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -42,7 +43,7 @@ public class SongDTO {
 
   String trivia;
 
-  Double averageRating;
+  BigDecimal averageRating;
 
   @NotNull(message = "Tags list must be initialized.")
   List<@Valid TagDTO> tags;
