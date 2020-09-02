@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.lazydev.stksongbook.webapp.data.model.*;
+import com.lazydev.stksongbook.webapp.data.model.enumeration.CoauthorFunction;
 import com.lazydev.stksongbook.webapp.service.FileSystemStorageService;
 import com.lazydev.stksongbook.webapp.service.SongService;
 import com.lazydev.stksongbook.webapp.service.dto.*;
@@ -30,6 +31,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -213,13 +215,13 @@ class SongResourceTest {
     coauthor.setId(new SongsCoauthorsKey());
     coauthor.setAuthor(author2);
     coauthor.setSong(song);
-    coauthor.setCoauthorFunction("muzyka");
+    coauthor.setCoauthorFunction(CoauthorFunction.MUSIC);
 
     SongCoauthor coauthor2 = new SongCoauthor();
     coauthor2.setId(new SongsCoauthorsKey());
     coauthor2.setAuthor(author3);
     coauthor2.setSong(song);
-    coauthor2.setCoauthorFunction("tekst");
+    coauthor2.setCoauthorFunction(CoauthorFunction.TEXT);
 
     Category category = new Category();
     category.setId(5L);
@@ -239,7 +241,7 @@ class SongResourceTest {
 
     UserSongRating rating = new UserSongRating();
     rating.setId(new UsersSongsRatingsKey());
-    rating.setRating(0.9);
+    rating.setRating(BigDecimal.valueOf(0.9));
     User user = new User();
     user.setId(1L);
     user.setUserRatings(new HashSet<>());
@@ -250,7 +252,7 @@ class SongResourceTest {
     user.addSong(song);
 
     UserSongRating rating2 = new UserSongRating();
-    rating2.setRating(0.8);
+    rating2.setRating(BigDecimal.valueOf(0.8));
     rating2.setId(new UsersSongsRatingsKey());
     User user2 = new User();
     user2.setUserRatings(new HashSet<>());
@@ -365,7 +367,7 @@ class SongResourceTest {
     Set<SongCoauthorDTO> coauthorDTOS = song.getCoauthors().stream().map(it -> SongCoauthorDTO.builder().songId(it.getSong().getId())
         .authorId(it.getAuthor().getId()).coauthorFunction(it.getCoauthorFunction()).build()).collect(Collectors.toSet());
     return SongDTO.builder().id(song.getId()).title(song.getTitle()).author(authorDTO).lyrics(song.getLyrics()).category(categoryDTO)
-        .averageRating(0.0).guitarTabs(song.getGuitarTabs()).tags(tagDTOS).coauthors(coauthorDTOS).edits(new ArrayList<>())
+        .averageRating(BigDecimal.valueOf(0.0)).guitarTabs(song.getGuitarTabs()).tags(tagDTOS).coauthors(coauthorDTOS).edits(new ArrayList<>())
         .isAwaiting(song.isAwaiting())
         .addedBy(SongAddDTO.builder().addedBy(song.getAdded().getAddedBy().getId()).addedSong(song.getId())
             .timestamp(song.getAdded().getTimestamp())
@@ -378,8 +380,8 @@ class SongResourceTest {
   }
 
   private CreateSongDTO getDtoFromFile() {
-    CreateCoauthorDTO dto1 = CreateCoauthorDTO.builder().authorName("Generalo").coauthorFunction("muzyka").build();
-    CreateCoauthorDTO dto2 = CreateCoauthorDTO.builder().authorName("Andrzej").coauthorFunction("tekst").build();
+    CreateCoauthorDTO dto1 = CreateCoauthorDTO.builder().authorName("Generalo").coauthorFunction(CoauthorFunction.MUSIC).build();
+    CreateCoauthorDTO dto2 = CreateCoauthorDTO.builder().authorName("Andrzej").coauthorFunction(CoauthorFunction.TEXT).build();
     return CreateSongDTO.builder().authorName("Ziutek").categoryId(1L).trivia(null).guitarTabs("ABBA CD E F").lyrics("fjdksnfldsfnsdjklfndkl;sfndsl;kfndkls\ndsavdgsvbhaj")
         .tags(List.of("tag1", "tag2", "tag4")).title("sample title").coauthors(Set.of(dto1, dto2)).build();
   }

@@ -1,6 +1,7 @@
 package com.lazydev.stksongbook.webapp.repository;
 
 import com.lazydev.stksongbook.webapp.data.model.SongCoauthor;
+import com.lazydev.stksongbook.webapp.data.model.enumeration.CoauthorFunction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,9 +12,8 @@ import java.util.Optional;
 public interface SongCoauthorRepository extends JpaRepository<SongCoauthor, Long> {
 
   Optional<SongCoauthor> findBySongIdAndAuthorId(Long songId, Long authorId);
-  Optional<SongCoauthor> findBySongIdAndAuthorIdAndCoauthorFunction(Long songId, Long authorId, String function);
+  Optional<SongCoauthor> findBySongIdAndAuthorIdAndCoauthorFunction(Long songId, Long authorId, CoauthorFunction function);
   List<SongCoauthor> findBySongId(Long id);
   List<SongCoauthor> findByAuthorId(Long id);
-  List<SongCoauthor> findByCoauthorFunctionIgnoreCase(String function);
-  List<SongCoauthor> findByCoauthorFunctionContainingIgnoreCase(String function);
+  List<SongCoauthor> findByCoauthorFunction(CoauthorFunction function);
 }

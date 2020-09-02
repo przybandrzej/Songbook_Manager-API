@@ -130,7 +130,7 @@ class UserSongRatingResourceTest {
   void testGetByUserIdAndSongId() throws Exception {
     UserSongRating rating = new UserSongRating();
     rating.setId(new UsersSongsRatingsKey());
-    rating.setRating(0.9);
+    rating.setRating(BigDecimal.valueOf(0.9));
     User user = new User();
     user.setId(1L);
     user.setUserRatings(new HashSet<>());
@@ -155,7 +155,7 @@ class UserSongRatingResourceTest {
 
   private UserSongRatingDTO map(UserSongRating userSongRating) {
     return UserSongRatingDTO.builder().userId(userSongRating.getUser().getId())
-        .songId(userSongRating.getSong().getId()).rating(BigDecimal.valueOf(userSongRating.getRating())).build();
+        .songId(userSongRating.getSong().getId()).rating(userSongRating.getRating()).build();
   }
 
   private UserSongRating map(UserSongRatingDTO dto) {
@@ -169,7 +169,7 @@ class UserSongRatingResourceTest {
     song.setId(dto.getSongId());
     song.setRatings(new HashSet<>());
     userSongRating.setSong(song);
-    userSongRating.setRating(dto.getRating().doubleValue());
+    userSongRating.setRating(dto.getRating());
     return userSongRating;
   }
 

@@ -44,7 +44,7 @@ class SongCoauthorResourceTest {
   void setUp() {
     mockMvc = MockMvcBuilders.standaloneSetup(controller).setControllerAdvice(ExceptionTranslator.class).build();
   }
-
+/*
   @Test
   void testCreate() throws Exception {
     SongCoauthorDTO dto = SongCoauthorDTO.builder().authorId(5L).songId(1L).coauthorFunction("muzyka").build();
@@ -120,7 +120,7 @@ class SongCoauthorResourceTest {
         .andExpect(status().isOk())
         .andExpect(content().json(convertObjectToJsonString(dto4)));
   }
-
+*/
   private SongCoauthorDTO map(SongCoauthor songCoauthor) {
     return SongCoauthorDTO.builder().authorId(songCoauthor.getAuthor().getId())
         .songId(songCoauthor.getSong().getId()).coauthorFunction(songCoauthor.getCoauthorFunction()).build();

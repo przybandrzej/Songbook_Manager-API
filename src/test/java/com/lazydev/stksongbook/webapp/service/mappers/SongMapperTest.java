@@ -2,6 +2,7 @@ package com.lazydev.stksongbook.webapp.service.mappers;
 
 import com.lazydev.stksongbook.webapp.StkSongbookApplication;
 import com.lazydev.stksongbook.webapp.data.model.*;
+import com.lazydev.stksongbook.webapp.data.model.enumeration.CoauthorFunction;
 import com.lazydev.stksongbook.webapp.service.PlaylistService;
 import com.lazydev.stksongbook.webapp.service.SongService;
 import com.lazydev.stksongbook.webapp.service.UserService;
@@ -16,11 +17,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -84,9 +88,10 @@ class SongMapperTest {
     assertEquals(song.getTags().size(), dto.getTags().size());
     assertEquals(song.getCoauthors().size(), dto.getCoauthors().size());
     assertEquals(song.getGuitarTabs(), dto.getGuitarTabs());
-    OptionalDouble avg = song.getRatings().stream().mapToDouble(UserSongRating::getRating).average();
-    assertTrue(avg.isPresent());
-    assertEquals(avg.getAsDouble(), dto.getAverageRating());
+    Stream<BigDecimal> bigDecimals = song.getRatings().stream().map(UserSongRating::getRating).filter(Objects::nonNull);
+    BigDecimal sum = bigDecimals.reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal avg = sum.divide(new BigDecimal(song.getRatings().stream().map(UserSongRating::getRating).filter(Objects::nonNull).count()), RoundingMode.HALF_UP);
+    assertEquals(avg, dto.getAverageRating());
   }
 
   @Test
@@ -104,7 +109,7 @@ class SongMapperTest {
     SongAddDTO timestampDTO = SongAddDTO.builder().addedSong(1L).addedBy(2L).id(1L)
         .timestamp(song.getAdded().getTimestamp()).build();
     SongDTO dto = SongDTO.builder().id(1L).title("dummy title").lyrics("dasdafsgsdg gfdasgsd").guitarTabs("ddddddddd")
-        .author(authorDTO).tags(List.of(tagDTO)).averageRating(0.75).category(categoryDTO).trivia(null)
+        .author(authorDTO).tags(List.of(tagDTO)).averageRating(BigDecimal.valueOf(0.75)).category(categoryDTO).trivia(null)
         .addedBy(timestampDTO)
         .coauthors(coauthorDTOS).isAwaiting(song.isAwaiting()).build();
 
@@ -169,13 +174,13 @@ class SongMapperTest {
     coauthor.setId(new SongsCoauthorsKey());
     coauthor.setAuthor(author2);
     coauthor.setSong(song);
-    coauthor.setCoauthorFunction("muzyka");
+    coauthor.setCoauthorFunction(CoauthorFunction.MUSIC);
 
     SongCoauthor coauthor2 = new SongCoauthor();
     coauthor2.setId(new SongsCoauthorsKey());
     coauthor2.setAuthor(author3);
     coauthor2.setSong(song);
-    coauthor2.setCoauthorFunction("tekst");
+    coauthor2.setCoauthorFunction(CoauthorFunction.TEXT);
 
     Category category = new Category();
     category.setId(5L);
@@ -194,7 +199,7 @@ class SongMapperTest {
 
     UserSongRating rating = new UserSongRating();
     rating.setId(new UsersSongsRatingsKey());
-    rating.setRating(0.9);
+    rating.setRating(BigDecimal.valueOf(0.9));
     User user = new User();
     user.setId(1L);
     user.setUserRatings(new HashSet<>());
@@ -202,7 +207,7 @@ class SongMapperTest {
     rating.setSong(song);
 
     UserSongRating rating2 = new UserSongRating();
-    rating2.setRating(0.8);
+    rating2.setRating(BigDecimal.valueOf(0.8));
     rating2.setId(new UsersSongsRatingsKey());
     User user2 = new User();
     user2.setUserRatings(new HashSet<>());

@@ -5,13 +5,12 @@ import com.lazydev.stksongbook.webapp.data.model.*;
 import com.lazydev.stksongbook.webapp.repository.SongAddRepository;
 import com.lazydev.stksongbook.webapp.repository.SongEditRepository;
 import com.lazydev.stksongbook.webapp.repository.SongRepository;
-import com.lazydev.stksongbook.webapp.security.SecurityUtils;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.exception.ForbiddenOperationException;
 import com.lazydev.stksongbook.webapp.util.Constants;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,6 @@ import java.util.Set;
 
 @Service
 @Transactional
-@AllArgsConstructor
 @Validated
 public class SongService {
 
@@ -42,6 +40,25 @@ public class SongService {
   private final UserContextService userContextService;
   private final SongAddRepository songAddRepository;
   private final SongEditRepository songEditRepository;
+  @Value("${spring.flyway.placeholders.role.superuser}")
+  private String superuserRoleName;
+  @Value("${spring.flyway.placeholders.role.admin}")
+  private String adminRoleName;
+  @Value("${spring.flyway.placeholders.role.moderator}")
+  private String moderatorRoleName;
+
+  public SongService(SongRepository repository, TagService tagService, AuthorService authorService, SongCoauthorService coauthorService, CategoryService categoryService, FileSystemStorageService storageService, UserSongRatingService ratingService, UserContextService userContextService, SongAddRepository songAddRepository, SongEditRepository songEditRepository) {
+    this.repository = repository;
+    this.tagService = tagService;
+    this.authorService = authorService;
+    this.coauthorService = coauthorService;
+    this.categoryService = categoryService;
+    this.storageService = storageService;
+    this.ratingService = ratingService;
+    this.userContextService = userContextService;
+    this.songAddRepository = songAddRepository;
+    this.songEditRepository = songEditRepository;
+  }
 
   public List<Song> findAll(Boolean awaiting, Boolean includeAwaiting, Integer limit) {
     if(limit != null) {
@@ -208,8 +225,11 @@ public class SongService {
 
   public void deleteById(Long id) {
     var song = findById(id);
+    User currentUser = userContextService.getCurrentUser();
     if(!song.isAwaiting()
-        && !(SecurityUtils.isCurrentUserModerator() || SecurityUtils.isCurrentUserAdmin() || SecurityUtils.isCurrentUserSuperuser())) {
+        && !(currentUser.getUserRole().getName().equals(superuserRoleName)
+        || currentUser.getUserRole().getName().equals(adminRoleName)
+        || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
       throw new ForbiddenOperationException("Approved song can be deleted only by a moderator or admin.");
     } else if(song.isAwaiting() && song.getAdded().getAddedBy() != userContextService.getCurrentUser()) {
       throw new ForbiddenOperationException("Awaiting song can be deleted only by its author, moderator or admin.");
@@ -226,8 +246,11 @@ public class SongService {
   }
 
   public Song updateSong(Song song) {
+    User currentUser = userContextService.getCurrentUser();
     if(!song.isAwaiting()
-        && !(SecurityUtils.isCurrentUserModerator() || SecurityUtils.isCurrentUserAdmin() || SecurityUtils.isCurrentUserSuperuser())) {
+        && !(currentUser.getUserRole().getName().equals(superuserRoleName)
+        || currentUser.getUserRole().getName().equals(adminRoleName)
+        || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
       throw new ForbiddenOperationException("Approved song can be updated only by a moderator or admin.");
     }
     SongEdit edit = new SongEdit();

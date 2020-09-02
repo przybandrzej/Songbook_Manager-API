@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.lazydev.stksongbook</groupId>
 	<artifactId>webapp</artifactId>
-	<version>1.6.0</version>
+	<version>1.7.0</version>
 	<name>STK Songbook</name>
 	<description>Application for managing a songbook of STK organization</description>
 	<packaging>jar</packaging>
@@ -152,6 +152,18 @@
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
+		</dependency>
+
+		<!-- RabbitMQ -->
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 
 	</dependencies>

@@ -95,8 +95,7 @@ CREATE TABLE songs (
 CREATE TABLE songs_coauthors (
                                  author_id bigint NOT NULL,
                                  song_id bigint NOT NULL,
-                                 coauthor_function character varying(255) NOT NULL,
-                                 CONSTRAINT songs_coauthors_coauthor_function_check CHECK (((coauthor_function)::text = ANY ((ARRAY['muzyka'::character varying, 'tekst'::character varying])::text[])))
+                                 coauthor_function character varying(255) NOT NULL
 );
 
 CREATE SEQUENCE songs_id_seq
@@ -175,8 +174,8 @@ CREATE TABLE users_songs (
 CREATE TABLE users_songs_ratings (
                                      song_id bigint NOT NULL,
                                      user_id bigint NOT NULL,
-                                     rating double precision NOT NULL,
-                                     CONSTRAINT users_songs_ratings_rating_check CHECK (((rating >= (0)::double precision) AND (rating <= (1)::double precision)))
+                                     rating numeric(3, 2) NOT NULL,
+                                     CONSTRAINT users_songs_ratings_rating_check CHECK (((rating >= (0)::numeric(3,2)) AND (rating <= (1)::numeric(3,2))))
 );
 
 ALTER TABLE ONLY authors ALTER COLUMN id SET DEFAULT nextval('authors_id_seq'::regclass);

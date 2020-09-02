@@ -1,6 +1,7 @@
 package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.data.model.*;
+import com.lazydev.stksongbook.webapp.data.model.enumeration.CoauthorFunction;
 import com.lazydev.stksongbook.webapp.repository.SongAddRepository;
 import com.lazydev.stksongbook.webapp.repository.SongEditRepository;
 import com.lazydev.stksongbook.webapp.repository.SongRepository;
@@ -15,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
@@ -84,8 +86,8 @@ class SongServiceTest {
 
   @Test
   void testCreateAndSaveSong() {
-    CreateCoauthorDTO coauthorDTO = CreateCoauthorDTO.builder().authorName("coauthor").coauthorFunction("muzyka").build();
-    CreateCoauthorDTO coauthorDTO2 = CreateCoauthorDTO.builder().authorName("coauthor2").coauthorFunction("tekst").build();
+    CreateCoauthorDTO coauthorDTO = CreateCoauthorDTO.builder().authorName("coauthor").coauthorFunction(CoauthorFunction.MUSIC).build();
+    CreateCoauthorDTO coauthorDTO2 = CreateCoauthorDTO.builder().authorName("coauthor2").coauthorFunction(CoauthorFunction.TEXT).build();
     CreateSongDTO dto = CreateSongDTO.builder().authorName("author").categoryId(1L).title("title s").trivia(null)
         .lyrics("dsa fa fda").tags(List.of("tag1", "tag2")).guitarTabs("gfsdgsjhifs")
         .coauthors(Set.of(coauthorDTO, coauthorDTO2)).build();
@@ -111,7 +113,7 @@ class SongServiceTest {
       song.setId(2L);
       return song;
     });
-    given(coauthorService.findOrCreate(any(Song.class), eq(author2), eq("muzyka"))).willAnswer(result -> {
+    given(coauthorService.findOrCreate(any(Song.class), eq(author2), eq(CoauthorFunction.MUSIC))).willAnswer(result -> {
       Song song = result.getArgument(0);
       SongCoauthor coauthor = new SongCoauthor();
       coauthor.setId(new SongsCoauthorsKey());
@@ -120,7 +122,7 @@ class SongServiceTest {
       coauthor.setCoauthorFunction(result.getArgument(2));
       return coauthor;
     });
-    given(coauthorService.findOrCreate(any(Song.class), eq(author3), eq("tekst"))).willAnswer(result -> {
+    given(coauthorService.findOrCreate(any(Song.class), eq(author3), eq(CoauthorFunction.MUSIC))).willAnswer(result -> {
       Song song = result.getArgument(0);
       SongCoauthor coauthor = new SongCoauthor();
       coauthor.setId(new SongsCoauthorsKey());
@@ -199,13 +201,13 @@ class SongServiceTest {
     coauthor.setId(new SongsCoauthorsKey());
     coauthor.setAuthor(author2);
     coauthor.setSong(song);
-    coauthor.setCoauthorFunction("muzyka");
+    coauthor.setCoauthorFunction(CoauthorFunction.MUSIC);
 
     SongCoauthor coauthor2 = new SongCoauthor();
     coauthor2.setId(new SongsCoauthorsKey());
     coauthor2.setAuthor(author3);
     coauthor2.setSong(song);
-    coauthor2.setCoauthorFunction("tekst");
+    coauthor2.setCoauthorFunction(CoauthorFunction.TEXT);
 
     Category category = new Category();
     category.setId(5L);
@@ -218,7 +220,7 @@ class SongServiceTest {
 
     UserSongRating rating = new UserSongRating();
     rating.setId(new UsersSongsRatingsKey());
-    rating.setRating(0.9);
+    rating.setRating(BigDecimal.valueOf(0.9));
     User user = new User();
     user.setId(1L);
     user.setUserRatings(new HashSet<>());
@@ -229,7 +231,7 @@ class SongServiceTest {
     user.addSong(song);
 
     UserSongRating rating2 = new UserSongRating();
-    rating2.setRating(0.8);
+    rating2.setRating(BigDecimal.valueOf(0.8));
     rating2.setId(new UsersSongsRatingsKey());
     User user2 = new User();
     user2.setUserRatings(new HashSet<>());

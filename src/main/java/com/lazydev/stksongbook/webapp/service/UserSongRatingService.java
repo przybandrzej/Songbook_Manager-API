@@ -8,6 +8,7 @@ import com.lazydev.stksongbook.webapp.service.exception.ForbiddenOperationExcept
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,27 +40,27 @@ public class UserSongRatingService {
     return repository.findByUserId(id);
   }
 
-  public List<UserSongRating> findByRating(Double rating) {
+  public List<UserSongRating> findByRating(BigDecimal rating) {
     return repository.findByRating(rating);
   }
 
-  public List<UserSongRating> findByRatingGreaterThanEqual(Double rating) {
+  public List<UserSongRating> findByRatingGreaterThanEqual(BigDecimal rating) {
     return repository.findByRatingGreaterThanEqual(rating);
   }
 
-  public List<UserSongRating> findByRatingLessThanEqual(Double rating) {
+  public List<UserSongRating> findByRatingLessThanEqual(BigDecimal rating) {
     return repository.findByRatingLessThanEqual(rating);
   }
 
   public UserSongRating save(UserSongRating rating) {
-    if(rating.getUser() != userContextService.getCurrentUser()) {
+    if(!rating.getUser().getId().equals(userContextService.getCurrentUser().getId())) {
       throw new ForbiddenOperationException("No permission.");
     }
     return repository.save(rating);
   }
 
   public void delete(UserSongRating obj) {
-    if(obj.getUser() != userContextService.getCurrentUser()) {
+    if(!obj.getUser().getId().equals(userContextService.getCurrentUser().getId())) {
       throw new ForbiddenOperationException("No permission.");
     }
     findByUserIdAndSongId(obj.getUser().getId(), obj.getSong().getId());

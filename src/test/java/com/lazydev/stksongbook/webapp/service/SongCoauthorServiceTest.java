@@ -1,6 +1,7 @@
 package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.data.model.*;
+import com.lazydev.stksongbook.webapp.data.model.enumeration.CoauthorFunction;
 import com.lazydev.stksongbook.webapp.repository.SongCoauthorRepository;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,7 @@ class SongCoauthorServiceTest {
   @Test
   void deleteById() {
     var sample = getSample(1, 1);
-    Mockito.when(repository.findBySongIdAndAuthorIdAndCoauthorFunction(1L, 1L, "muzyka"))
+    Mockito.when(repository.findBySongIdAndAuthorIdAndCoauthorFunction(1L, 1L, CoauthorFunction.MUSIC))
         .thenReturn(Optional.of(sample));
     assertDoesNotThrow(() -> service.delete(sample));
   }
@@ -60,7 +61,7 @@ class SongCoauthorServiceTest {
     coauthor.setId(new SongsCoauthorsKey());
     coauthor.setSong(song);
     coauthor.setAuthor(author);
-    coauthor.setCoauthorFunction("muzyka");
+    coauthor.setCoauthorFunction(CoauthorFunction.MUSIC);
     return coauthor;
   }
 }

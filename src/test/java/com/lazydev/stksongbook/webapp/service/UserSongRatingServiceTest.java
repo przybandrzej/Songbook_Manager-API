@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -48,7 +49,7 @@ class UserSongRatingServiceTest {
     rating.setId(new UsersSongsRatingsKey());
     rating.setSong(song);
     rating.setUser(user);
-    rating.setRating(0.9);
+    rating.setRating(BigDecimal.valueOf(0.9));
     Mockito.when(repository.findByUserIdAndSongId(1L, 1L)).thenReturn(Optional.of(rating));
     Mockito.when(repository.findByUserIdAndSongId(1L, 2L)).thenReturn(Optional.empty());
 
@@ -77,7 +78,7 @@ class UserSongRatingServiceTest {
     rating.setId(new UsersSongsRatingsKey());
     rating.setSong(song);
     rating.setUser(user);
-    rating.setRating(0.9);
+    rating.setRating(BigDecimal.valueOf(0.9));
     return rating;
   }
 }

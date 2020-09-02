@@ -57,4 +57,4 @@ build/
 ### VS Code ###
 .vscode/
 
-storage/
+storage/*

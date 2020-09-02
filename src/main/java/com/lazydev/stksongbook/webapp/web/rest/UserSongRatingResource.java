@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,9 +49,9 @@ public class UserSongRatingResource {
 
   @GetMapping
   public ResponseEntity<List<UserSongRatingDTO>> getAll(
-      @RequestParam(value = "greaterThanEqual", required = false) Double greaterValue,
-      @RequestParam(value = "lessThanEqual", required = false) Double lessValue,
-      @RequestParam(value = "equal", required = false) Double value) {
+      @RequestParam(value = "greaterThanEqual", required = false) BigDecimal greaterValue,
+      @RequestParam(value = "lessThanEqual", required = false) BigDecimal lessValue,
+      @RequestParam(value = "equal", required = false) BigDecimal value) {
     List<UserSongRating> list;
     if(greaterValue != null) {
       list = service.findByRatingGreaterThanEqual(greaterValue);
