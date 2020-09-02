@@ -24,6 +24,10 @@ public class UserDTO {
   @Pattern(regexp = Constants.USERNAME_REGEX, message = Constants.USERNAME_INVALID_MESSAGE)
   String username;
 
+  @NotNull(message = "Email can't be null.")
+  @Pattern(regexp = Constants.EMAIL_REGEX, message = Constants.EMAIL_INVALID_MESSAGE)
+  String email;
+
   @NotNull(message = "User Role ID must be defined.")
   Long userRoleId;
 

@@ -5,10 +5,7 @@ import com.lazydev.stksongbook.webapp.repository.UserRepository;
 import com.lazydev.stksongbook.webapp.repository.UserRoleRepository;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm;
-import com.lazydev.stksongbook.webapp.service.exception.EntityDependentNotInitialized;
-import com.lazydev.stksongbook.webapp.service.exception.ForbiddenOperationException;
-import com.lazydev.stksongbook.webapp.service.exception.SuperUserAlreadyExistsException;
-import com.lazydev.stksongbook.webapp.service.exception.UserNotExistsException;
+import com.lazydev.stksongbook.webapp.service.exception.*;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import com.lazydev.stksongbook.webapp.util.RandomUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -128,5 +125,58 @@ public class UserService {
     user.setActivated(false);
     user.setActivationKey(RandomUtil.generateActivationKey());
     return repository.save(user);
+  }
+
+  public User activate(String key) {
+    return repository.findByActivationKey(key)
+        .map(user -> {
+          user.setActivated(true);
+          user.setActivationKey(null);
+          return repository.save(user);
+        }).orElseThrow(() -> new InternalServerErrorException("No user was found for this activation key"));
+  }
+
+  public User updateUser(User newUser, User userToUpdate) {
+    if(!userToUpdate.getUsername().equals(newUser.getUsername())) {
+      throw new BadRequestErrorException("Cannot change username.");
+    }
+    if(!userToUpdate.getEmail().equals(newUser.getEmail())) {
+      throw new BadRequestErrorException("Cannot change email.");
+    }
+    userToUpdate.setFirstName(newUser.getFirstName());
+    userToUpdate.setLastName(newUser.getLastName());
+    userToUpdate.setImageUrl(newUser.getImageUrl());
+    userToUpdate.setSongs(newUser.getSongs());
+    return repository.save(userToUpdate);
+  }
+
+  public User changePassword(String oldPassword, String newPassword) {
+    User user = userContextService.getCurrentUser();
+    if(!user.getPassword().equals(oldPassword)) {
+      throw new InvalidPasswordException();
+    }
+    user.setPassword(newPassword);
+    return repository.save(user);
+  }
+
+  public User requestPasswordReset(String mail) {
+    return repository.findByEmailIgnoreCase(mail)
+        .filter(User::isActivated)
+        .map(user -> {
+          user.setResetKey(RandomUtil.generateResetKey());
+          user.setResetDate(Instant.now());
+          return repository.save(user);
+        }).orElseThrow(() -> new UserNotExistsException(mail));
+  }
+
+  public User completePasswordReset(String token, String newPassword) {
+    return repository.findByResetKey(token)
+        .filter(user -> user.getResetDate().isAfter(Instant.now().minusSeconds(86400)))
+        .map(user -> {
+          user.setPassword(passwordEncoder.encode(newPassword));
+          user.setResetKey(null);
+          user.setResetDate(null);
+          return repository.save(user);
+        }).orElseThrow(() -> new BadRequestErrorException("User does not exist."));
   }
 }
