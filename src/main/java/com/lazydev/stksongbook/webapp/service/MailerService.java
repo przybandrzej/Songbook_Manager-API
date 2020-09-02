@@ -53,4 +53,17 @@ public class MailerService {
     context.setVariable(BASE_URL, guiUrl);
     return templateEngine.process(templateName, context);
   }
+
+  public void sendPasswordResetMail(User user) {
+    log.debug("Sending password reset email to '{}'", user.getEmail());
+    String htmlContent = getEmailTemplate(user, "mail/passwordResetEmail");
+    String textContent = "Your reset key: " + user.getResetKey();
+    String subject = "Account password reset";
+    EmailMessage emailMessage = new EmailMessage();
+    emailMessage.setTo(user.getEmail());
+    emailMessage.setSubject(subject);
+    emailMessage.setText(textContent);
+    emailMessage.setHtml(htmlContent);
+    sendEmail(emailMessage);
+  }
 }
