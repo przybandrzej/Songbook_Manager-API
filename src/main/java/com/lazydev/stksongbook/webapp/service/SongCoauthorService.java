@@ -4,6 +4,7 @@ import com.lazydev.stksongbook.webapp.data.model.Author;
 import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.data.model.SongCoauthor;
 import com.lazydev.stksongbook.webapp.data.model.SongsCoauthorsKey;
+import com.lazydev.stksongbook.webapp.data.model.enumeration.CoauthorFunction;
 import com.lazydev.stksongbook.webapp.repository.SongCoauthorRepository;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -27,12 +28,12 @@ public class SongCoauthorService {
         .orElseThrow(() -> new EntityNotFoundException(SongCoauthor.class));
   }
 
-  public SongCoauthor findBySongIdAndAuthorIdAndFunction(Long songId, Long authorId, String function) {
+  public SongCoauthor findBySongIdAndAuthorIdAndFunction(Long songId, Long authorId, CoauthorFunction function) {
     return repository.findBySongIdAndAuthorIdAndCoauthorFunction(songId, authorId, function)
         .orElseThrow(() -> new EntityNotFoundException(SongCoauthor.class));
   }
 
-  public Optional<SongCoauthor> findBySongIdAndAuthorIdAndFunctionNoException(Long songId, Long authorId, String function) {
+  public Optional<SongCoauthor> findBySongIdAndAuthorIdAndFunctionNoException(Long songId, Long authorId, CoauthorFunction function) {
     return repository.findBySongIdAndAuthorIdAndCoauthorFunction(songId, authorId, function);
   }
 
@@ -48,8 +49,8 @@ public class SongCoauthorService {
     return repository.findByAuthorId(id);
   }
 
-  public List<SongCoauthor> findByFunction(String function) {
-    return repository.findByCoauthorFunctionContainingIgnoreCase(function);
+  public List<SongCoauthor> findByFunction(CoauthorFunction function) {
+    return repository.findByCoauthorFunction(function);
   }
 
   public SongCoauthor save(SongCoauthor songCoauthor) {
@@ -63,7 +64,7 @@ public class SongCoauthorService {
     repository.delete(songCoauthor);
   }
 
-  public SongCoauthor findOrCreate(Song song, Author author, String function) {
+  public SongCoauthor findOrCreate(Song song, Author author, CoauthorFunction function) {
     var coauthor = new SongCoauthor();
     coauthor.setId(new SongsCoauthorsKey());
     coauthor.setAuthor(author);

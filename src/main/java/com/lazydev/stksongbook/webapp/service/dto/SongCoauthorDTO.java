@@ -2,7 +2,7 @@ package com.lazydev.stksongbook.webapp.service.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.lazydev.stksongbook.webapp.service.validators.CoauthorFunctionConstraint;
+import com.lazydev.stksongbook.webapp.data.model.enumeration.CoauthorFunction;
 import lombok.Builder;
 import lombok.Value;
 
@@ -19,18 +19,8 @@ public class SongCoauthorDTO {
   @NotNull(message = "Author ID must be defined.")
   Long authorId;
 
-  @CoauthorFunctionConstraint
-  String coauthorFunction;
-
-  private SongCoauthorDTO(Long songId, Long authorId, String coauthorFunction) {
-    this.songId = songId;
-    this.authorId = authorId;
-    this.coauthorFunction = coauthorFunction;
-  }
-
-  public static SongCoauthorDTO.Builder builder() {
-    return new SongCoauthorDTO.Builder();
-  }
+  @NotNull(message = "Function cannot be null.")
+  CoauthorFunction coauthorFunction;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static final class Builder {

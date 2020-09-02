@@ -12,7 +12,11 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Stream;
 
 @Mapper(componentModel = "spring",
     uses = {Tag.class, SongCoauthorMapper.class, TagService.class, CategoryService.class, CategoryMapper.class,
@@ -30,12 +34,11 @@ public interface SongMapper {
   @Mapping(target = "awaiting", ignore = true)
   Song map(SongDTO dto);
 
-  default Double calculateAverageRating(Set<UserSongRating> ratings) {
-    if(ratings != null) {
-      var optional = ratings.stream().mapToDouble(UserSongRating::getRating).average();
-      if(optional.isPresent()) {
-        return optional.getAsDouble();
-      }
+  default BigDecimal calculateAverageRating(Set<UserSongRating> ratings) {
+    if(ratings != null && !ratings.isEmpty()) {
+      Stream<BigDecimal> bigDecimals = ratings.stream().map(UserSongRating::getRating).filter(Objects::nonNull);
+      BigDecimal sum = bigDecimals.reduce(BigDecimal.ZERO, BigDecimal::add);
+      return sum.divide(new BigDecimal(ratings.stream().map(UserSongRating::getRating).filter(Objects::nonNull).count()), RoundingMode.HALF_UP);
     }
     return null;
   }

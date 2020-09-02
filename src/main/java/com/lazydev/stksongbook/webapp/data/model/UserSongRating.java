@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "users_songs_ratings")
@@ -29,9 +30,8 @@ public class UserSongRating {
   @JoinColumn(name = "song_id")
   private Song song;
 
-  // todo change to BigDecimal
   @Column(name = "rating", nullable = false)
-  private Double rating;
+  private BigDecimal rating;
 
   public void setUser(User user) {
     this.user = user;

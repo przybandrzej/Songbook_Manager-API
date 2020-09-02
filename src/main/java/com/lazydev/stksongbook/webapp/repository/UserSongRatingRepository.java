@@ -4,6 +4,7 @@ import com.lazydev.stksongbook.webapp.data.model.UserSongRating;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +15,7 @@ public interface UserSongRatingRepository extends JpaRepository<UserSongRating, 
   List<UserSongRating> findBySongId(Long id);
   List<UserSongRating> findByUserId(Long id);
 
-  List<UserSongRating> findByRating(Double rating);
-  List<UserSongRating> findByRatingGreaterThanEqual(Double rating);
-  List<UserSongRating> findByRatingLessThanEqual(Double rating);
+  List<UserSongRating> findByRating(BigDecimal rating);
+  List<UserSongRating> findByRatingGreaterThanEqual(BigDecimal rating);
+  List<UserSongRating> findByRatingLessThanEqual(BigDecimal rating);
 }
