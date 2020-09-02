@@ -1,8 +1,6 @@
 # Songbook Manager Service API
 
-![tests & package](https://github.com/przybandrzej/Songbook_Manager-API/workflows/tests%20&%20package/badge.svg?branch=master)
-
-***current version: 1.6.0***
+***current version: 1.7.0***
 
 It is a server side application (RESTful API) that lets the users manage songs in a songbook, manage accounts, playlists, own small songbooks and singing events.
 
@@ -25,7 +23,7 @@ After this application is finished I will create an Android app that will connec
 * REST API
 * Browse a huge database of guitar songs' lyrics and guitar tabs
 * Create your own library of your favorite songs
-* Create a playlist for every occassion
+* Create a playlist for every occasion
 * Create a printable songbook out of any playlist
 * Add new songs even from a file (json file)
 * see all upcoming and past singing events and come to one! **<Not implemented yet>**
@@ -57,8 +55,11 @@ Feel free to read [Wiki](https://github.com/przybandrzej/Songbook_Manager-API/wi
   * [PDF Box]()
   * [Junit 5]()
   * [Mockito]()
+  * [Thymeleaf]()
+  * [Spring Boot AMPQ]()
 * [Flyway]()
 * [PostgreSQL]()
+* [RabbitMQ]()
 * [Heroku]()
 * [Swagger]()
 
