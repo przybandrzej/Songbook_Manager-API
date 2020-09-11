@@ -110,10 +110,16 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
   }
 
   @ExceptionHandler({EntityDependentNotInitialized.class,
-      AuthenticationException.class,
       InternalServerErrorException.class})
   protected ResponseEntity<Object> handleDependentEntitiesNotFound(RuntimeException ex, WebRequest request) {
     Error apiError = new Error(INTERNAL_SERVER_ERROR);
+    apiError.setMessage(ex.getMessage());
+    return buildResponseEntity(apiError);
+  }
+
+  @ExceptionHandler(NotAuthenticatedException.class)
+  protected ResponseEntity<Object> handleUnauthorized(NotAuthenticatedException ex, WebRequest request) {
+    Error apiError = new Error(UNAUTHORIZED);
     apiError.setMessage(ex.getMessage());
     return buildResponseEntity(apiError);
   }
