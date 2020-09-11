@@ -257,6 +257,7 @@ public class SongService {
     edit.setId(Constants.DEFAULT_ID);
     userContextService.getCurrentUser().addEditedSong(edit);
     song.addEdit(edit);
+    songEditRepository.save(edit);
     return repository.save(song);
   }
 
