@@ -2,7 +2,6 @@ package com.lazydev.stksongbook.webapp.security;
 
 import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.repository.UserRepository;
-import com.lazydev.stksongbook.webapp.service.exception.InternalServerErrorException;
 import com.lazydev.stksongbook.webapp.service.exception.NotAuthenticatedException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,7 @@ public class UserContextService {
 
   public User getCurrentUser() {
     return SecurityUtils.getCurrentUserLogin().map(login ->
-        repository.findByUsername(login).or(() -> repository.findByEmail(login)).orElseThrow(() -> new InternalServerErrorException("Cannot find user [" + login + "]!")))
+        repository.findByUsername(login).or(() -> repository.findByEmail(login)).orElseThrow(NotAuthenticatedException::new))
         .orElseThrow(NotAuthenticatedException::new);
   }
 }
