@@ -28,6 +28,7 @@ public class TokenProvider {
   private final Logger log = LoggerFactory.getLogger(TokenProvider.class);
 
   private static final String AUTHORITIES_KEY = "auth";
+  private static final String EXPIRATION_KEY = "expiration_in_milliseconds";
 
   private final Base64.Encoder encoder = Base64.getEncoder();
 
@@ -61,17 +62,19 @@ public class TokenProvider {
         .map(GrantedAuthority::getAuthority)
         .collect(Collectors.joining(","));
 
-    long now = (new Date()).getTime();
+    long now = new Date().getTime();
     Date validity;
-    if (rememberMe) {
+    if(rememberMe) {
       validity = new Date(now + this.tokenValidityInMillisecondsForRememberMe);
     } else {
       validity = new Date(now + this.tokenValidityInMilliseconds);
     }
+    log.debug("Token for {} will be valid {}ms until {}", authentication.getName(), validity.getTime(), validity);
 
     JwtBuilder jwtBuilder = Jwts.builder()
         .setSubject(authentication.getName())
         .claim(AUTHORITIES_KEY, authorities)
+        .claim(EXPIRATION_KEY, validity.getTime())
         .signWith(SignatureAlgorithm.HS512, secretKey)
         .setExpiration(validity);
 
@@ -111,8 +114,8 @@ public class TokenProvider {
 
   public boolean validateToken(String authToken) {
     try {
-      Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken);
-      return claimedUserExists(claimsJws.getBody().getSubject()) && hasClaimedRoles(claimsJws.getBody());
+      Claims claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken).getBody();
+      return claimedUserExists(claimsJws.getSubject()) && hasClaimedRoles(claimsJws);
     } catch(SignatureException e) {
       log.info("Invalid JWT signature.");
       log.trace("Invalid JWT signature trace: {}", e);
@@ -138,7 +141,7 @@ public class TokenProvider {
 
   private boolean hasClaimedRoles(Claims claims) {
     String claimedRole = String.valueOf(claims.get(AUTHORITIES_KEY));
-    if (claimedRole == null){
+    if(claimedRole == null) {
       return false;
     }
     String authName = claims.getSubject();
