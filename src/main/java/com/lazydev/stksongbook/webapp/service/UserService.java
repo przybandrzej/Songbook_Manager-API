@@ -8,6 +8,8 @@ import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm
 import com.lazydev.stksongbook.webapp.service.exception.*;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import com.lazydev.stksongbook.webapp.util.RandomUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +21,8 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+
+  private final Logger log = LoggerFactory.getLogger(UserService.class);
 
   private final UserRepository repository;
   private final PlaylistService playlistService;
@@ -155,6 +159,7 @@ public class UserService {
     if(!user.getPassword().equals(oldPassword)) {
       throw new InvalidPasswordException();
     }
+    log.debug("Changing password of {}", user.getUsername());
     user.setPassword(newPassword);
     return repository.save(user);
   }
@@ -176,6 +181,7 @@ public class UserService {
           user.setPassword(passwordEncoder.encode(newPassword));
           user.setResetKey(null);
           user.setResetDate(null);
+          log.debug("Completing password change for {}", user.getUsername());
           return repository.save(user);
         }).orElseThrow(() -> new BadRequestErrorException("User does not exist."));
   }

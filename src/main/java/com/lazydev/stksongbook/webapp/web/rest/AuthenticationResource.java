@@ -1,7 +1,6 @@
 package com.lazydev.stksongbook.webapp.web.rest;
 
 import com.lazydev.stksongbook.webapp.data.model.User;
-import com.lazydev.stksongbook.webapp.security.SecurityUtils;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.security.jwt.JWTConfigurer;
 import com.lazydev.stksongbook.webapp.security.jwt.TokenProvider;
@@ -23,10 +22,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -110,6 +107,7 @@ public class AuthenticationResource {
    */
   @PostMapping("/account/change-password")
   public void changePassword(@RequestBody @Valid PasswordChangeDTO passwordChangeDto) {
+    log.debug("Request to change password");
     service.changePassword(passwordChangeDto.getCurrentPassword(), passwordChangeDto.getNewPassword());
   }
 
@@ -120,6 +118,7 @@ public class AuthenticationResource {
    */
   @PostMapping("/account/reset-password/init")
   public void requestPasswordReset(@RequestBody String mail) {
+    log.debug("Request for password reset for {}", mail);
     mailerService.sendPasswordResetMail(service.requestPasswordReset(mail));
   }
 
@@ -131,6 +130,7 @@ public class AuthenticationResource {
    */
   @PostMapping("/account/reset-password/finish")
   public void finishPasswordReset(@RequestBody TokenAndPasswordDTO keyAndPassword) {
+    log.debug("Request to finish password reset");
     service.completePasswordReset(keyAndPassword.getToken(), keyAndPassword.getNewPassword());
   }
 }

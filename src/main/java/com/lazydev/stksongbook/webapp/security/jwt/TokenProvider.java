@@ -69,7 +69,7 @@ public class TokenProvider {
     } else {
       validity = new Date(now + this.tokenValidityInMilliseconds);
     }
-    log.debug("Token for {} will be valid {}ms until {}", authentication.getName(), validity.getTime(), validity);
+    log.debug("Token for {} will be valid {}ms until {}", authentication.getName(), validity.getTime() - new Date().getTime(), validity);
 
     JwtBuilder jwtBuilder = Jwts.builder()
         .setSubject(authentication.getName())
