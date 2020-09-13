@@ -32,6 +32,7 @@ public class TokenProvider {
   private String secretKey;
 
   private long tokenValidityInMilliseconds;
+  private long tokenValidityInMillisecondsForRememberMe;
 
   private final SecurityProperties securityProperties;
 
@@ -46,15 +47,23 @@ public class TokenProvider {
 
     this.tokenValidityInMilliseconds =
         1000 * securityProperties.getAuthentication().getJwt().getTokenValidityInSeconds();
+    this.tokenValidityInMillisecondsForRememberMe =
+        1000 * securityProperties.getAuthentication().getJwt()
+            .getTokenValidityInSecondsForRememberMe();
   }
 
-  public String createToken(Authentication authentication/*, boolean rememberMe*/) {
+  public String createToken(Authentication authentication, boolean rememberMe) {
     String authorities = authentication.getAuthorities().stream()
         .map(GrantedAuthority::getAuthority)
         .collect(Collectors.joining(","));
 
     long now = (new Date()).getTime();
-    Date validity = new Date(now + this.tokenValidityInMilliseconds);
+    Date validity;
+    if (rememberMe) {
+      validity = new Date(now + this.tokenValidityInMillisecondsForRememberMe);
+    } else {
+      validity = new Date(now + this.tokenValidityInMilliseconds);
+    }
 
     JwtBuilder jwtBuilder = Jwts.builder()
         .setSubject(authentication.getName())
@@ -71,7 +80,7 @@ public class TokenProvider {
 
   private void addClaim(KeyValueGrantedAuthority keyValueGrantedAuthority, JwtBuilder jwtBuilder) {
     jwtBuilder.claim(keyValueGrantedAuthority.getKey(), keyValueGrantedAuthority.getAuthority());
-    log.debug("Adding keyValueAuthority : " + keyValueGrantedAuthority);
+    log.debug("Adding keyValueAuthority : {}", keyValueGrantedAuthority);
   }
 
   public Authentication getAuthentication(String token) {
@@ -99,10 +108,7 @@ public class TokenProvider {
   public boolean validateToken(String authToken) {
     try {
       Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken);
-      if(!hasClaimedRoles(claimsJws)) {
-        return false;
-      }
-      return true;
+      return hasClaimedRoles(claimsJws);
     } catch(SignatureException e) {
       log.info("Invalid JWT signature.");
       log.trace("Invalid JWT signature trace: {}", e);

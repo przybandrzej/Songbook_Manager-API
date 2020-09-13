@@ -40,6 +40,15 @@ public class SecurityProperties {
     public static class Jwt {
       private String secret;
       private long tokenValidityInSeconds;
+      private long tokenValidityInSecondsForRememberMe;
+
+      public long getTokenValidityInSecondsForRememberMe() {
+        return tokenValidityInSecondsForRememberMe;
+      }
+
+      public void setTokenValidityInSecondsForRememberMe(long tokenValidityInSecondsForRememberMe) {
+        this.tokenValidityInSecondsForRememberMe = tokenValidityInSecondsForRememberMe;
+      }
 
       public String getSecret() {
         return secret;
