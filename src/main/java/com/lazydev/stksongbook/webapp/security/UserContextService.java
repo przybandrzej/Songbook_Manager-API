@@ -37,7 +37,7 @@ public class UserContextService {
 
   public User getCurrentUser() {
     return SecurityUtils.getCurrentUserLogin().map(login ->
-        repository.findByUsername(login).or(() -> repository.findByEmail(login)).orElseThrow(NotAuthenticatedException::new))
+        repository.findByUsername(login).or(() -> repository.findByEmailIgnoreCase(login)).orElseThrow(NotAuthenticatedException::new))
         .orElseThrow(NotAuthenticatedException::new);
   }
 

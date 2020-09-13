@@ -1,7 +1,9 @@
 package com.lazydev.stksongbook.webapp.security.jwt;
 
 import com.lazydev.stksongbook.webapp.config.SecurityProperties;
+import com.lazydev.stksongbook.webapp.repository.UserRepository;
 import com.lazydev.stksongbook.webapp.security.KeyValueGrantedAuthority;
+import com.lazydev.stksongbook.webapp.service.exception.NotAuthenticatedException;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,11 +35,13 @@ public class TokenProvider {
 
   private long tokenValidityInMilliseconds;
   private long tokenValidityInMillisecondsForRememberMe;
+  private final UserRepository userRepository;
 
   private final SecurityProperties securityProperties;
 
-  public TokenProvider(SecurityProperties securityProperties) {
+  public TokenProvider(SecurityProperties securityProperties, UserRepository userRepository) {
     this.securityProperties = securityProperties;
+    this.userRepository = userRepository;
   }
 
   @PostConstruct
@@ -108,7 +112,7 @@ public class TokenProvider {
   public boolean validateToken(String authToken) {
     try {
       Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken);
-      return hasClaimedRoles(claimsJws);
+      return claimedUserExists(claimsJws.getBody().getSubject()) && hasClaimedRoles(claimsJws.getBody());
     } catch(SignatureException e) {
       log.info("Invalid JWT signature.");
       log.trace("Invalid JWT signature trace: {}", e);
@@ -128,8 +132,19 @@ public class TokenProvider {
     return false;
   }
 
-  // TODO
-  private boolean hasClaimedRoles(Jws<Claims> claims) {
-    return true;
+  private boolean claimedUserExists(String claimsSubject) {
+    return userRepository.findByUsername(claimsSubject).or(() -> userRepository.findByEmailIgnoreCase(claimsSubject)).isPresent();
+  }
+
+  private boolean hasClaimedRoles(Claims claims) {
+    String claimedRole = String.valueOf(claims.get(AUTHORITIES_KEY));
+    if (claimedRole == null){
+      return false;
+    }
+    String authName = claims.getSubject();
+    String userRole = userRepository.findByUsername(authName).or(() -> userRepository.findByEmailIgnoreCase(authName))
+        .orElseThrow(NotAuthenticatedException::new)
+        .getUserRole().getName();
+    return userRole.equals(claimedRole);
   }
 }
