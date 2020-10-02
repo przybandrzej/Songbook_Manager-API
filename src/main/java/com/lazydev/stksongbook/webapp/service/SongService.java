@@ -257,7 +257,10 @@ public class SongService {
     edit.setId(Constants.DEFAULT_ID);
     userContextService.getCurrentUser().addEditedSong(edit);
     song.addEdit(edit);
-    songEditRepository.save(edit);
+    SongEdit finalEdit = songEditRepository.save(edit);
+    if(song.removeEditIf(it -> it.getTimestamp().equals(finalEdit.getTimestamp()))) {
+      song.addEdit(finalEdit);
+    }
     return repository.save(song);
   }
 

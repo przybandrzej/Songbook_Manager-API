@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * This is the model class of the Song entity. It is the main table in the application that store all songs.
@@ -154,6 +155,10 @@ public class Song {
 
   public boolean removeEdit(SongEdit timestamp) {
     return this.edits.remove(timestamp);
+  }
+
+  public boolean removeEditIf(Predicate<? super SongEdit> ped) {
+    return this.edits.removeIf(ped);
   }
 
   public void setAdded(SongAdd timestamp) {
