@@ -178,4 +178,31 @@ public class SongResource {
     }
     return new ResponseEntity<>(mapper.map(service.approveSong(mapper.map(songDTO))), HttpStatus.OK);
   }
+
+  /**
+   * Get all songs in user's library
+   */
+  @GetMapping("/user/{id}")
+  public ResponseEntity<List<SongDTO>> getUserSongs(@PathVariable("id") Long id) {
+    List<SongDTO> list = service.findByUser(id).stream().map(mapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
+  }
+
+  /**
+   * Get all songs edited by user
+   */
+  @GetMapping("/user/{id}/edited")
+  public ResponseEntity<List<SongDTO>> getSongsEditedByUser(@PathVariable("id") Long id) {
+    List<SongDTO> list = service.findAddedByUser(id).stream().map(mapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
+  }
+
+  /**
+   * Get all songs added by user
+   */
+  @GetMapping("/user/{id}/added")
+  public ResponseEntity<List<SongDTO>> getSongsAddedByUser(@PathVariable("id") Long id) {
+    List<SongDTO> list = service.findEditedByUser(id).stream().map(mapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
+  }
 }

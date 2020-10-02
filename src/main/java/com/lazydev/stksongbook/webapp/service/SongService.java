@@ -313,4 +313,16 @@ public class SongService {
     song.setAwaiting(false);
     return repository.save(song);
   }
+
+  public List<Song> findByUser(Long userId) {
+    return repository.findByUsersSongsId(userId);
+  }
+
+  public List<Song> findEditedByUser(Long userId) {
+    return repository.findByAddedAddedById(userId);
+  }
+
+  public List<Song> findAddedByUser(Long userId) {
+    return repository.findByEditsEditedById(userId);
+  }
 }
