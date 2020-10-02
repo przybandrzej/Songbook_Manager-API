@@ -130,7 +130,7 @@ public class PlaylistService {
 
   public void deleteById(Long id) {
     var playlist = findById(id);
-    if(!userContextService.getCurrentUser().getId().equals(id)) {
+    if(!userContextService.getCurrentUser().getId().equals(playlist.getOwner().getId())) {
       throw new ForbiddenOperationException("Cannot delete playlist of another user.");
     }
     repository.deleteById(id);
