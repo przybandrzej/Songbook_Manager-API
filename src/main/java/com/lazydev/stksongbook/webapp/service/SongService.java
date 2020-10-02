@@ -286,7 +286,6 @@ public class SongService {
 
     SongAdd timestamp = new SongAdd();
     timestamp.setId(Constants.DEFAULT_ID);
-    timestamp.setTimestamp(Instant.now());
     userContextService.getCurrentUser().addAddedSong(timestamp);
     savedSong.setAdded(timestamp);
     songAddRepository.save(timestamp);

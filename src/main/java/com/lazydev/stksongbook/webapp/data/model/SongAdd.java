@@ -28,5 +28,5 @@ public class SongAdd {
   private Song addedSong;
 
   @Column(name = "timestamp", nullable = false)
-  private Instant timestamp;
+  private Instant timestamp = Instant.now();
 }
