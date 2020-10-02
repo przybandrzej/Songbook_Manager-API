@@ -3,6 +3,7 @@ package com.lazydev.stksongbook.webapp.service;
 import com.lazydev.stksongbook.webapp.data.model.Category;
 import com.lazydev.stksongbook.webapp.repository.CategoryRepository;
 import com.lazydev.stksongbook.webapp.service.exception.CannotDeleteEntityException;
+import com.lazydev.stksongbook.webapp.service.exception.EntityAlreadyExistsException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,8 +41,12 @@ public class CategoryService {
     return repository.findByNameContainingIgnoreCase(name);
   }
 
-  public Category save(Category saveAuthor) {
-    return repository.save(saveAuthor);
+  public Category save(Category category) {
+    Optional<Category> found = repository.findByName(category.getName());
+    if(found.isPresent()) {
+      throw new EntityAlreadyExistsException(Category.class.getName(), category.getName());
+    }
+    return repository.save(category);
   }
 
   public void deleteById(Long id) {
