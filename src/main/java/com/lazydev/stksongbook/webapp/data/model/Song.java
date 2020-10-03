@@ -88,7 +88,7 @@ public class Song {
   @ManyToMany(mappedBy = "songs")
   private Set<User> usersSongs = new HashSet<>();
 
-  @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "song", orphanRemoval = true)
   private Set<UserSongRating> ratings = new HashSet<>();
 
   @ManyToMany(mappedBy = "songs")

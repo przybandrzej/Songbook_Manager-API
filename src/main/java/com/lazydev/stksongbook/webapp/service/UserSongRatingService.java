@@ -1,8 +1,14 @@
 package com.lazydev.stksongbook.webapp.service;
 
+import com.lazydev.stksongbook.webapp.data.model.Song;
+import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.data.model.UserSongRating;
+import com.lazydev.stksongbook.webapp.data.model.UsersSongsRatingsKey;
+import com.lazydev.stksongbook.webapp.repository.SongRepository;
+import com.lazydev.stksongbook.webapp.repository.UserRepository;
 import com.lazydev.stksongbook.webapp.repository.UserSongRatingRepository;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
+import com.lazydev.stksongbook.webapp.service.dto.UserSongRatingDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.exception.ForbiddenOperationException;
 import lombok.AllArgsConstructor;
@@ -18,6 +24,8 @@ public class UserSongRatingService {
 
   private final UserSongRatingRepository repository;
   private final UserContextService userContextService;
+  private final UserRepository userRepository;
+  private final SongRepository songRepository;
 
   public List<UserSongRating> findAll() {
     return repository.findAll();
@@ -66,4 +74,22 @@ public class UserSongRatingService {
     findByUserIdAndSongId(obj.getUser().getId(), obj.getSong().getId());
     repository.delete(obj);
   }
+
+  public UserSongRating create(UserSongRatingDTO dto) {
+    UserSongRating rating = new UserSongRating();
+    rating.setRating(dto.getRating());
+    User user = userRepository.findById(dto.getUserId()).orElseThrow(() -> new EntityNotFoundException(User.class, dto.getUserId()));
+    Song song = songRepository.findById(dto.getSongId()).orElseThrow(() -> new EntityNotFoundException(Song.class, dto.getSongId()));
+    rating.setId(new UsersSongsRatingsKey());
+    rating.setUser(user);
+    rating.setSong(song);
+    return repository.save(rating);
+  }
+
+  public UserSongRating update(UserSongRatingDTO dto) {
+    UserSongRating rating = findByUserIdAndSongId(dto.getUserId(), dto.getSongId());
+    rating.setRating(dto.getRating());
+    return repository.save(rating);
+  }
+
 }

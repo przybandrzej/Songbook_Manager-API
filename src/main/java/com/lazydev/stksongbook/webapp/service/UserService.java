@@ -28,6 +28,7 @@ public class UserService {
   private final PlaylistService playlistService;
   private final PasswordEncoder passwordEncoder;
   private final UserRoleRepository roleRepository;
+  private final UserSongRatingService ratingService;
   @Value("${spring.flyway.placeholders.role.user}")
   private String userRoleName;
   @Value("${spring.flyway.placeholders.role.superuser}")
@@ -36,12 +37,12 @@ public class UserService {
   private String adminRoleName;
   private final UserContextService userContextService;
 
-  public UserService(UserRepository repository, PlaylistService playlistService, PasswordEncoder passwordEncoder, UserRoleRepository roleRepository,
-                     UserContextService userContextService) {
+  public UserService(UserRepository repository, PlaylistService playlistService, PasswordEncoder passwordEncoder, UserRoleRepository roleRepository, UserSongRatingService ratingService, UserContextService userContextService) {
     this.repository = repository;
     this.playlistService = playlistService;
     this.passwordEncoder = passwordEncoder;
     this.roleRepository = roleRepository;
+    this.ratingService = ratingService;
     this.userContextService = userContextService;
   }
 
@@ -113,6 +114,7 @@ public class UserService {
       throw new ForbiddenOperationException("No permission.");
     }
     user.getPlaylists().forEach(it -> playlistService.deleteById(it.getId()));
+    user.getUserRatings().forEach(ratingService::delete);
     repository.deleteById(id);
   }
 
