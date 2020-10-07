@@ -231,14 +231,17 @@ public class SongService {
         || currentUser.getUserRole().getName().equals(adminRoleName)
         || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
       throw new ForbiddenOperationException("Approved song can be deleted only by a moderator or admin.");
-    } else if(song.isAwaiting() && song.getAdded().getAddedBy() != userContextService.getCurrentUser()) {
+    } else if(song.isAwaiting() && (!song.getAdded().getAddedBy().getId().equals(userContextService.getCurrentUser().getId())
+        && !(currentUser.getUserRole().getName().equals(superuserRoleName)
+        || currentUser.getUserRole().getName().equals(adminRoleName)
+        || currentUser.getUserRole().getName().equals(moderatorRoleName)))) {
       throw new ForbiddenOperationException("Awaiting song can be deleted only by its author, moderator or admin.");
     }
     song.getCoauthors().forEach(coauthorService::delete);
     song.getPlaylists().forEach(it -> it.removeSong(song));
     song.getUsersSongs().forEach(it -> it.removeSong(song));
     song.getRatings().forEach(ratingService::delete);
-    song.getTags().forEach(song::removeTag);
+    song.getTags().forEach(it -> it.removeSong(song));
     song.removeCategory();
     songAddRepository.delete(song.getAdded());
     songEditRepository.deleteAll(song.getEdits());
