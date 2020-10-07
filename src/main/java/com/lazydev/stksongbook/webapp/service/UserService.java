@@ -177,14 +177,15 @@ public class UserService {
   }
 
   public User completePasswordReset(String token, String newPassword) {
-    return repository.findByResetKey(token)
-        .filter(user -> user.getResetDate().isAfter(Instant.now().minusSeconds(86400)))
-        .map(user -> {
-          user.setPassword(passwordEncoder.encode(newPassword));
-          user.setResetKey(null);
-          user.setResetDate(null);
-          log.debug("Completing password change for {}", user.getUsername());
-          return repository.save(user);
-        }).orElseThrow(() -> new BadRequestErrorException("User does not exist."));
+    User user = repository.findByResetKey(token).orElseThrow(() -> new BadRequestErrorException("User for this key does not exist."));
+    boolean expired = user.getResetDate().isAfter(Instant.now().minusSeconds(86400));
+    if(expired) {
+      throw new BadRequestErrorException("Reset key is expired");
+    }
+    user.setPassword(passwordEncoder.encode(newPassword));
+    user.setResetKey(null);
+    user.setResetDate(null);
+    log.debug("Completing password change for {}", user.getUsername());
+    return repository.save(user);
   }
 }

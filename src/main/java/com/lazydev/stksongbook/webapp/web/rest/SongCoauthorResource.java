@@ -47,8 +47,9 @@ public class SongCoauthorResource {
 
   @PostMapping
   public ResponseEntity<SongCoauthorDTO> create(@RequestBody @Valid SongCoauthorDTO songCoauthorDTO) {
-    if(songCoauthorService.findBySongIdAndAuthorIdNoException(
-        songCoauthorDTO.getSongId(), songCoauthorDTO.getAuthorId()).isPresent()) {
+    if(songCoauthorService.findBySongIdAndAuthorId(
+        songCoauthorDTO.getSongId(), songCoauthorDTO.getAuthorId())
+        .stream().anyMatch(it -> it.getCoauthorFunction().equals(songCoauthorDTO.getCoauthorFunction()))) {
       throw new EntityAlreadyExistsException(SongCoauthor.class.getSimpleName());
     }
     SongCoauthor entity = songCoauthorMapper.map(songCoauthorDTO);
@@ -58,8 +59,9 @@ public class SongCoauthorResource {
 
   @PutMapping
   public ResponseEntity<SongCoauthorDTO> update(@RequestBody @Valid SongCoauthorDTO songCoauthorDTO) {
-    if(songCoauthorService.findBySongIdAndAuthorIdNoException(
-        songCoauthorDTO.getSongId(), songCoauthorDTO.getAuthorId()).isEmpty()) {
+    if(songCoauthorService.findBySongIdAndAuthorId(
+        songCoauthorDTO.getSongId(), songCoauthorDTO.getAuthorId())
+        .stream().anyMatch(it -> it.getCoauthorFunction().equals(songCoauthorDTO.getCoauthorFunction()))) {
       throw new EntityNotFoundException(SongCoauthor.class);
     }
     SongCoauthor author = songCoauthorMapper.map(songCoauthorDTO);
@@ -67,10 +69,9 @@ public class SongCoauthorResource {
     return new ResponseEntity<>(songCoauthorMapper.map(saved), HttpStatus.OK);
   }
 
-  @DeleteMapping
-  public ResponseEntity<Void> delete(@RequestBody @Valid SongCoauthorDTO songCoauthorDTO) {
-    var entity = songCoauthorMapper.map(songCoauthorDTO);
-    songCoauthorService.delete(entity);
+  @DeleteMapping("/{songId}/{authorId}/{function}")
+  public ResponseEntity<Void> delete(@PathVariable Long songId, @PathVariable Long authorId, @PathVariable String function) {
+    songCoauthorService.delete(songId, authorId, function);
     return ResponseEntity.noContent().build();
   }
 }
