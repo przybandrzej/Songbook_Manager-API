@@ -9,7 +9,7 @@ spring:
       superuser:
         username: superuser
         password-hash: $2a$10$rI7UAUIq8zUWo2x1uElO..dosFRWT4wZnEGypNd5Aql908E1MvZiO #the password value is 'superuser'
-        email: a@a.com
+        email: sample@sample.com
         first-name: Super
         last-name: User
 
