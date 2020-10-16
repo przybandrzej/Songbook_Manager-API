@@ -5,6 +5,7 @@ import com.lazydev.stksongbook.webapp.data.model.*;
 import com.lazydev.stksongbook.webapp.repository.SongAddRepository;
 import com.lazydev.stksongbook.webapp.repository.SongEditRepository;
 import com.lazydev.stksongbook.webapp.repository.SongRepository;
+import com.lazydev.stksongbook.webapp.repository.UserSongRatingRepository;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
@@ -36,7 +37,7 @@ public class SongService {
   private final SongCoauthorService coauthorService;
   private final CategoryService categoryService;
   private final FileSystemStorageService storageService;
-  private final UserSongRatingService ratingService;
+  private final UserSongRatingRepository ratingRepository;
   private final UserContextService userContextService;
   private final SongAddRepository songAddRepository;
   private final SongEditRepository songEditRepository;
@@ -47,14 +48,14 @@ public class SongService {
   @Value("${spring.flyway.placeholders.role.moderator}")
   private String moderatorRoleName;
 
-  public SongService(SongRepository repository, TagService tagService, AuthorService authorService, SongCoauthorService coauthorService, CategoryService categoryService, FileSystemStorageService storageService, UserSongRatingService ratingService, UserContextService userContextService, SongAddRepository songAddRepository, SongEditRepository songEditRepository) {
+  public SongService(SongRepository repository, TagService tagService, AuthorService authorService, SongCoauthorService coauthorService, CategoryService categoryService, FileSystemStorageService storageService, UserSongRatingRepository ratingRepository, UserContextService userContextService, SongAddRepository songAddRepository, SongEditRepository songEditRepository) {
     this.repository = repository;
     this.tagService = tagService;
     this.authorService = authorService;
     this.coauthorService = coauthorService;
     this.categoryService = categoryService;
     this.storageService = storageService;
-    this.ratingService = ratingService;
+    this.ratingRepository = ratingRepository;
     this.userContextService = userContextService;
     this.songAddRepository = songAddRepository;
     this.songEditRepository = songEditRepository;
@@ -237,10 +238,11 @@ public class SongService {
         || currentUser.getUserRole().getName().equals(moderatorRoleName)))) {
       throw new ForbiddenOperationException("Awaiting song can be deleted only by its author, moderator or admin.");
     }
-    song.getCoauthors().forEach(coauthorService::delete);
+
+    coauthorService.deleteAll(song.getCoauthors());
     song.getPlaylists().forEach(it -> it.removeSong(song));
     song.getUsersSongs().forEach(it -> it.removeSong(song));
-    song.getRatings().forEach(ratingService::delete);
+    ratingRepository.deleteAll(song.getRatings());
     song.getTags().forEach(it -> it.removeSong(song));
     song.removeCategory();
     songAddRepository.delete(song.getAdded());

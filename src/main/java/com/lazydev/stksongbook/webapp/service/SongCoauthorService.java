@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,5 +86,9 @@ public class SongCoauthorService {
     coauthor.setSong(song);
     coauthor.setCoauthorFunction(function);
     return repository.save(coauthor);
+  }
+
+  public void deleteAll(Collection<SongCoauthor> list) {
+    repository.deleteAll(list);
   }
 }
