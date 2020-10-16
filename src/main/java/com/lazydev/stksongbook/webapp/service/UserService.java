@@ -4,6 +4,7 @@ import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.repository.UserRepository;
 import com.lazydev.stksongbook.webapp.repository.UserRoleRepository;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
+import com.lazydev.stksongbook.webapp.service.dto.EmailChangeDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm;
 import com.lazydev.stksongbook.webapp.service.exception.*;
 import com.lazydev.stksongbook.webapp.util.Constants;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -187,5 +189,15 @@ public class UserService {
     user.setResetDate(null);
     log.debug("Completing password change for {}", user.getUsername());
     return repository.save(user);
+  }
+
+  public void changeEmail(EmailChangeDTO email) {
+    User user = userContextService.getCurrentUser();
+    if(repository.findByEmailIgnoreCase(email.getEmail()).isPresent()) {
+      throw new EmailAlreadyUsedException();
+    }
+    log.debug("Changing email of {} to {}", user.getUsername(), email);
+    user.setEmail(email.getEmail());
+    repository.save(user);
   }
 }

@@ -11,6 +11,7 @@ import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm
 import com.lazydev.stksongbook.webapp.service.exception.EmailAlreadyUsedException;
 import com.lazydev.stksongbook.webapp.service.exception.UsernameAlreadyUsedException;
 import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
+import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @RestController
 @RequestMapping("/api")
@@ -132,5 +135,11 @@ public class AuthenticationResource {
   public void finishPasswordReset(@RequestBody TokenAndPasswordDTO keyAndPassword) {
     log.debug("Request to finish password reset");
     service.completePasswordReset(keyAndPassword.getToken(), keyAndPassword.getNewPassword());
+  }
+
+  @PatchMapping("/account/change-email")
+  public void changeEmail(@RequestBody @Valid EmailChangeDTO emailChangeDTO) {
+    log.debug("Request to finish password reset");
+    service.changeEmail(emailChangeDTO);
   }
 }
