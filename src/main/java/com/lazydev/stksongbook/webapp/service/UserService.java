@@ -220,4 +220,18 @@ public class UserService {
     user.setUserRole(role);
     return repository.save(user);
   }
+
+  public User activateUser(Long userId) {
+    if(!(userContextService.getCurrentUser().getUserRole().getName().equals(superuserRoleName)
+        || userContextService.getCurrentUser().getUserRole().getName().equals(adminRoleName))) {
+      throw new ForbiddenOperationException("No permission.");
+    }
+    log.debug("Activate user {}", userId);
+    return repository.findById(userId)
+        .map(user -> {
+          user.setActivated(true);
+          user.setActivationKey(null);
+          return repository.save(user);
+        }).orElseThrow(() -> new UserNotExistsException(userId));
+  }
 }

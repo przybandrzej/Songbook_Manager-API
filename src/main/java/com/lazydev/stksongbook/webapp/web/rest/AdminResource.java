@@ -56,4 +56,9 @@ public class AdminResource {
   public ResponseEntity<UserDTO> updateUserRole(@PathVariable Long userId, @PathVariable Long roleId) {
     return ResponseEntity.ok(userMapper.map(userService.changeRole(userId, roleId)));
   }
+
+  @PatchMapping("/activate-user/{userId}")
+  public ResponseEntity<UserDTO> activateUser(@PathVariable Long userId) {
+    return ResponseEntity.ok(userMapper.map(userService.activateUser(userId)));
+  }
 }
