@@ -121,7 +121,7 @@ public class UserService {
       throw new BadRequestErrorException("Cannot delete superuser.");
     }
     user.getPlaylists().forEach(it -> playlistService.deleteById(it.getId()));
-    user.getUserRatings().forEach(ratingService::delete);
+    user.getUserRatings().forEach(it -> ratingService.delete(it.getUser().getId(), it.getSong().getId()));
     repository.deleteById(id);
   }
 
