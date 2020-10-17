@@ -38,6 +38,8 @@ public class UserService {
   private String superuserRoleName;
   @Value("${spring.flyway.placeholders.role.admin}")
   private String adminRoleName;
+  @Value("${application.default-user-image}")
+  private String defaultUserImageUrl;
   private final UserContextService userContextService;
 
   public UserService(UserRepository repository, PlaylistService playlistService, PasswordEncoder passwordEncoder, UserRoleRepository roleRepository, UserSongRatingService ratingService, UserContextService userContextService) {
@@ -133,6 +135,7 @@ public class UserService {
     user.setUserRole(roleRepository.findByName(userRoleName).orElseThrow(() -> new EntityDependentNotInitialized(userRoleName)));
     user.setActivated(false);
     user.setActivationKey(RandomUtil.generateActivationKey());
+    user.setImageUrl(defaultUserImageUrl);
     return repository.save(user);
   }
 
