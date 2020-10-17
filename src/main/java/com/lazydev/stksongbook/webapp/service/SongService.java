@@ -332,4 +332,94 @@ public class SongService {
   public List<Song> findAddedByUser(Long userId) {
     return repository.findByEditsEditedById(userId);
   }
+
+  public Song addTag(Long songId, String tagName) {
+    User currentUser = userContextService.getCurrentUser();
+    Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
+    if(!song.isAwaiting()
+        && !(currentUser.getUserRole().getName().equals(superuserRoleName)
+        || currentUser.getUserRole().getName().equals(adminRoleName)
+        || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
+      throw new ForbiddenOperationException("Approved song can be updated only by a moderator or admin.");
+    }
+    Tag tag = tagService.findOrCreateTag(tagName);
+    song.addTag(tag);
+    var saved = repository.save(song);
+    SongEdit edit = new SongEdit();
+    edit.setId(Constants.DEFAULT_ID);
+    userContextService.getCurrentUser().addEditedSong(edit);
+    song.addEdit(edit);
+    songEditRepository.save(edit);
+    return saved;
+  }
+
+  public Song removeTag(Long songId, Long tagId) {
+    User currentUser = userContextService.getCurrentUser();
+    Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
+    if(!song.isAwaiting()
+        && !(currentUser.getUserRole().getName().equals(superuserRoleName)
+        || currentUser.getUserRole().getName().equals(adminRoleName)
+        || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
+      throw new ForbiddenOperationException("Approved song can be updated only by a moderator or admin.");
+    }
+    Tag tag = tagService.findById(tagId);
+    song.removeTag(tag);
+    if(tag.getSongs().isEmpty()) {
+      tagService.deleteById(tagId);
+    }
+    var saved = repository.save(song);
+    SongEdit edit = new SongEdit();
+    edit.setId(Constants.DEFAULT_ID);
+    userContextService.getCurrentUser().addEditedSong(edit);
+    song.addEdit(edit);
+    songEditRepository.save(edit);
+    return saved;
+  }
+
+  public Song removeTags(Long songId, Long[] tagIds) {
+    User currentUser = userContextService.getCurrentUser();
+    Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
+    if(!song.isAwaiting()
+        && !(currentUser.getUserRole().getName().equals(superuserRoleName)
+        || currentUser.getUserRole().getName().equals(adminRoleName)
+        || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
+      throw new ForbiddenOperationException("Approved song can be updated only by a moderator or admin.");
+    }
+    for(Long tagId : tagIds) {
+      Tag tag = tagService.findById(tagId);
+      song.removeTag(tag);
+      if(tag.getSongs().isEmpty()) {
+        tagService.deleteById(tagId);
+      }
+    }
+    var saved = repository.save(song);
+    SongEdit edit = new SongEdit();
+    edit.setId(Constants.DEFAULT_ID);
+    userContextService.getCurrentUser().addEditedSong(edit);
+    song.addEdit(edit);
+    songEditRepository.save(edit);
+    return saved;
+  }
+
+  public Song addTags(Long songId, String[] tagNames) {
+    User currentUser = userContextService.getCurrentUser();
+    Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
+    if(!song.isAwaiting()
+        && !(currentUser.getUserRole().getName().equals(superuserRoleName)
+        || currentUser.getUserRole().getName().equals(adminRoleName)
+        || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
+      throw new ForbiddenOperationException("Approved song can be updated only by a moderator or admin.");
+    }
+    for(String tagName : tagNames) {
+      Tag tag = tagService.findOrCreateTag(tagName);
+      song.addTag(tag);
+    }
+    var saved = repository.save(song);
+    SongEdit edit = new SongEdit();
+    edit.setId(Constants.DEFAULT_ID);
+    userContextService.getCurrentUser().addEditedSong(edit);
+    song.addEdit(edit);
+    songEditRepository.save(edit);
+    return saved;
+  }
 }
