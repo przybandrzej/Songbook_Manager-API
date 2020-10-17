@@ -5,6 +5,7 @@ import com.lazydev.stksongbook.webapp.data.model.*;
 import com.lazydev.stksongbook.webapp.repository.SongAddRepository;
 import com.lazydev.stksongbook.webapp.repository.SongEditRepository;
 import com.lazydev.stksongbook.webapp.repository.SongRepository;
+import com.lazydev.stksongbook.webapp.repository.UserSongRatingRepository;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
@@ -36,7 +37,7 @@ public class SongService {
   private final SongCoauthorService coauthorService;
   private final CategoryService categoryService;
   private final FileSystemStorageService storageService;
-  private final UserSongRatingService ratingService;
+  private final UserSongRatingRepository ratingRepository;
   private final UserContextService userContextService;
   private final SongAddRepository songAddRepository;
   private final SongEditRepository songEditRepository;
@@ -47,14 +48,14 @@ public class SongService {
   @Value("${spring.flyway.placeholders.role.moderator}")
   private String moderatorRoleName;
 
-  public SongService(SongRepository repository, TagService tagService, AuthorService authorService, SongCoauthorService coauthorService, CategoryService categoryService, FileSystemStorageService storageService, UserSongRatingService ratingService, UserContextService userContextService, SongAddRepository songAddRepository, SongEditRepository songEditRepository) {
+  public SongService(SongRepository repository, TagService tagService, AuthorService authorService, SongCoauthorService coauthorService, CategoryService categoryService, FileSystemStorageService storageService, UserSongRatingRepository ratingRepository, UserContextService userContextService, SongAddRepository songAddRepository, SongEditRepository songEditRepository) {
     this.repository = repository;
     this.tagService = tagService;
     this.authorService = authorService;
     this.coauthorService = coauthorService;
     this.categoryService = categoryService;
     this.storageService = storageService;
-    this.ratingService = ratingService;
+    this.ratingRepository = ratingRepository;
     this.userContextService = userContextService;
     this.songAddRepository = songAddRepository;
     this.songEditRepository = songEditRepository;
@@ -231,14 +232,18 @@ public class SongService {
         || currentUser.getUserRole().getName().equals(adminRoleName)
         || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
       throw new ForbiddenOperationException("Approved song can be deleted only by a moderator or admin.");
-    } else if(song.isAwaiting() && song.getAdded().getAddedBy() != userContextService.getCurrentUser()) {
+    } else if(song.isAwaiting() && (!song.getAdded().getAddedBy().getId().equals(userContextService.getCurrentUser().getId())
+        && !(currentUser.getUserRole().getName().equals(superuserRoleName)
+        || currentUser.getUserRole().getName().equals(adminRoleName)
+        || currentUser.getUserRole().getName().equals(moderatorRoleName)))) {
       throw new ForbiddenOperationException("Awaiting song can be deleted only by its author, moderator or admin.");
     }
-    song.getCoauthors().forEach(coauthorService::delete);
+
+    coauthorService.deleteAll(song.getCoauthors());
     song.getPlaylists().forEach(it -> it.removeSong(song));
     song.getUsersSongs().forEach(it -> it.removeSong(song));
-    song.getRatings().forEach(ratingService::delete);
-    song.getTags().forEach(song::removeTag);
+    ratingRepository.deleteAll(song.getRatings());
+    song.getTags().forEach(it -> it.removeSong(song));
     song.removeCategory();
     songAddRepository.delete(song.getAdded());
     songEditRepository.deleteAll(song.getEdits());
@@ -257,6 +262,10 @@ public class SongService {
     edit.setId(Constants.DEFAULT_ID);
     userContextService.getCurrentUser().addEditedSong(edit);
     song.addEdit(edit);
+    SongEdit finalEdit = songEditRepository.save(edit);
+    if(song.removeEditIf(it -> it.getTimestamp().equals(finalEdit.getTimestamp()))) {
+      song.addEdit(finalEdit);
+    }
     return repository.save(song);
   }
 
@@ -285,7 +294,6 @@ public class SongService {
 
     SongAdd timestamp = new SongAdd();
     timestamp.setId(Constants.DEFAULT_ID);
-    timestamp.setTimestamp(Instant.now());
     userContextService.getCurrentUser().addAddedSong(timestamp);
     savedSong.setAdded(timestamp);
     songAddRepository.save(timestamp);
@@ -311,5 +319,107 @@ public class SongService {
   public Song approveSong(Song song) {
     song.setAwaiting(false);
     return repository.save(song);
+  }
+
+  public List<Song> findByUser(Long userId) {
+    return repository.findByUsersSongsId(userId);
+  }
+
+  public List<Song> findEditedByUser(Long userId) {
+    return repository.findByAddedAddedById(userId);
+  }
+
+  public List<Song> findAddedByUser(Long userId) {
+    return repository.findByEditsEditedById(userId);
+  }
+
+  public Song addTag(Long songId, String tagName) {
+    User currentUser = userContextService.getCurrentUser();
+    Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
+    if(!song.isAwaiting()
+        && !(currentUser.getUserRole().getName().equals(superuserRoleName)
+        || currentUser.getUserRole().getName().equals(adminRoleName)
+        || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
+      throw new ForbiddenOperationException("Approved song can be updated only by a moderator or admin.");
+    }
+    Tag tag = tagService.findOrCreateTag(tagName);
+    song.addTag(tag);
+    var saved = repository.save(song);
+    SongEdit edit = new SongEdit();
+    edit.setId(Constants.DEFAULT_ID);
+    userContextService.getCurrentUser().addEditedSong(edit);
+    song.addEdit(edit);
+    songEditRepository.save(edit);
+    return saved;
+  }
+
+  public Song removeTag(Long songId, Long tagId) {
+    User currentUser = userContextService.getCurrentUser();
+    Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
+    if(!song.isAwaiting()
+        && !(currentUser.getUserRole().getName().equals(superuserRoleName)
+        || currentUser.getUserRole().getName().equals(adminRoleName)
+        || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
+      throw new ForbiddenOperationException("Approved song can be updated only by a moderator or admin.");
+    }
+    Tag tag = tagService.findById(tagId);
+    song.removeTag(tag);
+    if(tag.getSongs().isEmpty()) {
+      tagService.deleteById(tagId);
+    }
+    var saved = repository.save(song);
+    SongEdit edit = new SongEdit();
+    edit.setId(Constants.DEFAULT_ID);
+    userContextService.getCurrentUser().addEditedSong(edit);
+    song.addEdit(edit);
+    songEditRepository.save(edit);
+    return saved;
+  }
+
+  public Song removeTags(Long songId, Long[] tagIds) {
+    User currentUser = userContextService.getCurrentUser();
+    Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
+    if(!song.isAwaiting()
+        && !(currentUser.getUserRole().getName().equals(superuserRoleName)
+        || currentUser.getUserRole().getName().equals(adminRoleName)
+        || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
+      throw new ForbiddenOperationException("Approved song can be updated only by a moderator or admin.");
+    }
+    for(Long tagId : tagIds) {
+      Tag tag = tagService.findById(tagId);
+      song.removeTag(tag);
+      if(tag.getSongs().isEmpty()) {
+        tagService.deleteById(tagId);
+      }
+    }
+    var saved = repository.save(song);
+    SongEdit edit = new SongEdit();
+    edit.setId(Constants.DEFAULT_ID);
+    userContextService.getCurrentUser().addEditedSong(edit);
+    song.addEdit(edit);
+    songEditRepository.save(edit);
+    return saved;
+  }
+
+  public Song addTags(Long songId, String[] tagNames) {
+    User currentUser = userContextService.getCurrentUser();
+    Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
+    if(!song.isAwaiting()
+        && !(currentUser.getUserRole().getName().equals(superuserRoleName)
+        || currentUser.getUserRole().getName().equals(adminRoleName)
+        || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
+      throw new ForbiddenOperationException("Approved song can be updated only by a moderator or admin.");
+    }
+    for(String tagName : tagNames) {
+      Tag tag = tagService.findOrCreateTag(tagName);
+      song.addTag(tag);
+    }
+    var saved = repository.save(song);
+    SongEdit edit = new SongEdit();
+    edit.setId(Constants.DEFAULT_ID);
+    userContextService.getCurrentUser().addEditedSong(edit);
+    song.addEdit(edit);
+    songEditRepository.save(edit);
+    return saved;
   }
 }

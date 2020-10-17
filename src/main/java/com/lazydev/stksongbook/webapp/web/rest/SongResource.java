@@ -178,4 +178,55 @@ public class SongResource {
     }
     return new ResponseEntity<>(mapper.map(service.approveSong(mapper.map(songDTO))), HttpStatus.OK);
   }
+
+  /**
+   * Get all songs in user's library
+   */
+  @GetMapping("/user/{id}")
+  public ResponseEntity<List<SongDTO>> getUserSongs(@PathVariable("id") Long id) {
+    List<SongDTO> list = service.findByUser(id).stream().map(mapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
+  }
+
+  /**
+   * Get all songs edited by user
+   */
+  @GetMapping("/user/{id}/edited")
+  public ResponseEntity<List<SongDTO>> getSongsEditedByUser(@PathVariable("id") Long id) {
+    List<SongDTO> list = service.findAddedByUser(id).stream().map(mapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
+  }
+
+  /**
+   * Get all songs added by user
+   */
+  @GetMapping("/user/{id}/added")
+  public ResponseEntity<List<SongDTO>> getSongsAddedByUser(@PathVariable("id") Long id) {
+    List<SongDTO> list = service.findEditedByUser(id).stream().map(mapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
+  }
+
+  @PatchMapping("{id}/add-tag/{tagName}")
+  public ResponseEntity<SongDTO> addTagToSong(@PathVariable Long id, @PathVariable String tagName) {
+    var song = service.addTag(id, tagName);
+    return ResponseEntity.ok(mapper.map(song));
+  }
+
+  @PatchMapping("{id}/add-tag-bulk/{tagNames}")
+  public ResponseEntity<SongDTO> addTagsToSongBulk(@PathVariable Long id, @PathVariable String[] tagNames) {
+    Song song = service.addTags(id, tagNames);
+    return ResponseEntity.ok(mapper.map(song));
+  }
+
+  @PatchMapping("{id}/remove-tag/{tagId}")
+  public ResponseEntity<SongDTO> removeTagFromSong(@PathVariable Long id, @PathVariable Long tagId) {
+    var song = service.removeTag(id, tagId);
+    return ResponseEntity.ok(mapper.map(song));
+  }
+
+  @PatchMapping("{id}/remove-tag-bulk/{tagIds}")
+  public ResponseEntity<SongDTO> removeTagsFromSongBulk(@PathVariable Long id, @PathVariable Long[] tagIds) {
+    var song = service.removeTags(id, tagIds);
+    return ResponseEntity.ok(mapper.map(song));
+  }
 }

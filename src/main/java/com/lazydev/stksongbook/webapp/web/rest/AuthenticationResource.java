@@ -11,7 +11,10 @@ import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm
 import com.lazydev.stksongbook.webapp.service.exception.EmailAlreadyUsedException;
 import com.lazydev.stksongbook.webapp.service.exception.UsernameAlreadyUsedException;
 import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
+import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +24,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @RestController
 @RequestMapping("/api")
 @AllArgsConstructor
 public class AuthenticationResource {
+
+  private final Logger log = LoggerFactory.getLogger(AuthenticationResource.class);
 
   private final UserService service;
   private final AuthenticationManager authenticationManager;
@@ -55,7 +61,7 @@ public class AuthenticationResource {
         new UsernamePasswordAuthenticationToken(form.getLogin(), form.getPassword());
     Authentication authentication = this.authenticationManager.authenticate(authenticationToken);
     SecurityContextHolder.getContext().setAuthentication(authentication);
-    String jwt = tokenProvider.createToken(authentication);
+    String jwt = tokenProvider.createToken(authentication, form.isRememberMe());
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.add(JWTConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
     return new ResponseEntity<>(new TokenDTO(jwt), httpHeaders, HttpStatus.OK);
@@ -66,15 +72,9 @@ public class AuthenticationResource {
     service.activate(key);
   }
 
-  /**
-   * GET  /authenticate : check if the user is authenticated, and return its login.
-   *
-   * @param request the HTTP request
-   * @return the login if the user is authenticated
-   */
-  @GetMapping("/authenticate")
-  public String isAuthenticated(HttpServletRequest request) {
-    return request.getRemoteUser();
+  @GetMapping("/is-authenticated")
+  public boolean isAuthenticated() {
+    return userContextService.isAuthenticated();
   }
 
   /**
@@ -110,6 +110,7 @@ public class AuthenticationResource {
    */
   @PostMapping("/account/change-password")
   public void changePassword(@RequestBody @Valid PasswordChangeDTO passwordChangeDto) {
+    log.debug("Request to change password");
     service.changePassword(passwordChangeDto.getCurrentPassword(), passwordChangeDto.getNewPassword());
   }
 
@@ -120,6 +121,7 @@ public class AuthenticationResource {
    */
   @PostMapping("/account/reset-password/init")
   public void requestPasswordReset(@RequestBody String mail) {
+    log.debug("Request for password reset for {}", mail);
     mailerService.sendPasswordResetMail(service.requestPasswordReset(mail));
   }
 
@@ -131,6 +133,13 @@ public class AuthenticationResource {
    */
   @PostMapping("/account/reset-password/finish")
   public void finishPasswordReset(@RequestBody TokenAndPasswordDTO keyAndPassword) {
+    log.debug("Request to finish password reset");
     service.completePasswordReset(keyAndPassword.getToken(), keyAndPassword.getNewPassword());
+  }
+
+  @PatchMapping("/account/change-email")
+  public void changeEmail(@RequestBody @Valid EmailChangeDTO emailChangeDTO) {
+    log.debug("Request to finish password reset");
+    service.changeEmail(emailChangeDTO);
   }
 }

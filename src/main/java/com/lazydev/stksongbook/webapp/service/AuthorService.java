@@ -60,6 +60,9 @@ public class AuthorService {
     if(!author.getSongs().isEmpty()) {
       throw new CannotDeleteEntityException(Author.class.getSimpleName(), "There are songs belonging to this author.");
     }
+    if(!author.getCoauthorSongs().isEmpty()) {
+      throw new CannotDeleteEntityException(Author.class.getSimpleName(), "There are songs that this author is a coauthor of.");
+    }
     authorRepository.deleteById(id);
   }
 

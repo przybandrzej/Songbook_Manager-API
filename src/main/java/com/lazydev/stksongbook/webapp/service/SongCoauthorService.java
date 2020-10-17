@@ -5,11 +5,15 @@ import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.data.model.SongCoauthor;
 import com.lazydev.stksongbook.webapp.data.model.SongsCoauthorsKey;
 import com.lazydev.stksongbook.webapp.data.model.enumeration.CoauthorFunction;
+import com.lazydev.stksongbook.webapp.repository.AuthorRepository;
 import com.lazydev.stksongbook.webapp.repository.SongCoauthorRepository;
+import com.lazydev.stksongbook.webapp.repository.SongRepository;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,14 +22,11 @@ import java.util.Optional;
 public class SongCoauthorService {
 
   private final SongCoauthorRepository repository;
+  private final SongRepository songRepository;
+  private final AuthorRepository authorRepository;
 
-  public Optional<SongCoauthor> findBySongIdAndAuthorIdNoException(Long songId, Long authorId) {
+  public List<SongCoauthor> findBySongIdAndAuthorId(Long songId, Long authorId) {
     return repository.findBySongIdAndAuthorId(songId, authorId);
-  }
-
-  public SongCoauthor findBySongIdAndAuthorId(Long songId, Long authorId) {
-    return repository.findBySongIdAndAuthorId(songId, authorId)
-        .orElseThrow(() -> new EntityNotFoundException(SongCoauthor.class));
   }
 
   public SongCoauthor findBySongIdAndAuthorIdAndFunction(Long songId, Long authorId, CoauthorFunction function) {
@@ -57,11 +58,25 @@ public class SongCoauthorService {
     return repository.save(songCoauthor);
   }
 
-  public void delete(SongCoauthor songCoauthor) {
-    findBySongIdAndAuthorIdAndFunction(songCoauthor.getSong().getId(), songCoauthor.getAuthor().getId(), songCoauthor.getCoauthorFunction());
-    songCoauthor.getSong().removeCoauthor(songCoauthor);
-    songCoauthor.getAuthor().removeCoauthor(songCoauthor);
-    repository.delete(songCoauthor);
+  public void delete(Long songId, Long authorId, String function) {
+    List<SongCoauthor> list = findBySongIdAndAuthorId(songId, authorId);
+    if(list.stream().noneMatch(it -> it.getCoauthorFunction().toString().equals(function))) {
+      return;
+    }
+    SongCoauthor coauthor = list.stream().filter(it -> it.getCoauthorFunction().toString().equals(function)).findFirst().orElseThrow(() -> new EntityNotFoundException(SongCoauthor.class));
+    songRepository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId)).removeCoauthor(coauthor);
+    authorRepository.findById(authorId).orElseThrow(() -> new EntityNotFoundException(Author.class, authorId)).removeCoauthor(coauthor);
+    repository.delete(coauthor);
+  }
+
+  public void delete(SongCoauthor coauthor) {
+    List<SongCoauthor> list = findBySongIdAndAuthorId(coauthor.getSong().getId(), coauthor.getAuthor().getId());
+    if(list.stream().noneMatch(it -> it.getCoauthorFunction().equals(coauthor.getCoauthorFunction()))) {
+      return;
+    }
+    coauthor.getSong().removeCoauthor(coauthor);
+    coauthor.getAuthor().removeCoauthor(coauthor);
+    repository.delete(coauthor);
   }
 
   public SongCoauthor findOrCreate(Song song, Author author, CoauthorFunction function) {
@@ -71,5 +86,9 @@ public class SongCoauthorService {
     coauthor.setSong(song);
     coauthor.setCoauthorFunction(function);
     return repository.save(coauthor);
+  }
+
+  public void deleteAll(Collection<SongCoauthor> list) {
+    repository.deleteAll(list);
   }
 }

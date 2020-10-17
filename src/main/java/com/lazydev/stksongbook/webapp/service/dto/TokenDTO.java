@@ -4,19 +4,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class TokenDTO {
 
+  @JsonProperty("idToken")
   private String idToken;
 
   public TokenDTO(String idToken) {
     this.idToken = idToken;
   }
 
-  @JsonProperty("id_token")
-  String getIdToken() {
+  public String getIdToken() {
     return idToken;
   }
 
-  void setIdToken(String idToken) {
+  public void setIdToken(String idToken) {
     this.idToken = idToken;
   }
-
 }

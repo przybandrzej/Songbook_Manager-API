@@ -78,4 +78,7 @@ public interface SongRepository extends JpaRepository<Song, Long> {
   List<Song> findByAddedTimestampLessThanEqualAndIsAwaiting(Instant date, boolean isAwaiting);
 
   List<Song> findByUsersSongsIdAndIsAwaiting(Long userId, boolean isAwaiting);
+  List<Song> findByUsersSongsId(Long userId);
+  List<Song> findByAddedAddedById(Long userId);
+  List<Song> findByEditsEditedById(Long userId);
 }

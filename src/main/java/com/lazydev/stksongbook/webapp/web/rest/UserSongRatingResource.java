@@ -4,7 +4,6 @@ import com.lazydev.stksongbook.webapp.data.model.UserSongRating;
 import com.lazydev.stksongbook.webapp.service.UserSongRatingService;
 import com.lazydev.stksongbook.webapp.service.dto.UserSongRatingDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityAlreadyExistsException;
-import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.UserSongRatingMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -73,26 +72,19 @@ public class UserSongRatingResource {
     if(service.findByUserIdAndSongIdNoException(dto.getUserId(), dto.getSongId()).isPresent()) {
       throw new EntityAlreadyExistsException(UserSongRating.class.getSimpleName());
     }
-    UserSongRating user = mapper.map(dto);
-    var saved = service.save(user);
+    var saved = service.create(dto);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.CREATED);
   }
 
   @PutMapping
   public ResponseEntity<UserSongRatingDTO> update(@RequestBody @Valid UserSongRatingDTO dto) {
-    if(service.findByUserIdAndSongIdNoException(
-        dto.getUserId(), dto.getSongId()).isEmpty()) {
-      throw new EntityNotFoundException(UserSongRating.class);
-    }
-    UserSongRating user = mapper.map(dto);
-    var saved = service.save(user);
+    var saved = service.update(dto);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.OK);
   }
 
-  @DeleteMapping
-  public ResponseEntity<Void> delete(@RequestBody @Valid UserSongRatingDTO dto) {
-    var obj = mapper.map(dto);
-    service.delete(obj);
+  @DeleteMapping("/{userId}/{songId}")
+  public ResponseEntity<Void> delete(@PathVariable Long userId, @PathVariable Long songId) {
+    service.delete(userId, songId);
     return ResponseEntity.noContent().build();
   }
 }

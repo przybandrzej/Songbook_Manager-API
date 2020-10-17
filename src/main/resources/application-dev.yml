@@ -1,0 +1,73 @@
+spring:
+  profiles:
+    active: dev
+  flyway:
+    placeholders:
+      role:
+        user: user
+        moderator: moderator
+        admin: admin
+        superuser: superuser
+      superuser:
+        username: superuser
+        password-hash: $2a$10$rI7UAUIq8zUWo2x1uElO..dosFRWT4wZnEGypNd5Aql908E1MvZiO #the password value is 'superuser'
+        email: sample@sample.com
+        first-name: Super
+        last-name: User
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL95Dialect
+    hibernate:
+      ddl-auto: none
+  datasource:
+    url: jdbc:postgresql://localhost:5432/stksongbook
+    username: stksongbook
+    password: stksongbook
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  messages:
+    basename: i18n/messages
+  thymeleaf:
+    enabled: true
+    check-template-location: true
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    cache: true
+
+logging:
+  level:
+    ROOT: INFO
+    com.lazydev.stksongbook.webapp: DEBUG
+
+server:
+  port: 8080
+
+security:
+  authentication:
+    jwt:
+      secret: 55d3de79e7b18c67f42f420e9065b980bba03659
+      # Token is valid 24 hours
+      token-validity-in-seconds: 86400
+      token-validity-in-seconds-for-remember-me: 2592000
+  cors:
+    allowed-origins: "*"
+    allowed-methods: "*"
+    allowed-headers: "*"
+    exposed-headers: "Authorization,Link,X-Total-Count"
+    allow-credentials: true
+    max-age: 1800
+
+storage:
+  location: ./storage
+queue:
+  mails: mails.to.send
+  mails-results: mails.results
+application:
+  gui-base-url: http://localhost:4200
+  default-user-image: https://i.pinimg.com/originals/51/f6/fb/51f6fb256629fc755b8870c801092942.png

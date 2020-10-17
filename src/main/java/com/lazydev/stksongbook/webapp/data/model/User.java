@@ -97,7 +97,7 @@ public class User {
       inverseJoinColumns = @JoinColumn(name = "song_id"))
   private Set<Song> songs = new HashSet<>();
 
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "user", orphanRemoval = true)
   private Set<UserSongRating> userRatings = new HashSet<>();
 
   @OneToMany(mappedBy = "owner", orphanRemoval = true)

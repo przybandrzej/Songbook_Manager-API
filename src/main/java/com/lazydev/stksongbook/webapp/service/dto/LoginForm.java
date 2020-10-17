@@ -12,6 +12,7 @@ public class LoginForm {
 
   String login;
   String password;
+  boolean rememberMe = false;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class Builder {

@@ -1,7 +1,9 @@
 package com.lazydev.stksongbook.webapp.security.jwt;
 
 import com.lazydev.stksongbook.webapp.config.SecurityProperties;
+import com.lazydev.stksongbook.webapp.repository.UserRepository;
 import com.lazydev.stksongbook.webapp.security.KeyValueGrantedAuthority;
+import com.lazydev.stksongbook.webapp.service.exception.NotAuthenticatedException;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,17 +28,21 @@ public class TokenProvider {
   private final Logger log = LoggerFactory.getLogger(TokenProvider.class);
 
   private static final String AUTHORITIES_KEY = "auth";
+  private static final String EXPIRATION_KEY = "expiration_in_milliseconds";
 
   private final Base64.Encoder encoder = Base64.getEncoder();
 
   private String secretKey;
 
   private long tokenValidityInMilliseconds;
+  private long tokenValidityInMillisecondsForRememberMe;
+  private final UserRepository userRepository;
 
   private final SecurityProperties securityProperties;
 
-  public TokenProvider(SecurityProperties securityProperties) {
+  public TokenProvider(SecurityProperties securityProperties, UserRepository userRepository) {
     this.securityProperties = securityProperties;
+    this.userRepository = userRepository;
   }
 
   @PostConstruct
@@ -46,19 +52,29 @@ public class TokenProvider {
 
     this.tokenValidityInMilliseconds =
         1000 * securityProperties.getAuthentication().getJwt().getTokenValidityInSeconds();
+    this.tokenValidityInMillisecondsForRememberMe =
+        1000 * securityProperties.getAuthentication().getJwt()
+            .getTokenValidityInSecondsForRememberMe();
   }
 
-  public String createToken(Authentication authentication/*, boolean rememberMe*/) {
+  public String createToken(Authentication authentication, boolean rememberMe) {
     String authorities = authentication.getAuthorities().stream()
         .map(GrantedAuthority::getAuthority)
         .collect(Collectors.joining(","));
 
-    long now = (new Date()).getTime();
-    Date validity = new Date(now + this.tokenValidityInMilliseconds);
+    long now = new Date().getTime();
+    Date validity;
+    if(rememberMe) {
+      validity = new Date(now + this.tokenValidityInMillisecondsForRememberMe);
+    } else {
+      validity = new Date(now + this.tokenValidityInMilliseconds);
+    }
+    log.debug("Token for {} will be valid {}ms until {}", authentication.getName(), validity.getTime() - new Date().getTime(), validity);
 
     JwtBuilder jwtBuilder = Jwts.builder()
         .setSubject(authentication.getName())
         .claim(AUTHORITIES_KEY, authorities)
+        .claim(EXPIRATION_KEY, validity.getTime())
         .signWith(SignatureAlgorithm.HS512, secretKey)
         .setExpiration(validity);
 
@@ -71,7 +87,7 @@ public class TokenProvider {
 
   private void addClaim(KeyValueGrantedAuthority keyValueGrantedAuthority, JwtBuilder jwtBuilder) {
     jwtBuilder.claim(keyValueGrantedAuthority.getKey(), keyValueGrantedAuthority.getAuthority());
-    log.debug("Adding keyValueAuthority : " + keyValueGrantedAuthority);
+    log.debug("Adding keyValueAuthority : {}", keyValueGrantedAuthority);
   }
 
   public Authentication getAuthentication(String token) {
@@ -98,11 +114,8 @@ public class TokenProvider {
 
   public boolean validateToken(String authToken) {
     try {
-      Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken);
-      if(!hasClaimedRoles(claimsJws)) {
-        return false;
-      }
-      return true;
+      Claims claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken).getBody();
+      return claimedUserExists(claimsJws.getSubject()) && hasClaimedRoles(claimsJws);
     } catch(SignatureException e) {
       log.info("Invalid JWT signature.");
       log.trace("Invalid JWT signature trace: {}", e);
@@ -122,8 +135,19 @@ public class TokenProvider {
     return false;
   }
 
-  // TODO
-  private boolean hasClaimedRoles(Jws<Claims> claims) {
-    return true;
+  private boolean claimedUserExists(String claimsSubject) {
+    return userRepository.findByUsername(claimsSubject).or(() -> userRepository.findByEmailIgnoreCase(claimsSubject)).isPresent();
+  }
+
+  private boolean hasClaimedRoles(Claims claims) {
+    String claimedRole = String.valueOf(claims.get(AUTHORITIES_KEY));
+    if(claimedRole == null) {
+      return false;
+    }
+    String authName = claims.getSubject();
+    String userRole = userRepository.findByUsername(authName).or(() -> userRepository.findByEmailIgnoreCase(authName))
+        .orElseThrow(NotAuthenticatedException::new)
+        .getUserRole().getName();
+    return userRole.equals(claimedRole);
   }
 }

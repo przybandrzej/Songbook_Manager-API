@@ -1,13 +1,17 @@
 package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.data.model.User;
+import com.lazydev.stksongbook.webapp.data.model.UserRole;
 import com.lazydev.stksongbook.webapp.repository.UserRepository;
 import com.lazydev.stksongbook.webapp.repository.UserRoleRepository;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
+import com.lazydev.stksongbook.webapp.service.dto.EmailChangeDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm;
 import com.lazydev.stksongbook.webapp.service.exception.*;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import com.lazydev.stksongbook.webapp.util.RandomUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,24 +24,29 @@ import java.util.Optional;
 @Service
 public class UserService {
 
+  private final Logger log = LoggerFactory.getLogger(UserService.class);
+
   private final UserRepository repository;
   private final PlaylistService playlistService;
   private final PasswordEncoder passwordEncoder;
   private final UserRoleRepository roleRepository;
+  private final UserSongRatingService ratingService;
   @Value("${spring.flyway.placeholders.role.user}")
   private String userRoleName;
   @Value("${spring.flyway.placeholders.role.superuser}")
   private String superuserRoleName;
   @Value("${spring.flyway.placeholders.role.admin}")
   private String adminRoleName;
+  @Value("${application.default-user-image}")
+  private String defaultUserImageUrl;
   private final UserContextService userContextService;
 
-  public UserService(UserRepository repository, PlaylistService playlistService, PasswordEncoder passwordEncoder, UserRoleRepository roleRepository,
-                     UserContextService userContextService) {
+  public UserService(UserRepository repository, PlaylistService playlistService, PasswordEncoder passwordEncoder, UserRoleRepository roleRepository, UserSongRatingService ratingService, UserContextService userContextService) {
     this.repository = repository;
     this.playlistService = playlistService;
     this.passwordEncoder = passwordEncoder;
     this.roleRepository = roleRepository;
+    this.ratingService = ratingService;
     this.userContextService = userContextService;
   }
 
@@ -108,7 +117,11 @@ public class UserService {
         && !currentUser.getUserRole().getName().equals(adminRoleName)) {
       throw new ForbiddenOperationException("No permission.");
     }
+    if(user.getUserRole().getName().equals(superuserRoleName)) {
+      throw new BadRequestErrorException("Cannot delete superuser.");
+    }
     user.getPlaylists().forEach(it -> playlistService.deleteById(it.getId()));
+    user.getUserRatings().forEach(it -> ratingService.delete(it.getUser().getId(), it.getSong().getId()));
     repository.deleteById(id);
   }
 
@@ -124,6 +137,7 @@ public class UserService {
     user.setUserRole(roleRepository.findByName(userRoleName).orElseThrow(() -> new EntityDependentNotInitialized(userRoleName)));
     user.setActivated(false);
     user.setActivationKey(RandomUtil.generateActivationKey());
+    user.setImageUrl(defaultUserImageUrl);
     return repository.save(user);
   }
 
@@ -155,6 +169,7 @@ public class UserService {
     if(!user.getPassword().equals(oldPassword)) {
       throw new InvalidPasswordException();
     }
+    log.debug("Changing password of {}", user.getUsername());
     user.setPassword(newPassword);
     return repository.save(user);
   }
@@ -170,13 +185,58 @@ public class UserService {
   }
 
   public User completePasswordReset(String token, String newPassword) {
-    return repository.findByResetKey(token)
-        .filter(user -> user.getResetDate().isAfter(Instant.now().minusSeconds(86400)))
+    User user = repository.findByResetKey(token).orElseThrow(() -> new BadRequestErrorException("User for this key does not exist."));
+    boolean expired = user.getResetDate().isAfter(Instant.now().minusSeconds(86400));
+    if(expired) {
+      throw new BadRequestErrorException("Reset key is expired");
+    }
+    user.setPassword(passwordEncoder.encode(newPassword));
+    user.setResetKey(null);
+    user.setResetDate(null);
+    log.debug("Completing password change for {}", user.getUsername());
+    return repository.save(user);
+  }
+
+  public void changeEmail(EmailChangeDTO email) {
+    User user = userContextService.getCurrentUser();
+    if(repository.findByEmailIgnoreCase(email.getEmail()).isPresent()) {
+      throw new EmailAlreadyUsedException();
+    }
+    log.debug("Changing email of {} to {}", user.getUsername(), email);
+    user.setEmail(email.getEmail());
+    repository.save(user);
+  }
+
+  public User changeRole(Long userId, Long roleId) {
+    if(!(userContextService.getCurrentUser().getUserRole().getName().equals(superuserRoleName)
+        || userContextService.getCurrentUser().getUserRole().getName().equals(adminRoleName))) {
+      throw new ForbiddenOperationException("No permission.");
+    }
+    User user = repository.findById(userId).orElseThrow(() -> new UserNotExistsException(userId));
+    UserRole role = roleRepository.findById(roleId).orElseThrow(() -> new EntityNotFoundException(UserRole.class, roleId));
+    if(role.getName().equals(superuserRoleName)) {
+      boolean superuserExists = !roleRepository.findByName(superuserRoleName).map(it -> it.getUsers().isEmpty())
+          .orElseThrow(() -> new EntityDependentNotInitialized(superuserRoleName));
+      if(superuserExists) {
+        throw new SuperUserAlreadyExistsException();
+      }
+    }
+    log.debug("Changing role of {} to {}", user.getUsername(), role.getName());
+    user.setUserRole(role);
+    return repository.save(user);
+  }
+
+  public User activateUser(Long userId) {
+    if(!(userContextService.getCurrentUser().getUserRole().getName().equals(superuserRoleName)
+        || userContextService.getCurrentUser().getUserRole().getName().equals(adminRoleName))) {
+      throw new ForbiddenOperationException("No permission.");
+    }
+    log.debug("Activate user {}", userId);
+    return repository.findById(userId)
         .map(user -> {
-          user.setPassword(passwordEncoder.encode(newPassword));
-          user.setResetKey(null);
-          user.setResetDate(null);
+          user.setActivated(true);
+          user.setActivationKey(null);
           return repository.save(user);
-        }).orElseThrow(() -> new BadRequestErrorException("User does not exist."));
+        }).orElseThrow(() -> new UserNotExistsException(userId));
   }
 }
