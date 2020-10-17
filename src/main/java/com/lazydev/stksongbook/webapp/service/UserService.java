@@ -1,6 +1,7 @@
 package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.data.model.User;
+import com.lazydev.stksongbook.webapp.data.model.UserRole;
 import com.lazydev.stksongbook.webapp.repository.UserRepository;
 import com.lazydev.stksongbook.webapp.repository.UserRoleRepository;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
@@ -199,5 +200,24 @@ public class UserService {
     log.debug("Changing email of {} to {}", user.getUsername(), email);
     user.setEmail(email.getEmail());
     repository.save(user);
+  }
+
+  public User changeRole(Long userId, Long roleId) {
+    if(!(userContextService.getCurrentUser().getUserRole().getName().equals(superuserRoleName)
+        || userContextService.getCurrentUser().getUserRole().getName().equals(adminRoleName))) {
+      throw new ForbiddenOperationException("No permission.");
+    }
+    User user = repository.findById(userId).orElseThrow(() -> new UserNotExistsException(userId));
+    UserRole role = roleRepository.findById(roleId).orElseThrow(() -> new EntityNotFoundException(UserRole.class, roleId));
+    if(role.getName().equals(superuserRoleName)) {
+      boolean superuserExists = !roleRepository.findByName(superuserRoleName).map(it -> it.getUsers().isEmpty())
+          .orElseThrow(() -> new EntityDependentNotInitialized(superuserRoleName));
+      if(superuserExists) {
+        throw new SuperUserAlreadyExistsException();
+      }
+    }
+    log.debug("Changing role of {} to {}", user.getUsername(), role.getName());
+    user.setUserRole(role);
+    return repository.save(user);
   }
 }
