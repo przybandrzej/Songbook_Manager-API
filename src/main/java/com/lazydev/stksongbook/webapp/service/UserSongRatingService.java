@@ -67,12 +67,13 @@ public class UserSongRatingService {
     return repository.save(rating);
   }
 
-  public void delete(UserSongRating obj) {
-    if(!obj.getUser().getId().equals(userContextService.getCurrentUser().getId())) {
+  public void delete(Long userId, Long songId) {
+    UserSongRating rating = repository.findByUserIdAndSongId(userId, songId)
+        .orElseThrow(() -> new EntityNotFoundException(UserSongRating.class, "user: " + userId + ", song " + songId));
+    if(!userId.equals(userContextService.getCurrentUser().getId())) {
       throw new ForbiddenOperationException("No permission.");
     }
-    findByUserIdAndSongId(obj.getUser().getId(), obj.getSong().getId());
-    repository.delete(obj);
+    repository.delete(rating);
   }
 
   public UserSongRating create(UserSongRatingDTO dto) {
