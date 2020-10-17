@@ -16,9 +16,12 @@ public class MailerService {
   private static final Logger log = LoggerFactory.getLogger(MailerService.class);
   private static final String USER = "user";
   private static final String BASE_URL = "baseUrl";
+  private static final String SUPPORT_MAIL = "supportMail";
 
   @Value("${application.gui-base-url}")
   private String guiUrl;
+  @Value("${application.support-mail}")
+  private String supportMail;
 
   private final MailerMessageSenderService sender;
   private final SpringTemplateEngine templateEngine;
@@ -59,6 +62,23 @@ public class MailerService {
     String htmlContent = getEmailTemplate(user, "mail/passwordResetEmail");
     String textContent = "Your reset key: " + user.getResetKey();
     String subject = "Account password reset";
+    EmailMessage emailMessage = new EmailMessage();
+    emailMessage.setTo(user.getEmail());
+    emailMessage.setSubject(subject);
+    emailMessage.setText(textContent);
+    emailMessage.setHtml(htmlContent);
+    sendEmail(emailMessage);
+  }
+
+  public void sendUserEmailChangedEmail(User user) {
+    log.debug("Sending email has changed email to '{}'", user.getEmail());
+    Context context = new Context(/*locale*/);
+    context.setVariable(USER, user);
+    context.setVariable(BASE_URL, guiUrl);
+    context.setVariable(SUPPORT_MAIL, supportMail);
+    String htmlContent = templateEngine.process("mail/emailChangedEmail", context);
+    String textContent = "Your account's email has been changed.";
+    String subject = "Account email changed";
     EmailMessage emailMessage = new EmailMessage();
     emailMessage.setTo(user.getEmail());
     emailMessage.setSubject(subject);

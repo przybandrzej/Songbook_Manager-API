@@ -197,14 +197,14 @@ public class UserService {
     return repository.save(user);
   }
 
-  public void changeEmail(EmailChangeDTO email) {
+  public User changeEmail(EmailChangeDTO email) {
     User user = userContextService.getCurrentUser();
     if(repository.findByEmailIgnoreCase(email.getEmail()).isPresent()) {
       throw new EmailAlreadyUsedException();
     }
     log.debug("Changing email of {} to {}", user.getUsername(), email);
     user.setEmail(email.getEmail());
-    repository.save(user);
+    return repository.save(user);
   }
 
   public User changeRole(Long userId, Long roleId) {

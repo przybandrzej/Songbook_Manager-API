@@ -140,6 +140,7 @@ public class AuthenticationResource {
   @PatchMapping("/account/change-email")
   public void changeEmail(@RequestBody @Valid EmailChangeDTO emailChangeDTO) {
     log.debug("Request to finish password reset");
-    service.changeEmail(emailChangeDTO);
+    User user = service.changeEmail(emailChangeDTO);
+    mailerService.sendUserEmailChangedEmail(user);
   }
 }
