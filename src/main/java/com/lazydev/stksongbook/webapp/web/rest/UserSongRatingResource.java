@@ -82,10 +82,9 @@ public class UserSongRatingResource {
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.OK);
   }
 
-  @DeleteMapping
-  public ResponseEntity<Void> delete(@RequestBody @Valid UserSongRatingDTO dto) {
-    var obj = mapper.map(dto);
-    service.delete(obj);
+  @DeleteMapping("/{userId}/{songId}")
+  public ResponseEntity<Void> delete(@PathVariable Long userId, @PathVariable Long songId) {
+    service.delete(userId, songId);
     return ResponseEntity.noContent().build();
   }
 }

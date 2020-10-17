@@ -17,7 +17,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.validation.Valid;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -117,6 +116,9 @@ public class UserService {
     if(!id.equals(currentUser.getId()) && !currentUser.getUserRole().getName().equals(superuserRoleName)
         && !currentUser.getUserRole().getName().equals(adminRoleName)) {
       throw new ForbiddenOperationException("No permission.");
+    }
+    if(user.getUserRole().getName().equals(superuserRoleName)) {
+      throw new BadRequestErrorException("Cannot delete superuser.");
     }
     user.getPlaylists().forEach(it -> playlistService.deleteById(it.getId()));
     user.getUserRatings().forEach(ratingService::delete);
