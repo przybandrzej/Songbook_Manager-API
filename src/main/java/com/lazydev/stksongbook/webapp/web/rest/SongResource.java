@@ -8,6 +8,7 @@ import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserSongRatingDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
+import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.exception.ParameterNotDefinedException;
 import com.lazydev.stksongbook.webapp.service.mappers.PlaylistMapper;
@@ -206,15 +207,15 @@ public class SongResource {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
-  @PatchMapping("{id}/add-tag/{tagName}")
-  public ResponseEntity<SongDTO> addTagToSong(@PathVariable Long id, @PathVariable String tagName) {
-    var song = service.addTag(id, tagName);
+  @PatchMapping("{id}/add-tag")
+  public ResponseEntity<SongDTO> addTagToSong(@PathVariable Long id, @RequestBody @Valid UniversalCreateDTO tag) {
+    var song = service.addTag(id, tag);
     return ResponseEntity.ok(mapper.map(song));
   }
 
-  @PatchMapping("{id}/add-tag-bulk/{tagNames}")
-  public ResponseEntity<SongDTO> addTagsToSongBulk(@PathVariable Long id, @PathVariable String[] tagNames) {
-    Song song = service.addTags(id, tagNames);
+  @PatchMapping("{id}/add-tag-bulk")
+  public ResponseEntity<SongDTO> addTagsToSongBulk(@PathVariable Long id, @RequestBody @Valid UniversalCreateDTO[] tags) {
+    Song song = service.addTags(id, tags);
     return ResponseEntity.ok(mapper.map(song));
   }
 

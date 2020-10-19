@@ -8,6 +8,7 @@ import com.lazydev.stksongbook.webapp.repository.SongRepository;
 import com.lazydev.stksongbook.webapp.repository.UserSongRatingRepository;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
+import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.exception.ForbiddenOperationException;
 import com.lazydev.stksongbook.webapp.util.Constants;
@@ -333,7 +334,7 @@ public class SongService {
     return repository.findByEditsEditedById(userId);
   }
 
-  public Song addTag(Long songId, String tagName) {
+  public Song addTag(Long songId, UniversalCreateDTO tag) {
     User currentUser = userContextService.getCurrentUser();
     Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
     if(!song.isAwaiting()
@@ -342,8 +343,8 @@ public class SongService {
         || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
       throw new ForbiddenOperationException("Approved song can be updated only by a moderator or admin.");
     }
-    Tag tag = tagService.findOrCreateTag(tagName);
-    song.addTag(tag);
+    Tag created = tagService.findOrCreateTag(tag.getName());
+    song.addTag(created);
     var saved = repository.save(song);
     SongEdit edit = new SongEdit();
     edit.setId(Constants.DEFAULT_ID);
@@ -401,7 +402,7 @@ public class SongService {
     return saved;
   }
 
-  public Song addTags(Long songId, String[] tagNames) {
+  public Song addTags(Long songId, UniversalCreateDTO[] tags) {
     User currentUser = userContextService.getCurrentUser();
     Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
     if(!song.isAwaiting()
@@ -410,9 +411,9 @@ public class SongService {
         || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
       throw new ForbiddenOperationException("Approved song can be updated only by a moderator or admin.");
     }
-    for(String tagName : tagNames) {
-      Tag tag = tagService.findOrCreateTag(tagName);
-      song.addTag(tag);
+    for(UniversalCreateDTO tag : tags) {
+      Tag created = tagService.findOrCreateTag(tag.getName());
+      song.addTag(created);
     }
     var saved = repository.save(song);
     SongEdit edit = new SongEdit();
