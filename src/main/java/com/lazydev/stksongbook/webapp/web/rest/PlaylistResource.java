@@ -102,14 +102,14 @@ public class PlaylistResource {
         .body(resource);
   }
 
-  @PatchMapping("/{id}/{songId}")
+  @PatchMapping("/{id}/add-song/{songId}")
   public ResponseEntity<Void> addSong(@PathVariable Long id, @PathVariable Long songId) {
     log.debug("Add song {} to playlist {}", songId, id);
     service.addSong(id, songId);
     return ResponseEntity.noContent().build();
   }
 
-  @PatchMapping("/{id}/{songId}")
+  @PatchMapping("/{id}/remove-song/{songId}")
   public ResponseEntity<Void> removeSong(@PathVariable Long id, @PathVariable Long songId) {
     log.debug("Add song {} to playlist {}", songId, id);
     service.removeSong(id, songId);

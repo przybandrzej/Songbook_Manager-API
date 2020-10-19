@@ -84,14 +84,14 @@ public class UserResource {
     return ResponseEntity.noContent().build();
   }
 
-  @PatchMapping("/{id}/{songId}")
+  @PatchMapping("/{id}/add-song/{songId}")
   public ResponseEntity<Void> addSongToLibrary(@PathVariable Long id, @PathVariable Long songId) {
     log.debug("Add song {} to user {} library", songId, id);
     service.addSongToLibrary(id, songId);
     return ResponseEntity.noContent().build();
   }
 
-  @PatchMapping("/{id}/{songId}")
+  @PatchMapping("/{id}/remove-song/{songId}")
   public ResponseEntity<Void> removeSongFromLibrary(@PathVariable Long id, @PathVariable Long songId) {
     log.debug("Remove song {} from user {} library", songId, id);
     service.removeSongFromLibrary(id, songId);
