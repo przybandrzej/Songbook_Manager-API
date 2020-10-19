@@ -11,7 +11,6 @@ import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm
 import com.lazydev.stksongbook.webapp.service.exception.EmailAlreadyUsedException;
 import com.lazydev.stksongbook.webapp.service.exception.UsernameAlreadyUsedException;
 import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
-import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +24,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 @RestController
 @RequestMapping("/api")
@@ -44,6 +41,7 @@ public class AuthenticationResource {
 
   @PostMapping("/register")
   public ResponseEntity<Void> register(@RequestBody @Valid RegisterNewUserForm form) {
+    log.debug("Request to register user {}", form.getUsername());
     if(service.findByEmailNoException(form.getEmail()).isPresent()) {
       throw new EmailAlreadyUsedException();
     }
@@ -57,6 +55,7 @@ public class AuthenticationResource {
 
   @PostMapping("/authenticate")
   public ResponseEntity<TokenDTO> authenticate(@Valid @RequestBody LoginForm form) {
+    log.debug("Request to login user {}", form.getLogin());
     UsernamePasswordAuthenticationToken authenticationToken =
         new UsernamePasswordAuthenticationToken(form.getLogin(), form.getPassword());
     Authentication authentication = this.authenticationManager.authenticate(authenticationToken);
@@ -69,11 +68,13 @@ public class AuthenticationResource {
 
   @GetMapping("/activate")
   public void activateAccount(@RequestParam(value = "key") String key) {
+    log.debug("Request to activate account by key {}", key);
     service.activate(key);
   }
 
   @GetMapping("/is-authenticated")
   public boolean isAuthenticated() {
+    log.debug("Request to check if authenticated");
     return userContextService.isAuthenticated();
   }
 
@@ -85,6 +86,7 @@ public class AuthenticationResource {
    */
   @GetMapping("/account")
   public ResponseEntity<UserDTO> getAccount() {
+    log.debug("Request to get logged-in account");
     return ResponseEntity.ok(userMapper.map(userContextService.getCurrentUser()));
   }
 
@@ -97,6 +99,7 @@ public class AuthenticationResource {
    */
   @PostMapping("/account")
   public ResponseEntity<UserDTO> saveAccount(@Valid @RequestBody UserDTO userDTO) {
+    log.debug("Request to save user {}", userDTO.getUsername());
     User user = userContextService.getCurrentUser();
     User mapped = userMapper.map(userDTO.toBuilder().id(user.getId()).build());
     User saved = service.updateUser(mapped, user);

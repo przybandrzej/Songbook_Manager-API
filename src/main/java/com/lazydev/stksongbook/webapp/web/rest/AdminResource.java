@@ -4,14 +4,11 @@ import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.service.UserService;
 import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
-import com.lazydev.stksongbook.webapp.service.exception.EmailAlreadyUsedException;
 import com.lazydev.stksongbook.webapp.service.exception.ForbiddenOperationException;
-import com.lazydev.stksongbook.webapp.service.exception.UsernameAlreadyUsedException;
 import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +37,7 @@ public class AdminResource {
 
   @PutMapping("/update-user")
   public ResponseEntity<UserDTO> updateUser(@RequestBody @Valid UserDTO userDTO) {
+    log.debug("Request to update user {}", userDTO.getUsername());
     if(!(userContextService.getCurrentUser().getUserRole().getName().equals(superuserRoleName)
         || userContextService.getCurrentUser().getUserRole().getName().equals(adminRoleName))) {
       throw new ForbiddenOperationException("No permission.");
@@ -54,11 +52,13 @@ public class AdminResource {
 
   @PatchMapping("/update-role/{userId}/{roleId}")
   public ResponseEntity<UserDTO> updateUserRole(@PathVariable Long userId, @PathVariable Long roleId) {
+    log.debug("Request to update user {} role to {}", userId, roleId);
     return ResponseEntity.ok(userMapper.map(userService.changeRole(userId, roleId)));
   }
 
   @PatchMapping("/activate-user/{userId}")
   public ResponseEntity<UserDTO> activateUser(@PathVariable Long userId) {
+    log.debug("Request to activate user {}", userId);
     return ResponseEntity.ok(userMapper.map(userService.activateUser(userId)));
   }
 }
