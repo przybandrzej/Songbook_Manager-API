@@ -10,6 +10,8 @@ import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.AuthorMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/authors")
 @AllArgsConstructor
 public class AuthorResource {
+
+  private final Logger log = LoggerFactory.getLogger(AuthorResource.class);
 
   private final AuthorService service;
   private final AuthorMapper mapper;

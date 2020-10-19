@@ -8,9 +8,12 @@ import com.lazydev.stksongbook.webapp.repository.SongRepository;
 import com.lazydev.stksongbook.webapp.repository.UserSongRatingRepository;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
+import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.exception.ForbiddenOperationException;
 import com.lazydev.stksongbook.webapp.util.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -30,6 +33,8 @@ import java.util.Set;
 @Transactional
 @Validated
 public class SongService {
+
+  private final Logger log = LoggerFactory.getLogger(SongService.class);
 
   private final SongRepository repository;
   private final TagService tagService;
@@ -62,6 +67,7 @@ public class SongService {
   }
 
   public List<Song> findAll(Boolean awaiting, Boolean includeAwaiting, Integer limit) {
+    log.debug("Include awaiting songs {} and limit result to {}", includeAwaiting, limit);
     if(limit != null) {
       if(includeAwaiting != null) {
         if(Boolean.TRUE.equals(includeAwaiting)) {
@@ -122,6 +128,7 @@ public class SongService {
   }
 
   public List<Song> findByTitleContains(String val, Boolean awaiting, Integer limit) {
+    log.debug("Include awaiting songs {} and limit result to {}", awaiting, limit);
     if(awaiting != null) {
       if(limit != null) {
         return repository.findByTitleContainingIgnoreCaseAndIsAwaiting(val, awaiting, PageRequest.of(0, limit)).toList();
@@ -138,6 +145,7 @@ public class SongService {
   }
 
   public List<Song> findByLyricsContains(String val, Boolean awaiting, Integer limit) {
+    log.debug("Include awaiting songs {} and limit result to {}", awaiting, limit);
     if(awaiting != null) {
       if(limit != null) {
         return repository.findByLyricsContainingIgnoreCaseAndIsAwaiting(val, awaiting, PageRequest.of(0, limit)).toList();
@@ -154,6 +162,7 @@ public class SongService {
   }
 
   public List<Song> findByAuthorId(Long authorId, Boolean awaiting, Integer limit) {
+    log.debug("Include awaiting songs {} and limit result to {}", awaiting, limit);
     if(awaiting != null) {
       if(limit != null) {
         return repository.findByAuthorIdAndIsAwaiting(authorId, awaiting, PageRequest.of(0, limit)).toList();
@@ -170,6 +179,7 @@ public class SongService {
   }
 
   public List<Song> findByCategoryId(Long id, Boolean awaiting, Integer limit) {
+    log.debug("Include awaiting songs {} and limit result to {}", awaiting, limit);
     if(awaiting != null) {
       if(limit != null) {
         return repository.findByCategoryIdAndIsAwaiting(id, awaiting, PageRequest.of(0, limit)).toList();
@@ -186,6 +196,7 @@ public class SongService {
   }
 
   public List<Song> findByTagId(Long id, Boolean awaiting, Integer limit) {
+    log.debug("Include awaiting songs {} and limit result to {}", awaiting, limit);
     if(awaiting != null) {
       if(limit != null) {
         return repository.findByTagsIdAndIsAwaiting(id, awaiting, PageRequest.of(0, limit)).toList();
@@ -333,7 +344,7 @@ public class SongService {
     return repository.findByEditsEditedById(userId);
   }
 
-  public Song addTag(Long songId, String tagName) {
+  public Song addTag(Long songId, UniversalCreateDTO tag) {
     User currentUser = userContextService.getCurrentUser();
     Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
     if(!song.isAwaiting()
@@ -342,8 +353,8 @@ public class SongService {
         || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
       throw new ForbiddenOperationException("Approved song can be updated only by a moderator or admin.");
     }
-    Tag tag = tagService.findOrCreateTag(tagName);
-    song.addTag(tag);
+    Tag created = tagService.findOrCreateTag(tag.getName());
+    song.addTag(created);
     var saved = repository.save(song);
     SongEdit edit = new SongEdit();
     edit.setId(Constants.DEFAULT_ID);
@@ -401,7 +412,7 @@ public class SongService {
     return saved;
   }
 
-  public Song addTags(Long songId, String[] tagNames) {
+  public Song addTags(Long songId, UniversalCreateDTO[] tags) {
     User currentUser = userContextService.getCurrentUser();
     Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
     if(!song.isAwaiting()
@@ -410,9 +421,9 @@ public class SongService {
         || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
       throw new ForbiddenOperationException("Approved song can be updated only by a moderator or admin.");
     }
-    for(String tagName : tagNames) {
-      Tag tag = tagService.findOrCreateTag(tagName);
-      song.addTag(tag);
+    for(UniversalCreateDTO tag : tags) {
+      Tag created = tagService.findOrCreateTag(tag.getName());
+      song.addTag(created);
     }
     var saved = repository.save(song);
     SongEdit edit = new SongEdit();
