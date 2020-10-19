@@ -148,4 +148,28 @@ public class PlaylistService {
     playlist.setSongs(songs);
     return repository.save(playlist);
   }
+
+  public void addSong(Long playlistId, Long songId) {
+    var playlist = findById(playlistId);
+    User currentUser = userContextService.getCurrentUser();
+    if(!playlist.getOwner().getId().equals(currentUser.getId()) && !currentUser.getUserRole().getName().equals(superuserRoleName)
+        && !currentUser.getUserRole().getName().equals(adminRoleName)) {
+      throw new ForbiddenOperationException("No permission.");
+    }
+    Song song = songService.findById(songId);
+    playlist.addSong(song);
+    repository.save(playlist);
+  }
+
+  public void removeSong(Long playlistId, Long songId) {
+    var playlist = findById(playlistId);
+    User currentUser = userContextService.getCurrentUser();
+    if(!playlist.getOwner().getId().equals(currentUser.getId()) && !currentUser.getUserRole().getName().equals(superuserRoleName)
+        && !currentUser.getUserRole().getName().equals(adminRoleName)) {
+      throw new ForbiddenOperationException("No permission.");
+    }
+    Song song = songService.findById(songId);
+    playlist.removeSong(song);
+    repository.save(playlist);
+  }
 }

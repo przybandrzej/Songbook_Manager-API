@@ -165,4 +165,12 @@ public class Song {
     this.added = timestamp;
     this.added.setAddedSong(this);
   }
+
+  public boolean removeUser(User user) {
+    return this.usersSongs.remove(user);
+  }
+
+  public boolean removePlaylist(Playlist playlist) {
+    return this.playlists.remove(playlist);
+  }
 }

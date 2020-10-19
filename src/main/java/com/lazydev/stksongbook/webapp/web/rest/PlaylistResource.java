@@ -7,6 +7,8 @@ import com.lazydev.stksongbook.webapp.service.dto.PlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreatePlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.mappers.PlaylistMapper;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/playlists")
 @AllArgsConstructor
 public class PlaylistResource {
+
+  private final Logger log = LoggerFactory.getLogger(PlaylistResource.class);
 
   private final PlaylistService service;
   private final PlaylistMapper mapper;
@@ -96,5 +100,19 @@ public class PlaylistResource {
         .header(HttpHeaders.CONTENT_DISPOSITION,
             "attachment; filename=\"" + resource.getFilename() + "\"")
         .body(resource);
+  }
+
+  @PatchMapping("/{id}/{songId}")
+  public ResponseEntity<Void> addSong(@PathVariable Long id, @PathVariable Long songId) {
+    log.debug("Add song {} to playlist {}", songId, id);
+    service.addSong(id, songId);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PatchMapping("/{id}/{songId}")
+  public ResponseEntity<Void> removeSong(@PathVariable Long id, @PathVariable Long songId) {
+    log.debug("Add song {} to playlist {}", songId, id);
+    service.removeSong(id, songId);
+    return ResponseEntity.noContent().build();
   }
 }

@@ -4,16 +4,16 @@ import com.lazydev.stksongbook.webapp.service.UserService;
 import com.lazydev.stksongbook.webapp.service.dto.PlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserSongRatingDTO;
-import com.lazydev.stksongbook.webapp.service.exception.UserNotExistsException;
 import com.lazydev.stksongbook.webapp.service.mappers.PlaylistMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.UserSongRatingMapper;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/users")
 @AllArgsConstructor
 public class UserResource {
+
+  private final Logger log = LoggerFactory.getLogger(UserResource.class);
 
   private final UserMapper mapper;
   private final UserService service;
@@ -79,6 +81,20 @@ public class UserResource {
   @DeleteMapping("/id/{id}")
   public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
     service.deleteById(id);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PatchMapping("/{id}/{songId}")
+  public ResponseEntity<Void> addSongToLibrary(@PathVariable Long id, @PathVariable Long songId) {
+    log.debug("Add song {} to user {} library", songId, id);
+    service.addSongToLibrary(id, songId);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PatchMapping("/{id}/{songId}")
+  public ResponseEntity<Void> removeSongFromLibrary(@PathVariable Long id, @PathVariable Long songId) {
+    log.debug("Remove song {} from user {} library", songId, id);
+    service.removeSongFromLibrary(id, songId);
     return ResponseEntity.noContent().build();
   }
 }

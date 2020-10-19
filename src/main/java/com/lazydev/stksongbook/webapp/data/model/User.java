@@ -126,7 +126,11 @@ public class User {
   }
 
   public boolean removeSong(Song song) {
-    return songs.remove(song);
+    if(this.songs.remove(song)) {
+      song.removeUser(this);
+      return true;
+    }
+    return false;
   }
 
   public boolean addPlaylist(Playlist playlist) {
