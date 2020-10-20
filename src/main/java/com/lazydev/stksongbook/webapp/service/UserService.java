@@ -1,7 +1,9 @@
 package com.lazydev.stksongbook.webapp.service;
 
+import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.data.model.UserRole;
+import com.lazydev.stksongbook.webapp.repository.SongRepository;
 import com.lazydev.stksongbook.webapp.repository.UserRepository;
 import com.lazydev.stksongbook.webapp.repository.UserRoleRepository;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
@@ -31,6 +33,7 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
   private final UserRoleRepository roleRepository;
   private final UserSongRatingService ratingService;
+  private final SongRepository songRepository;
   @Value("${spring.flyway.placeholders.role.user}")
   private String userRoleName;
   @Value("${spring.flyway.placeholders.role.superuser}")
@@ -41,12 +44,13 @@ public class UserService {
   private String defaultUserImageUrl;
   private final UserContextService userContextService;
 
-  public UserService(UserRepository repository, PlaylistService playlistService, PasswordEncoder passwordEncoder, UserRoleRepository roleRepository, UserSongRatingService ratingService, UserContextService userContextService) {
+  public UserService(UserRepository repository, PlaylistService playlistService, PasswordEncoder passwordEncoder, UserRoleRepository roleRepository, UserSongRatingService ratingService, SongRepository songRepository, UserContextService userContextService) {
     this.repository = repository;
     this.playlistService = playlistService;
     this.passwordEncoder = passwordEncoder;
     this.roleRepository = roleRepository;
     this.ratingService = ratingService;
+    this.songRepository = songRepository;
     this.userContextService = userContextService;
   }
 
@@ -238,5 +242,29 @@ public class UserService {
           user.setActivationKey(null);
           return repository.save(user);
         }).orElseThrow(() -> new UserNotExistsException(userId));
+  }
+
+  public void addSongToLibrary(Long userId, Long songId) {
+    var user = findById(userId);
+    User currentUser = userContextService.getCurrentUser();
+    if(!userId.equals(currentUser.getId()) && !currentUser.getUserRole().getName().equals(superuserRoleName)
+        && !currentUser.getUserRole().getName().equals(adminRoleName)) {
+      throw new ForbiddenOperationException("No permission.");
+    }
+    Song song = songRepository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
+    user.addSong(song);
+    repository.save(user);
+  }
+
+  public void removeSongFromLibrary(Long userId, Long songId) {
+    var user = findById(userId);
+    User currentUser = userContextService.getCurrentUser();
+    if(!userId.equals(currentUser.getId()) && !currentUser.getUserRole().getName().equals(superuserRoleName)
+        && !currentUser.getUserRole().getName().equals(adminRoleName)) {
+      throw new ForbiddenOperationException("No permission.");
+    }
+    Song song = songRepository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
+    user.removeSong(song);
+    repository.save(user);
   }
 }

@@ -69,12 +69,17 @@ public class Playlist {
       inverseJoinColumns = @JoinColumn(name = "song_id"))
   private Set<Song> songs = new HashSet<>();
 
-  public void addSong(Song song) {
-    songs.add(song);
-    song.addPlaylist(this);
+  public boolean addSong(Song song) {
+    if(songs.add(song)) {
+      return song.addPlaylist(this);
+    }
+    return false;
   }
 
   public boolean removeSong(Song song) {
-    return songs.remove(song);
+    if(songs.remove(song)) {
+      return song.removePlaylist(this);
+    }
+    return false;
   }
 }
