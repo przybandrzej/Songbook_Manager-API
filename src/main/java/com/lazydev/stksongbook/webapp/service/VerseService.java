@@ -10,7 +10,6 @@ import com.lazydev.stksongbook.webapp.service.dto.creational.CreateVerseDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.exception.ForbiddenOperationException;
 import com.lazydev.stksongbook.webapp.util.Constants;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -21,6 +20,7 @@ import javax.validation.Valid;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Validated
@@ -60,6 +60,10 @@ public class VerseService {
 
   public Verse findById(Long id) {
     return verseRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Verse.class, id));
+  }
+
+  public Set<Line> findLines(Long id) {
+    return findById(id).getLines();
   }
 
   public void deleteById(Long id) {

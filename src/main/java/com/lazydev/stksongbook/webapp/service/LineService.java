@@ -22,6 +22,7 @@ import javax.validation.Valid;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -61,6 +62,10 @@ public class LineService {
 
   public Line findById(Long id) {
     return lineRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Line.class, id));
+  }
+
+  public Set<GuitarCord> findCordsById(Long id) {
+    return findById(id).getCords();
   }
 
   public Line save(Line saveLine) {
