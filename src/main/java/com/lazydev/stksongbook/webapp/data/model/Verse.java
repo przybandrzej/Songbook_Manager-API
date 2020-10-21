@@ -23,6 +23,9 @@ public class Verse {
   @Column(name = "is_chorus", nullable = false)
   private boolean isChorus = false;
 
+  @Column(name = "order", nullable = false)
+  private int order;
+
   @OneToMany(mappedBy = "verse", orphanRemoval = true)
   private Set<Line> lines = new HashSet<>();
 
@@ -44,6 +47,14 @@ public class Verse {
       return true;
     }
     return false;
+  }
+
+  public int getOrder() {
+    return order;
+  }
+
+  public void setOrder(int order) {
+    this.order = order;
   }
 
   public Long getId() {

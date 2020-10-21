@@ -33,11 +33,6 @@ public class PlaylistDTO {
 
   private final Instant creationTime;
 
-  @NotNull(message = "Songs list must be initialized.")
-  private final Set<
-      @NotNull(message = "Can't be null.")
-          Long> songs;
-
   private PlaylistDTO(Long id, String name, Long ownerId, boolean isPrivate, Instant creationTime, Set<Long> songs) {
     this.id = id;
     this.name = name;

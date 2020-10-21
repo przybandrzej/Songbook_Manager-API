@@ -20,6 +20,8 @@ public class LineDTO {
   @NotBlank(message = "Cannot be empty")
   String content;
 
+  int order;
+
   @JsonPOJOBuilder(withPrefix = "")
   public static class Builder {
   }

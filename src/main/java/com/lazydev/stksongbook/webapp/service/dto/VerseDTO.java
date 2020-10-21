@@ -15,8 +15,9 @@ public class VerseDTO {
   @NotNull(message = "ID must be defined.")
   Long id;
 
-  @NotNull(message = "Cannot be null.")
   boolean isChorus;
+
+  int order;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class Builder {

@@ -7,7 +7,9 @@ import com.lazydev.stksongbook.webapp.repository.SongEditRepository;
 import com.lazydev.stksongbook.webapp.repository.SongRepository;
 import com.lazydev.stksongbook.webapp.repository.UserSongRatingRepository;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
+import com.lazydev.stksongbook.webapp.service.dto.creational.CreateLineDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
+import com.lazydev.stksongbook.webapp.service.dto.creational.CreateVerseDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.exception.ForbiddenOperationException;
@@ -16,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -43,6 +44,7 @@ public class SongService {
   private final UserContextService userContextService;
   private final SongAddRepository songAddRepository;
   private final SongEditRepository songEditRepository;
+  private final VerseService verseService;
   @Value("${spring.flyway.placeholders.role.superuser}")
   private String superuserRoleName;
   @Value("${spring.flyway.placeholders.role.admin}")
@@ -50,7 +52,7 @@ public class SongService {
   @Value("${spring.flyway.placeholders.role.moderator}")
   private String moderatorRoleName;
 
-  public SongService(SongRepository repository, TagService tagService, AuthorService authorService, SongCoauthorService coauthorService, CategoryService categoryService, FileSystemStorageService storageService, UserSongRatingRepository ratingRepository, UserContextService userContextService, SongAddRepository songAddRepository, SongEditRepository songEditRepository) {
+  public SongService(SongRepository repository, TagService tagService, AuthorService authorService, SongCoauthorService coauthorService, CategoryService categoryService, FileSystemStorageService storageService, UserSongRatingRepository ratingRepository, UserContextService userContextService, SongAddRepository songAddRepository, SongEditRepository songEditRepository, VerseService verseService) {
     this.repository = repository;
     this.tagService = tagService;
     this.authorService = authorService;
@@ -61,6 +63,7 @@ public class SongService {
     this.userContextService = userContextService;
     this.songAddRepository = songAddRepository;
     this.songEditRepository = songEditRepository;
+    this.verseService = verseService;
   }
 
   public List<Song> findAll(Boolean awaiting, Boolean includeAwaiting, Integer limit) {
@@ -141,70 +144,6 @@ public class SongService {
     }
   }
 
-  public List<Song> findByLyricsContains(String val, Boolean awaiting, Integer limit) {
-    log.debug("Include awaiting songs {} and limit result to {}", awaiting, limit);
-    if(awaiting != null) {
-      if(limit != null) {
-        return new ArrayList<>();
-      } else {
-        return new ArrayList<>();
-      }
-    } else {
-      if(limit != null) {
-        return new ArrayList<>();
-      } else {
-        return new ArrayList<>();
-      }
-    }
-  }
-
-  public List<Song> findByAuthorId(Long authorId, Boolean awaiting, Integer limit) {
-    log.debug("Include awaiting songs {} and limit result to {}", awaiting, limit);
-    if(awaiting != null) {
-      if(limit != null) {
-        return repository.findByAuthorIdAndIsAwaiting(authorId, awaiting, PageRequest.of(0, limit)).toList();
-      } else {
-        return repository.findByAuthorIdAndIsAwaiting(authorId, awaiting);
-      }
-    } else {
-      if(limit != null) {
-        return repository.findByAuthorId(authorId, PageRequest.of(0, limit)).toList();
-      } else {
-        return repository.findByAuthorId(authorId);
-      }
-    }
-  }
-
-  public List<Song> findByCategoryId(Long id, Boolean awaiting, Integer limit) {
-    log.debug("Include awaiting songs {} and limit result to {}", awaiting, limit);
-    if(awaiting != null) {
-      if(limit != null) {
-        return repository.findByCategoryIdAndIsAwaiting(id, awaiting, PageRequest.of(0, limit)).toList();
-      } else {
-        return repository.findByCategoryIdAndIsAwaiting(id, awaiting);
-      }
-    } else {
-      if(limit != null) {
-        return repository.findByCategoryId(id, PageRequest.of(0, limit)).toList();
-      } else {
-        return repository.findByCategoryId(id);
-      }
-    }
-  }
-
-  public List<Song> findByTagId(Long id, Boolean awaiting, Integer limit) {
-    log.debug("Include awaiting songs {} and limit result to {}", awaiting, limit);
-    if(awaiting != null) {
-      if(limit != null) {
-        return repository.findByTagsIdAndIsAwaiting(id, awaiting, PageRequest.of(0, limit)).toList();
-      } else {
-        return repository.findByTagsIdAndIsAwaiting(id, awaiting);
-      }
-    } else {
-      return repository.findByTagsId(id);
-    }
-  }
-
   public List<Song> findByRating(Double val) {
     return repository.findByRatingsAndIsAwaiting(val, false);
   }
@@ -246,19 +185,17 @@ public class SongService {
         || currentUser.getUserRole().getName().equals(moderatorRoleName)))) {
       throw new ForbiddenOperationException("Awaiting song can be deleted only by its author, moderator or admin.");
     }
-
     coauthorService.deleteAll(song.getCoauthors());
     song.getPlaylists().forEach(it -> it.removeSong(song));
     song.getUsersSongs().forEach(it -> it.removeSong(song));
     ratingRepository.deleteAll(song.getRatings());
-    song.getTags().forEach(it -> it.removeSong(song));
-    song.removeCategory();
     songAddRepository.delete(song.getAdded());
     songEditRepository.deleteAll(song.getEdits());
+    verseService.deleteAll(song.getVerses());
     repository.deleteById(id);
   }
 
-  public Song updateSong(Song song) {
+  /*public Song updateSong(Song song) {
     User currentUser = userContextService.getCurrentUser();
     if(!song.isAwaiting()
         && !(currentUser.getUserRole().getName().equals(superuserRoleName)
@@ -275,15 +212,14 @@ public class SongService {
       song.addEdit(finalEdit);
     }
     return repository.save(song);
-  }
+  }*/
 
   public Song createAndSaveSong(@Valid CreateSongDTO obj) {
     Song song = new Song();
     song.setId(Constants.DEFAULT_ID);
     song.setCategory(categoryService.findById(obj.getCategoryId()));
     song.setTitle(obj.getTitle());
-    //song.setLyrics(obj.getLyrics());
-    //song.setGuitarTabs(obj.getGuitarTabs());
+
     song.setTrivia(obj.getTrivia());
     song.setAwaiting(true);
 
@@ -294,6 +230,10 @@ public class SongService {
     author.addSong(song);
     tags.forEach(song::addTag);
     var savedSong = repository.save(song);
+
+    for(CreateVerseDTO verse : obj.getVerses()) {
+      verseService.create(verse, savedSong);
+    }
 
     obj.getCoauthors().forEach(coauthorDTO -> {
       var auth = authorService.findOrCreateAuthor(coauthorDTO.getAuthorName());
@@ -312,16 +252,6 @@ public class SongService {
   public CreateSongDTO readSongFromFile(String fileName) throws IOException {
     return new ObjectMapper().readValue(
         storageService.getLocation().resolve(fileName).toUri().toURL(), CreateSongDTO.class);
-  }
-
-  // todo ERROR! NOT UP TO DATE 'creationTime' does not exist
-  public List<Song> findLatestLimited(int limit, Boolean awaiting) {
-    String properties = "creationTime";
-    if(awaiting != null) {
-      return repository.findByIsAwaiting(awaiting, PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, properties))).toList();
-    } else {
-      return repository.findAll(PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, properties))).toList();
-    }
   }
 
   public Song approveSong(Song song) {

@@ -12,6 +12,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -35,22 +36,18 @@ public class CreateSongDTO {
   @Pattern(regexp = Constants.NAME_REGEX_SHORT, message = Constants.TITLE_INVALID_MESSAGE)
   String title;
 
-  @ApiModelProperty(required = true, position = 4)
+  @ApiModelProperty(position = 4)
   @NotNull(message = "Coauthors list must be initialized.")
-  Set<@Valid CreateCoauthorDTO> coauthors;
+  List<@Valid CreateCoauthorDTO> coauthors = new ArrayList<>();
 
-  @ApiModelProperty(required = true, position = 5)
-  @NotBlank(message = "Lyrics can't be blank.")
-  String lyrics;
+  @ApiModelProperty(position = 5)
+  @NotNull(message = "Verses list must be initialized.")
+  List<@Valid CreateVerseDTO> verses = new ArrayList<>();
 
-  @ApiModelProperty(required = true, position = 6)
-  @NotBlank(message = "Guitar tabs can't be blank.")
-  String guitarTabs;
-
-  @ApiModelProperty(example = "Has written it for his wife.", position = 7)
+  @ApiModelProperty(example = "Has written it for his wife.", position = 6)
   String trivia;
 
-  @ApiModelProperty(required = true, position = 8)
+  @ApiModelProperty(required = true, position = 7)
   @NotNull(message = "Tags list must be initialized.")
   List<
       @NotBlank(message = "Field can't be blank.")

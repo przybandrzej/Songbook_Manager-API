@@ -10,7 +10,6 @@ import lombok.Value;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.Instant;
-import java.util.Set;
 
 @Value
 @JsonDeserialize(builder = UserDTO.Builder.class)
@@ -42,11 +41,6 @@ public class UserDTO {
   Instant registrationDate;
 
   String imageUrl;
-
-  @NotNull(message = "Songs list must be initialized.")
-  Set<
-      @NotNull(message = "Can't be null.")
-          Long> songs;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class Builder {

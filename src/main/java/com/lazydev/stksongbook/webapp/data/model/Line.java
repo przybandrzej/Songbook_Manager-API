@@ -23,6 +23,9 @@ public class Line {
   @Column(name = "content", nullable = false)
   private String content;
 
+  @Column(name = "order", nullable = false)
+  private int order;
+
   @OneToMany(mappedBy = "line", orphanRemoval = true)
   private Set<GuitarCord> cords = new HashSet<>();
 
@@ -45,7 +48,15 @@ public class Line {
     }
     return false;
   }
-  
+
+  public int getOrder() {
+    return order;
+  }
+
+  public void setOrder(int order) {
+    this.order = order;
+  }
+
   public Long getId() {
     return id;
   }
