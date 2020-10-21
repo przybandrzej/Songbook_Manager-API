@@ -7,7 +7,6 @@ import com.lazydev.stksongbook.webapp.repository.SongEditRepository;
 import com.lazydev.stksongbook.webapp.repository.SongRepository;
 import com.lazydev.stksongbook.webapp.repository.UserSongRatingRepository;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
-import com.lazydev.stksongbook.webapp.service.dto.creational.CreateLineDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateVerseDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
@@ -174,17 +173,8 @@ public class SongService {
   public void deleteById(Long id) {
     var song = findById(id);
     User currentUser = userContextService.getCurrentUser();
-    if(!song.isAwaiting()
-        && !(currentUser.getUserRole().getName().equals(superuserRoleName)
-        || currentUser.getUserRole().getName().equals(adminRoleName)
-        || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
-      throw new ForbiddenOperationException("Approved song can be deleted only by a moderator or admin.");
-    } else if(song.isAwaiting() && (!song.getAdded().getAddedBy().getId().equals(userContextService.getCurrentUser().getId())
-        && !(currentUser.getUserRole().getName().equals(superuserRoleName)
-        || currentUser.getUserRole().getName().equals(adminRoleName)
-        || currentUser.getUserRole().getName().equals(moderatorRoleName)))) {
-      throw new ForbiddenOperationException("Awaiting song can be deleted only by its author, moderator or admin.");
-    }
+    filterRequestForApprovedSong(song, currentUser, "deleted");
+    filterRequestForAwaitingSong(song, currentUser, "deleted");
     coauthorService.deleteAll(song.getCoauthors());
     song.getPlaylists().forEach(it -> it.removeSong(song));
     song.getUsersSongs().forEach(it -> it.removeSong(song));
@@ -195,24 +185,19 @@ public class SongService {
     repository.deleteById(id);
   }
 
-  /*public Song updateSong(Song song) {
+  public Song updateSong(Song song) {
     User currentUser = userContextService.getCurrentUser();
-    if(!song.isAwaiting()
-        && !(currentUser.getUserRole().getName().equals(superuserRoleName)
-        || currentUser.getUserRole().getName().equals(adminRoleName)
-        || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
-      throw new ForbiddenOperationException("Approved song can be updated only by a moderator or admin.");
-    }
+    filterRequestForApprovedSong(song, currentUser, "updated");
     SongEdit edit = new SongEdit();
     edit.setId(Constants.DEFAULT_ID);
-    userContextService.getCurrentUser().addEditedSong(edit);
+    currentUser.addEditedSong(edit);
     song.addEdit(edit);
     SongEdit finalEdit = songEditRepository.save(edit);
     if(song.removeEditIf(it -> it.getTimestamp().equals(finalEdit.getTimestamp()))) {
       song.addEdit(finalEdit);
     }
     return repository.save(song);
-  }*/
+  }
 
   public Song createAndSaveSong(@Valid CreateSongDTO obj) {
     Song song = new Song();
@@ -274,18 +259,13 @@ public class SongService {
   public Song addTag(Long songId, UniversalCreateDTO tag) {
     User currentUser = userContextService.getCurrentUser();
     Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
-    if(!song.isAwaiting()
-        && !(currentUser.getUserRole().getName().equals(superuserRoleName)
-        || currentUser.getUserRole().getName().equals(adminRoleName)
-        || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
-      throw new ForbiddenOperationException("Approved song can be updated only by a moderator or admin.");
-    }
+    filterRequestForApprovedSong(song, currentUser, "updated");
     Tag created = tagService.findOrCreateTag(tag.getName());
     song.addTag(created);
     var saved = repository.save(song);
     SongEdit edit = new SongEdit();
     edit.setId(Constants.DEFAULT_ID);
-    userContextService.getCurrentUser().addEditedSong(edit);
+    currentUser.addEditedSong(edit);
     song.addEdit(edit);
     songEditRepository.save(edit);
     return saved;
@@ -294,12 +274,7 @@ public class SongService {
   public Song removeTag(Long songId, Long tagId) {
     User currentUser = userContextService.getCurrentUser();
     Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
-    if(!song.isAwaiting()
-        && !(currentUser.getUserRole().getName().equals(superuserRoleName)
-        || currentUser.getUserRole().getName().equals(adminRoleName)
-        || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
-      throw new ForbiddenOperationException("Approved song can be updated only by a moderator or admin.");
-    }
+    filterRequestForApprovedSong(song, currentUser, "updated");
     Tag tag = tagService.findById(tagId);
     song.removeTag(tag);
     if(tag.getSongs().isEmpty()) {
@@ -308,7 +283,7 @@ public class SongService {
     var saved = repository.save(song);
     SongEdit edit = new SongEdit();
     edit.setId(Constants.DEFAULT_ID);
-    userContextService.getCurrentUser().addEditedSong(edit);
+    currentUser.addEditedSong(edit);
     song.addEdit(edit);
     songEditRepository.save(edit);
     return saved;
@@ -317,12 +292,7 @@ public class SongService {
   public Song removeTags(Long songId, Long[] tagIds) {
     User currentUser = userContextService.getCurrentUser();
     Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
-    if(!song.isAwaiting()
-        && !(currentUser.getUserRole().getName().equals(superuserRoleName)
-        || currentUser.getUserRole().getName().equals(adminRoleName)
-        || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
-      throw new ForbiddenOperationException("Approved song can be updated only by a moderator or admin.");
-    }
+    filterRequestForApprovedSong(song, currentUser, "updated");
     for(Long tagId : tagIds) {
       Tag tag = tagService.findById(tagId);
       song.removeTag(tag);
@@ -333,7 +303,7 @@ public class SongService {
     var saved = repository.save(song);
     SongEdit edit = new SongEdit();
     edit.setId(Constants.DEFAULT_ID);
-    userContextService.getCurrentUser().addEditedSong(edit);
+    currentUser.addEditedSong(edit);
     song.addEdit(edit);
     songEditRepository.save(edit);
     return saved;
@@ -342,12 +312,7 @@ public class SongService {
   public Song addTags(Long songId, UniversalCreateDTO[] tags) {
     User currentUser = userContextService.getCurrentUser();
     Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
-    if(!song.isAwaiting()
-        && !(currentUser.getUserRole().getName().equals(superuserRoleName)
-        || currentUser.getUserRole().getName().equals(adminRoleName)
-        || currentUser.getUserRole().getName().equals(moderatorRoleName))) {
-      throw new ForbiddenOperationException("Approved song can be updated only by a moderator or admin.");
-    }
+    filterRequestForApprovedSong(song, currentUser, "updated");
     for(UniversalCreateDTO tag : tags) {
       Tag created = tagService.findOrCreateTag(tag.getName());
       song.addTag(created);
@@ -355,9 +320,51 @@ public class SongService {
     var saved = repository.save(song);
     SongEdit edit = new SongEdit();
     edit.setId(Constants.DEFAULT_ID);
-    userContextService.getCurrentUser().addEditedSong(edit);
+    currentUser.addEditedSong(edit);
     song.addEdit(edit);
     songEditRepository.save(edit);
     return saved;
+  }
+
+  public void addVerse(Long songId, CreateVerseDTO dto) {
+    User currentUser = userContextService.getCurrentUser();
+    Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
+    filterRequestForApprovedSong(song, currentUser, "updated");
+    verseService.create(dto, song);
+    SongEdit edit = new SongEdit();
+    edit.setId(Constants.DEFAULT_ID);
+    currentUser.addEditedSong(edit);
+    song.addEdit(edit);
+    songEditRepository.save(edit);
+  }
+
+  public void removeVerse(Long songId, Long verseId) {
+    User currentUser = userContextService.getCurrentUser();
+    Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
+    filterRequestForApprovedSong(song, currentUser, "updated");
+    verseService.deleteById(verseId);
+    SongEdit edit = new SongEdit();
+    edit.setId(Constants.DEFAULT_ID);
+    currentUser.addEditedSong(edit);
+    song.addEdit(edit);
+    songEditRepository.save(edit);
+  }
+
+  private void filterRequestForApprovedSong(Song song, User user, String option) {
+    if(!song.isAwaiting()
+        && !(user.getUserRole().getName().equals(superuserRoleName)
+        || user.getUserRole().getName().equals(adminRoleName)
+        || user.getUserRole().getName().equals(moderatorRoleName))) {
+      throw new ForbiddenOperationException("Approved song can be " + option + " only by a moderator or admin.");
+    }
+  }
+
+  private void filterRequestForAwaitingSong(Song song, User user, String option) {
+    if(song.isAwaiting() && (!song.getAdded().getAddedBy().getId().equals(userContextService.getCurrentUser().getId())
+        && !(user.getUserRole().getName().equals(superuserRoleName)
+        || user.getUserRole().getName().equals(adminRoleName)
+        || user.getUserRole().getName().equals(moderatorRoleName)))) {
+      throw new ForbiddenOperationException("Awaiting song can be " + option + " only by its author, moderator or admin.");
+    }
   }
 }

@@ -7,12 +7,9 @@ import lombok.Builder;
 import lombok.Value;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Set;
 
 @Value
 @JsonDeserialize(builder = SongDTO.Builder.class)

@@ -3,11 +3,9 @@ package com.lazydev.stksongbook.webapp.web.rest;
 import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.service.FileSystemStorageService;
 import com.lazydev.stksongbook.webapp.service.SongService;
-import com.lazydev.stksongbook.webapp.service.dto.PlaylistDTO;
-import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
-import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
-import com.lazydev.stksongbook.webapp.service.dto.UserSongRatingDTO;
+import com.lazydev.stksongbook.webapp.service.dto.*;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
+import com.lazydev.stksongbook.webapp.service.dto.creational.CreateVerseDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.exception.ParameterNotDefinedException;
@@ -58,13 +56,6 @@ public class SongResource {
     return new ResponseEntity<>(mapper.map(service.findById(id)), HttpStatus.OK);
   }
 
-  @GetMapping("/latest")
-  public ResponseEntity<List<SongDTO>> getLatest(@RequestParam(value = "limit") Integer limit) {
-    log.debug("Request to get latest songs");
-    List<SongDTO> list = service.findLatestLimited(limit, false).stream().map(mapper::map).collect(Collectors.toList());
-    return new ResponseEntity<>(list, HttpStatus.OK);
-  }
-
   @GetMapping("/title/{title}")
   public ResponseEntity<List<SongDTO>> getByTitleFragment(@PathVariable("title") String title,
                                                           @RequestParam(value = "limit", required = false) Integer limit) {
@@ -73,7 +64,14 @@ public class SongResource {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
-  @GetMapping("/lyrics_fragment/{value}")
+  /*@GetMapping("/latest")
+  public ResponseEntity<List<SongDTO>> getLatest(@RequestParam(value = "limit") Integer limit) {
+    log.debug("Request to get latest songs");
+    List<SongDTO> list = service.findLatestLimited(limit, false).stream().map(mapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
+  }*/
+
+  /*@GetMapping("/lyrics_fragment/{value}")
   public ResponseEntity<List<SongDTO>> getByLyricsFragment(@PathVariable("value") String value,
                                                            @RequestParam(value = "limit", required = false) Integer limit) {
     log.debug("Request to get all songs by lyrics fragment {}", value);
@@ -103,7 +101,7 @@ public class SongResource {
     log.debug("Request to get all songs by tag {}", id);
     List<SongDTO> list = service.findByTagId(id, false, limit).stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
-  }
+  }*/
 
   @GetMapping("/rating")
   public ResponseEntity<List<SongDTO>> getByRating(
@@ -226,31 +224,45 @@ public class SongResource {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
-  @PatchMapping("{id}/add-tag")
+  @PatchMapping("/{id}/add-tag")
   public ResponseEntity<SongDTO> addTagToSong(@PathVariable Long id, @RequestBody @Valid UniversalCreateDTO tag) {
     log.debug("Request to add tag {} to song {}", tag.getName(), id);
     var song = service.addTag(id, tag);
     return ResponseEntity.ok(mapper.map(song));
   }
 
-  @PatchMapping("{id}/add-tag-bulk")
+  @PatchMapping("/{id}/add-tag-bulk")
   public ResponseEntity<SongDTO> addTagsToSongBulk(@PathVariable Long id, @RequestBody @Valid UniversalCreateDTO[] tags) {
     log.debug("Request to add tag {} to song {}", Arrays.stream(tags).map(UniversalCreateDTO::getName).collect(Collectors.joining(",")), id);
     Song song = service.addTags(id, tags);
     return ResponseEntity.ok(mapper.map(song));
   }
 
-  @PatchMapping("{id}/remove-tag/{tagId}")
+  @PatchMapping("/{id}/remove-tag/{tagId}")
   public ResponseEntity<SongDTO> removeTagFromSong(@PathVariable Long id, @PathVariable Long tagId) {
     log.debug("Request to remove tag {} from song {}", tagId, id);
     var song = service.removeTag(id, tagId);
     return ResponseEntity.ok(mapper.map(song));
   }
 
-  @PatchMapping("{id}/remove-tag-bulk/{tagIds}")
+  @PatchMapping("/{id}/remove-tag-bulk/{tagIds}")
   public ResponseEntity<SongDTO> removeTagsFromSongBulk(@PathVariable Long id, @PathVariable Long[] tagIds) {
     log.debug("Request to remove tags {} from song {}", tagIds, id);
     var song = service.removeTags(id, tagIds);
     return ResponseEntity.ok(mapper.map(song));
+  }
+
+  @PatchMapping("/{id}/add-verse")
+  public ResponseEntity<Void> addVerseToSong(@PathVariable Long id, @RequestBody @Valid CreateVerseDTO verse) {
+    log.debug("Request to add verse {} to song {}", verse, id);
+    service.addVerse(id, verse);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PatchMapping("/{id}/remove-verse/{verseId}")
+  public ResponseEntity<Void> removeVerseFromSong(@PathVariable Long id, @PathVariable Long verseId) {
+    log.debug("Request to remove verse {} from song {}", verseId, id);
+    service.removeVerse(id, verseId);
+    return ResponseEntity.noContent().build();
   }
 }

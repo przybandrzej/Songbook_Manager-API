@@ -19,16 +19,14 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 @Mapper(componentModel = "spring",
-    uses = {Tag.class, SongCoauthorMapper.class, TagService.class, CategoryService.class, CategoryMapper.class,
-        AuthorMapper.class, TagMapper.class, SongAddMapper.class, SongEditMapper.class},
+    uses = {Tag.class, TagService.class, CategoryService.class},
     injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 @DecoratedWith(SongMapperDecorator.class)
 public interface SongMapper {
 
   @Mapping(target = "averageRating", expression = "java(calculateAverageRating(entity.getRatings()))")
   @Mapping(target = "isAwaiting", source = "awaiting")
-  @Mapping(target = "addedBy", source = "added")
-  @Mapping(target = "edits", source = "edits")
+  @Mapping(target = "addedBy", source = "added.id")
   SongDTO map(Song entity);
 
   @Mapping(target = "awaiting", ignore = true)

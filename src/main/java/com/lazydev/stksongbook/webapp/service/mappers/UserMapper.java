@@ -11,16 +11,12 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR,
     uses = {Song.class, SongService.class, UserRoleService.class})
 @DecoratedWith(UserMapperDecorator.class)
 public interface UserMapper {
 
   @Mapping(target = "userRoleId", expression = "java(entity.getUserRole().getId())")
-  @Mapping(target = "songs", expression = "java(getIds(entity.getSongs()))")
   UserDTO map(User entity);
 
   @Mapping(target = "songs", ignore = true)
@@ -37,8 +33,4 @@ public interface UserMapper {
   @Mapping(target = "password", ignore = true)
   @Mapping(target = "id", source = "id")
   User map(UserDTO dto);
-
-  default Set<Long> getIds(Set<Song> list) {
-    return list.stream().map(Song::getId).collect(Collectors.toSet());
-  }
 }
