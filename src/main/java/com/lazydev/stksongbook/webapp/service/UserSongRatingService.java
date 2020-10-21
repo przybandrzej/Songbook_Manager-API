@@ -9,6 +9,7 @@ import com.lazydev.stksongbook.webapp.repository.UserRepository;
 import com.lazydev.stksongbook.webapp.repository.UserSongRatingRepository;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.service.dto.UserSongRatingDTO;
+import com.lazydev.stksongbook.webapp.service.exception.EntityAlreadyExistsException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.exception.ForbiddenOperationException;
 import lombok.AllArgsConstructor;
@@ -60,13 +61,6 @@ public class UserSongRatingService {
     return repository.findByRatingLessThanEqual(rating);
   }
 
-  public UserSongRating save(UserSongRating rating) {
-    if(!rating.getUser().getId().equals(userContextService.getCurrentUser().getId())) {
-      throw new ForbiddenOperationException("No permission.");
-    }
-    return repository.save(rating);
-  }
-
   public void delete(Long userId, Long songId) {
     UserSongRating rating = repository.findByUserIdAndSongId(userId, songId)
         .orElseThrow(() -> new EntityNotFoundException(UserSongRating.class, "user: " + userId + ", song " + songId));
@@ -77,6 +71,12 @@ public class UserSongRatingService {
   }
 
   public UserSongRating create(UserSongRatingDTO dto) {
+    if(findByUserIdAndSongIdNoException(dto.getUserId(), dto.getSongId()).isPresent()) {
+      throw new EntityAlreadyExistsException(UserSongRating.class.getSimpleName());
+    }
+    if(!dto.getUserId().equals(userContextService.getCurrentUser().getId())) {
+      throw new ForbiddenOperationException("No permission.");
+    }
     UserSongRating rating = new UserSongRating();
     rating.setRating(dto.getRating());
     User user = userRepository.findById(dto.getUserId()).orElseThrow(() -> new EntityNotFoundException(User.class, dto.getUserId()));
@@ -89,6 +89,9 @@ public class UserSongRatingService {
 
   public UserSongRating update(UserSongRatingDTO dto) {
     UserSongRating rating = findByUserIdAndSongId(dto.getUserId(), dto.getSongId());
+    if(!rating.getUser().getId().equals(userContextService.getCurrentUser().getId())) {
+      throw new ForbiddenOperationException("No permission.");
+    }
     rating.setRating(dto.getRating());
     return repository.save(rating);
   }

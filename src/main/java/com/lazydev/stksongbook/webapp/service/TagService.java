@@ -2,17 +2,23 @@ package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.data.model.Tag;
 import com.lazydev.stksongbook.webapp.repository.TagRepository;
+import com.lazydev.stksongbook.webapp.service.dto.TagDTO;
+import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
+import com.lazydev.stksongbook.webapp.service.exception.EntityAlreadyExistsException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Validated
 @AllArgsConstructor
 public class TagService {
 
@@ -46,8 +52,21 @@ public class TagService {
     return repository.findAll(PageRequest.of(0, limit)).toList();
   }
 
-  public Tag save(Tag saveObj) {
-    return repository.save(saveObj);
+  public Tag create(@Valid UniversalCreateDTO dto) {
+    var optional = findByNameNoException(dto.getName());
+    if(optional.isPresent()) {
+      throw new EntityAlreadyExistsException(Tag.class.getSimpleName(), optional.get().getName());
+    }
+    Tag tag = new Tag();
+    tag.setId(Constants.DEFAULT_ID);
+    tag.setName(dto.getName());
+    return repository.save(tag);
+  }
+
+  public Tag update(@Valid TagDTO dto) {
+    Tag tag = findById(dto.getId());
+    tag.setName(dto.getName());
+    return repository.save(tag);
   }
 
   public void deleteById(Long id) {

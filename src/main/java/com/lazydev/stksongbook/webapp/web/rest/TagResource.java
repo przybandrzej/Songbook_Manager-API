@@ -38,7 +38,7 @@ public class TagResource {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
-  @GetMapping("/id/{id}")
+  @GetMapping("/{id}")
   public ResponseEntity<TagDTO> getById(@PathVariable("id") Long id) {
     return new ResponseEntity<>(modelMapper.map(service.findById(id)), HttpStatus.OK);
   }
@@ -49,42 +49,27 @@ public class TagResource {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
-  /**
-   * @deprecated This should not be implemented. Songs should not be loaded to Tag (Lazy Loading) or Tag should not have Song list.
-   * Should use {@link SongResource#getByTag(Long, Integer)}
-   */
-  @Deprecated(since = "1.5.5", forRemoval = true)
-  @GetMapping("/id/{id}/songs")
-  public ResponseEntity<List<SongDTO>> getSongsByTagId(@PathVariable("id") Long id) {
+  @GetMapping("/{id}/songs")
+  public ResponseEntity<List<SongDTO>> getSongsByTag(@PathVariable("id") Long id) {
     var tmp = service.findById(id);
     List<SongDTO> list = tmp.getSongs().stream().map(songMapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @PostMapping
-  public ResponseEntity<TagDTO> create(@RequestBody @Valid UniversalCreateDTO tagDto) {
-    var optional = service.findByNameNoException(tagDto.getName());
-    if(optional.isPresent()) {
-      throw new EntityAlreadyExistsException(Tag.class.getSimpleName(), optional.get().getId(), optional.get().getName());
-    }
-    var tag = modelMapper.map(tagDto);
-    tag.setId(Constants.DEFAULT_ID);
-    var saved = service.save(tag);
+  public ResponseEntity<TagDTO> createTag(@RequestBody @Valid UniversalCreateDTO tagDto) {
+    var saved = service.create(tagDto);
     return new ResponseEntity<>(modelMapper.map(saved), HttpStatus.CREATED);
   }
 
   @PutMapping
-  public ResponseEntity<TagDTO> update(@RequestBody @Valid TagDTO tagDto) {
-    if(service.findByIdNoException(tagDto.getId()).isEmpty()) {
-      throw new EntityNotFoundException(Tag.class, tagDto.getId());
-    }
-    var tag = modelMapper.map(tagDto);
-    var saved = service.save(tag);
+  public ResponseEntity<TagDTO> updateTag(@RequestBody @Valid TagDTO tagDto) {
+    var saved = service.update(tagDto);
     return new ResponseEntity<>(modelMapper.map(saved), HttpStatus.OK);
   }
 
   @DeleteMapping("/id/{id}")
-  public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+  public ResponseEntity<Void> deleteTag(@PathVariable("id") Long id) {
     service.deleteById(id);
     return ResponseEntity.noContent().build();
   }

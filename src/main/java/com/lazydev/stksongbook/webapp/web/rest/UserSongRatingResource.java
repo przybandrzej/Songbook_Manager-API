@@ -3,7 +3,6 @@ package com.lazydev.stksongbook.webapp.web.rest;
 import com.lazydev.stksongbook.webapp.data.model.UserSongRating;
 import com.lazydev.stksongbook.webapp.service.UserSongRatingService;
 import com.lazydev.stksongbook.webapp.service.dto.UserSongRatingDTO;
-import com.lazydev.stksongbook.webapp.service.exception.EntityAlreadyExistsException;
 import com.lazydev.stksongbook.webapp.service.mappers.UserSongRatingMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,24 +22,8 @@ public class UserSongRatingResource {
   private final UserSongRatingMapper mapper;
   private final UserSongRatingService service;
 
-  @GetMapping("/user/{id}")
-  public ResponseEntity<List<UserSongRatingDTO>> getByUserId(@PathVariable("id") Long userId) {
-    List<UserSongRatingDTO> list = service.findByUserId(userId).stream()
-        .map(mapper::map)
-        .collect(Collectors.toList());
-    return new ResponseEntity<>(list, HttpStatus.OK);
-  }
-
-  @GetMapping("/song/{id}")
-  public ResponseEntity<List<UserSongRatingDTO>> getBySongId(@PathVariable("id") Long songId) {
-    List<UserSongRatingDTO> list = service.findBySongId(songId).stream()
-        .map(mapper::map)
-        .collect(Collectors.toList());
-    return new ResponseEntity<>(list, HttpStatus.OK);
-  }
-
   @GetMapping("/{userId}/{songId}")
-  public ResponseEntity<UserSongRatingDTO> getByUserIdAndSongId(
+  public ResponseEntity<UserSongRatingDTO> getRatingByUserIdAndSongId(
       @PathVariable("userId") Long userId, @PathVariable("songId") Long songId) {
     var tmp = service.findByUserIdAndSongId(userId, songId);
     return new ResponseEntity<>(mapper.map(tmp), HttpStatus.OK);
@@ -69,9 +52,6 @@ public class UserSongRatingResource {
 
   @PostMapping
   public ResponseEntity<UserSongRatingDTO> create(@RequestBody @Valid UserSongRatingDTO dto) {
-    if(service.findByUserIdAndSongIdNoException(dto.getUserId(), dto.getSongId()).isPresent()) {
-      throw new EntityAlreadyExistsException(UserSongRating.class.getSimpleName());
-    }
     var saved = service.create(dto);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.CREATED);
   }

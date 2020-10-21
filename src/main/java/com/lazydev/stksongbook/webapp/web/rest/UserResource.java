@@ -39,15 +39,12 @@ public class UserResource {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
-  @GetMapping("/id/{id}")
+  @GetMapping("/{id}")
   public ResponseEntity<UserDTO> getById(@PathVariable("id") Long id) {
     return new ResponseEntity<>(mapper.map(service.findById(id)), HttpStatus.OK);
   }
 
-  /**
-   * NOTE! Should be changed (lazy loading)
-   */
-  @GetMapping("/id/{id}/ratings")
+  @GetMapping("/{id}/ratings")
   public ResponseEntity<List<UserSongRatingDTO>> getRatingsByUserId(@PathVariable("id") Long id) {
     var tmp = service.findById(id);
     List<UserSongRatingDTO> list = tmp.getUserRatings()
@@ -55,31 +52,15 @@ public class UserResource {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
-  /**
-   * NOTE! Should be changed (lazy loading)
-   */
-  @GetMapping("/id/{id}/playlists")
+  @GetMapping("/{id}/playlists")
   public ResponseEntity<List<PlaylistDTO>> getPlaylistsByUserId(@PathVariable("id") Long id) {
     var tmp = service.findById(id);
     List<PlaylistDTO> list = tmp.getPlaylists().stream().map(playlistMapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
-  /**
-   * NOTE! Should be changed. Cannot update whole User entity
-   */
-  /*@PutMapping
-  public ResponseEntity<UserDTO> update(@RequestBody @Valid UserDTO dto) {
-    if(service.findByIdNoException(dto.getId()).isEmpty()) {
-      throw new UserNotExistsException(dto.getId());
-    }
-    var user = mapper.map(dto);
-    var saved = service.save(user);
-    return new ResponseEntity<>(mapper.map(saved), HttpStatus.OK);
-  }*/
-
-  @DeleteMapping("/id/{id}")
-  public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
     service.deleteById(id);
     return ResponseEntity.noContent().build();
   }
