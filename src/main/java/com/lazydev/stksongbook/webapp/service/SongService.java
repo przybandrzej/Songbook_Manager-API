@@ -7,6 +7,7 @@ import com.lazydev.stksongbook.webapp.repository.SongEditRepository;
 import com.lazydev.stksongbook.webapp.repository.SongRepository;
 import com.lazydev.stksongbook.webapp.repository.UserSongRatingRepository;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
+import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateVerseDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
@@ -185,18 +186,21 @@ public class SongService {
     repository.deleteById(id);
   }
 
-  public Song updateSong(Song song) {
+  public Song updateSong(SongDTO dto) {
     User currentUser = userContextService.getCurrentUser();
+    Song song = repository.findById(dto.getId()).orElseThrow(() -> new EntityNotFoundException(Song.class, dto.getId()));
     filterRequestForApprovedSong(song, currentUser, "updated");
+    song.setAuthor(authorService.findById(dto.getAuthorId()));
+    song.setCategory(categoryService.findById(dto.getCategoryId()));
+    song.setTitle(dto.getTitle());
+    song.setTrivia(dto.getTrivia());
+    Song saved = repository.save(song);
     SongEdit edit = new SongEdit();
     edit.setId(Constants.DEFAULT_ID);
     currentUser.addEditedSong(edit);
-    song.addEdit(edit);
-    SongEdit finalEdit = songEditRepository.save(edit);
-    if(song.removeEditIf(it -> it.getTimestamp().equals(finalEdit.getTimestamp()))) {
-      song.addEdit(finalEdit);
-    }
-    return repository.save(song);
+    saved.addEdit(edit);
+    songEditRepository.save(edit);
+    return saved;
   }
 
   public Song createAndSaveSong(@Valid CreateSongDTO obj) {
