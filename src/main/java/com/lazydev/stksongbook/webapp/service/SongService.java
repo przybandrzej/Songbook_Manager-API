@@ -24,10 +24,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Transactional
@@ -148,15 +145,15 @@ public class SongService {
     log.debug("Include awaiting songs {} and limit result to {}", awaiting, limit);
     if(awaiting != null) {
       if(limit != null) {
-        return repository.findByLyricsContainingIgnoreCaseAndIsAwaiting(val, awaiting, PageRequest.of(0, limit)).toList();
+        return new ArrayList<>();
       } else {
-        return repository.findByLyricsContainingIgnoreCaseAndIsAwaiting(val, awaiting);
+        return new ArrayList<>();
       }
     } else {
       if(limit != null) {
-        return repository.findByLyricsContainingIgnoreCase(val, PageRequest.of(0, limit)).toList();
+        return new ArrayList<>();
       } else {
-        return repository.findByLyricsContainingIgnoreCase(val);
+        return new ArrayList<>();
       }
     }
   }
@@ -285,8 +282,8 @@ public class SongService {
     song.setId(Constants.DEFAULT_ID);
     song.setCategory(categoryService.findById(obj.getCategoryId()));
     song.setTitle(obj.getTitle());
-    song.setLyrics(obj.getLyrics());
-    song.setGuitarTabs(obj.getGuitarTabs());
+    //song.setLyrics(obj.getLyrics());
+    //song.setGuitarTabs(obj.getGuitarTabs());
     song.setTrivia(obj.getTrivia());
     song.setAwaiting(true);
 

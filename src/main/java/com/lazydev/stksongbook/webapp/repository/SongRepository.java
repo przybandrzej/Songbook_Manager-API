@@ -31,13 +31,13 @@ public interface SongRepository extends JpaRepository<Song, Long> {
 
   Page<Song> findByTitleContainingIgnoreCaseAndIsAwaiting(String text, boolean isAwaiting, Pageable req);
 
-  List<Song> findByLyricsContainingIgnoreCase(String text);
+  //List<Song> findByLyricsContainingIgnoreCase(String text);
 
-  Page<Song> findByLyricsContainingIgnoreCase(String text, Pageable req);
+  //Page<Song> findByLyricsContainingIgnoreCase(String text, Pageable req);
 
-  List<Song> findByLyricsContainingIgnoreCaseAndIsAwaiting(String text, boolean isAwaiting);
+  //List<Song> findByLyricsContainingIgnoreCaseAndIsAwaiting(String text, boolean isAwaiting);
 
-  Page<Song> findByLyricsContainingIgnoreCaseAndIsAwaiting(String text, boolean isAwaiting, Pageable req);
+  //Page<Song> findByLyricsContainingIgnoreCaseAndIsAwaiting(String text, boolean isAwaiting, Pageable req);
 
   List<Song> findByCategoryId(Long categoryId);
 

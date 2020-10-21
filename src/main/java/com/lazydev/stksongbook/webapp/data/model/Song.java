@@ -22,13 +22,9 @@ import java.util.function.Predicate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode(exclude = {"coauthors", "tags", "usersSongs", "playlists", "ratings", "added", "edits"})
+@EqualsAndHashCode(exclude = {"coauthors", "tags", "usersSongs", "playlists", "ratings", "added", "edits", "verses"})
 public class Song {
 
-  /**
-   * @param id is the Primary Key in the table.
-   * By definition, it must be unique.
-   */
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
@@ -41,40 +37,18 @@ public class Song {
   @OneToMany(mappedBy = "song")
   private Set<SongCoauthor> coauthors = new HashSet<>();
 
-  /**
-   * @param title stores the song's title.
-   */
   @Column(name = "title", nullable = false)
   private String title;
 
-  /**
-   * @param lyrics stores the lyrics of the song.
-   */
-  @Column(name = "lyrics", columnDefinition = "TEXT", nullable = false)
-  private String lyrics;
+  @OneToMany(mappedBy = "song", orphanRemoval = true)
+  private Set<Verse> verses = new HashSet<>();
 
-  /**
-   * Column that indicates whether the song is waiting for being accepted, edited or deleted
-   */
   @Column(name = "is_awaiting", nullable = false)
   private boolean isAwaiting;
 
-  /**
-   * @param guitar_tabs stores the guitar tabs.
-   */
-  @Column(name = "guitar_tabs", columnDefinition = "TEXT", nullable = false)
-  private String guitarTabs;
-
-  /**
-   * @param trivia is the optional bonus info about the song.
-   */
   @Column(name = "trivia", columnDefinition = "TEXT")
   private String trivia;
 
-  /**
-   * @param categoryId is the Foreign Key referencing the ID in the CATEGORIES table.
-   * It is used for determinig the category of the song.
-   */
   @ManyToOne
   @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
   private Category category;
@@ -172,5 +146,21 @@ public class Song {
 
   public boolean removePlaylist(Playlist playlist) {
     return this.playlists.remove(playlist);
+  }
+
+  public boolean addVerse(Verse verse) {
+    if(this.verses.add(verse)) {
+      verse.setSong(this);
+      return true;
+    }
+    return false;
+  }
+
+  public boolean removeVerse(Verse verse) {
+    if(this.verses.remove(verse)) {
+      verse.setSong(null);
+      return true;
+    }
+    return false;
   }
 }

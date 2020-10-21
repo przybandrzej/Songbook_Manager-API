@@ -160,7 +160,7 @@ public class PdfService {
         float textFontSize = 11;
         float textLeading = 1.5f * textFontSize;
 
-        String[] separatedLines = song.getLyrics().split(System.lineSeparator());
+        String[] separatedLines = new String[]{}; //song.getLyrics().split(System.lineSeparator());
         List<String> lines = new ArrayList<>();
 
         for (String text : separatedLines) {
