@@ -5,6 +5,7 @@ import com.lazydev.stksongbook.webapp.data.model.SongAdd;
 import com.lazydev.stksongbook.webapp.service.FileSystemStorageService;
 import com.lazydev.stksongbook.webapp.service.SongService;
 import com.lazydev.stksongbook.webapp.service.dto.*;
+import com.lazydev.stksongbook.webapp.service.dto.creational.CreateCoauthorDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateVerseDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
@@ -42,6 +43,7 @@ public class SongResource {
   private final VerseMapper verseMapper;
   private final TagMapper tagMapper;
   private final SongEditMapper editMapper;
+  private final SongCoauthorMapper coauthorMapper;
 
   @GetMapping
   public ResponseEntity<List<SongDTO>> getAll(@RequestParam(value = "limit", required = false) Integer limit,
@@ -111,6 +113,13 @@ public class SongResource {
   public ResponseEntity<List<SongEditDTO>> getSongEdits(@PathVariable("id") Long id) {
     List<SongEditDTO> list = service.findById(id).getEdits()
         .stream().map(editMapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
+  }
+
+  @GetMapping("/{id}/coauthors")
+  public ResponseEntity<List<SongCoauthorDTO>> getSongCoauthors(@PathVariable("id") Long id) {
+    List<SongCoauthorDTO> list = service.findById(id).getCoauthors()
+        .stream().map(coauthorMapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
@@ -194,98 +203,18 @@ public class SongResource {
     service.removeVerse(id, verseId);
     return ResponseEntity.noContent().build();
   }
+
+  @PatchMapping("/{id}/add-coauthor")
+  public ResponseEntity<Void> addCoauthorToSong(@PathVariable Long id, @RequestBody @Valid CreateCoauthorDTO coauthor) {
+    log.debug("Request to add coauthor {} to song {}", coauthor, id);
+    service.addCoauthor(id, coauthor);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PatchMapping("/{id}/remove-coauthor/{coauthorId}")
+  public ResponseEntity<Void> removeCoauthorFromSong(@PathVariable Long id, @PathVariable Long coauthorId) {
+    log.debug("Request to remove coauthor {} from song {}", coauthorId, id);
+    service.removeCoauthor(id, coauthorId);
+    return ResponseEntity.noContent().build();
+  }
 }
-
-
-/**
- * Get all songs in user's library
- * <p>
- * Get all songs edited by user
- * <p>
- * Get all songs added by user
- */
-  /*@GetMapping("/user/{id}")
-  public ResponseEntity<List<SongDTO>> getUserSongs(@PathVariable("id") Long id) {
-    List<SongDTO> list = service.findByUser(id).stream().map(mapper::map).collect(Collectors.toList());
-    return new ResponseEntity<>(list, HttpStatus.OK);
-  }*/
-
-/**
- * Get all songs edited by user
- */
-  /*@GetMapping("/user/{id}/edited")
-  public ResponseEntity<List<SongDTO>> getSongsEditedByUser(@PathVariable("id") Long id) {
-    List<SongDTO> list = service.findAddedByUser(id).stream().map(mapper::map).collect(Collectors.toList());
-    return new ResponseEntity<>(list, HttpStatus.OK);
-  }*/
-
-/**
- * Get all songs added by user
- */
-  /*@GetMapping("/user/{id}/added")
-  public ResponseEntity<List<SongDTO>> getSongsAddedByUser(@PathVariable("id") Long id) {
-    List<SongDTO> list = service.findEditedByUser(id).stream().map(mapper::map).collect(Collectors.toList());
-    return new ResponseEntity<>(list, HttpStatus.OK);
-  }*/
-
-
-  /*@GetMapping("/latest")
-  public ResponseEntity<List<SongDTO>> getLatest(@RequestParam(value = "limit") Integer limit) {
-    log.debug("Request to get latest songs");
-    List<SongDTO> list = service.findLatestLimited(limit, false).stream().map(mapper::map).collect(Collectors.toList());
-    return new ResponseEntity<>(list, HttpStatus.OK);
-  }*/
-
-  /*@GetMapping("/lyrics_fragment/{value}")
-  public ResponseEntity<List<SongDTO>> getByLyricsFragment(@PathVariable("value") String value,
-                                                           @RequestParam(value = "limit", required = false) Integer limit) {
-    log.debug("Request to get all songs by lyrics fragment {}", value);
-    List<SongDTO> list = service.findByLyricsContains(value, false, limit).stream().map(mapper::map).collect(Collectors.toList());
-    return new ResponseEntity<>(list, HttpStatus.OK);
-  }
-
-  @GetMapping("/category/{categoryId}")
-  public ResponseEntity<List<SongDTO>> getByCategory(@PathVariable("categoryId") Long id,
-                                                     @RequestParam(value = "limit", required = false) Integer limit) {
-    log.debug("Request to get all songs by category {}", id);
-    List<SongDTO> list = service.findByCategoryId(id, false, limit).stream().map(mapper::map).collect(Collectors.toList());
-    return new ResponseEntity<>(list, HttpStatus.OK);
-  }
-
-  @GetMapping("/author/{authorId}")
-  public ResponseEntity<List<SongDTO>> getByAuthor(@PathVariable("authorId") Long id,
-                                                   @RequestParam(value = "limit", required = false) Integer limit) {
-    log.debug("Request to get all songs by author {}", id);
-    List<SongDTO> list = service.findByAuthorId(id, false, limit).stream().map(mapper::map).collect(Collectors.toList());
-    return new ResponseEntity<>(list, HttpStatus.OK);
-  }
-
-  @GetMapping("/tag/{tagId}")
-  public ResponseEntity<List<SongDTO>> getByTag(@PathVariable("tagId") Long id,
-                                                @RequestParam(value = "limit", required = false) Integer limit) {
-    log.debug("Request to get all songs by tag {}", id);
-    List<SongDTO> list = service.findByTagId(id, false, limit).stream().map(mapper::map).collect(Collectors.toList());
-    return new ResponseEntity<>(list, HttpStatus.OK);
-  }*/
-
-/*@GetMapping("/rating")
-  public ResponseEntity<List<SongDTO>> getByRating(
-      @RequestParam(value = "greaterThanEqual", required = false) Double greaterValue,
-      @RequestParam(value = "lessThanEqual", required = false) Double lessValue,
-      @RequestParam(value = "equal", required = false) Double value) {
-    log.debug("Request to get all songs by rating");
-    List<Song> list;
-    if(greaterValue != null) {
-      list = service.findByRatingEqualGreater(greaterValue);
-    } else if(lessValue != null) {
-      list = service.findByRatingEqualLess(lessValue);
-    } else if(value != null) {
-      list = service.findByRating(value);
-    } else {
-      throw new ParameterNotDefinedException("rating");
-    }
-    List<SongDTO> dtos = list.stream()
-        .map(mapper::map)
-        .collect(Collectors.toList());
-    return new ResponseEntity<>(dtos, HttpStatus.OK);
-  }*/

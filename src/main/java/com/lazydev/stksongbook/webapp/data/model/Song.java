@@ -101,6 +101,7 @@ public class Song {
 
   public void addCoauthor(SongCoauthor coauthor) {
     this.coauthors.add(coauthor);
+    coauthor.setSong(this);
   }
 
   public boolean addRating(UserSongRating rating) {
@@ -117,6 +118,7 @@ public class Song {
 
   public void removeCoauthor(SongCoauthor coauthor) {
     this.coauthors.remove(coauthor);
+    coauthor.setSong(null);
   }
 
   public boolean addEdit(SongEdit timestamp) {

@@ -52,6 +52,7 @@ public class Author {
 
   public void addCoauthorSong(SongCoauthor coauthor) {
     coauthorSongs.add(coauthor);
+    coauthor.setAuthor(this);
   }
 
   public void addSong(Song song) {
@@ -61,5 +62,6 @@ public class Author {
 
   public void removeCoauthor(SongCoauthor coauthor) {
     this.coauthorSongs.remove(coauthor);
+    coauthor.setAuthor(null);
   }
 }

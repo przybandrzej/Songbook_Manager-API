@@ -1,13 +1,8 @@
 package com.lazydev.stksongbook.webapp.service.mappers;
 
 import com.lazydev.stksongbook.webapp.data.model.Song;
-import com.lazydev.stksongbook.webapp.data.model.Tag;
 import com.lazydev.stksongbook.webapp.data.model.UserSongRating;
-import com.lazydev.stksongbook.webapp.service.CategoryService;
-import com.lazydev.stksongbook.webapp.service.TagService;
 import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
-import com.lazydev.stksongbook.webapp.service.mappers.decorator.SongMapperDecorator;
-import org.mapstruct.DecoratedWith;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,19 +13,13 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
-@Mapper(componentModel = "spring",
-    uses = {Tag.class, TagService.class, CategoryService.class},
-    injectionStrategy = InjectionStrategy.CONSTRUCTOR)
-@DecoratedWith(SongMapperDecorator.class)
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface SongMapper {
 
   @Mapping(target = "averageRating", expression = "java(calculateAverageRating(entity.getRatings()))")
   @Mapping(target = "isAwaiting", source = "awaiting")
   @Mapping(target = "addedBy", source = "added.id")
   SongDTO map(Song entity);
-
-  @Mapping(target = "awaiting", ignore = true)
-  Song map(SongDTO dto);
 
   default BigDecimal calculateAverageRating(Set<UserSongRating> ratings) {
     if(ratings != null && !ratings.isEmpty()) {

@@ -8,6 +8,7 @@ import com.lazydev.stksongbook.webapp.repository.SongRepository;
 import com.lazydev.stksongbook.webapp.repository.UserSongRatingRepository;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
+import com.lazydev.stksongbook.webapp.service.dto.creational.CreateCoauthorDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateSongDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreateVerseDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
@@ -186,7 +187,7 @@ public class SongService {
     repository.deleteById(id);
   }
 
-  public Song updateSong(SongDTO dto) {
+  public Song updateSong(@Valid SongDTO dto) {
     User currentUser = userContextService.getCurrentUser();
     Song song = repository.findById(dto.getId()).orElseThrow(() -> new EntityNotFoundException(Song.class, dto.getId()));
     filterRequestForApprovedSong(song, currentUser, "updated");
@@ -347,6 +348,30 @@ public class SongService {
     Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
     filterRequestForApprovedSong(song, currentUser, "updated");
     verseService.deleteById(verseId);
+    SongEdit edit = new SongEdit();
+    edit.setId(Constants.DEFAULT_ID);
+    currentUser.addEditedSong(edit);
+    song.addEdit(edit);
+    songEditRepository.save(edit);
+  }
+
+  public void addCoauthor(Long songId, CreateCoauthorDTO coauthor) {
+    User currentUser = userContextService.getCurrentUser();
+    Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
+    filterRequestForApprovedSong(song, currentUser, "updated");
+    coauthorService.create(coauthor, song);
+    SongEdit edit = new SongEdit();
+    edit.setId(Constants.DEFAULT_ID);
+    currentUser.addEditedSong(edit);
+    song.addEdit(edit);
+    songEditRepository.save(edit);
+  }
+
+  public void removeCoauthor(Long songId, Long coauthorId) {
+    User currentUser = userContextService.getCurrentUser();
+    Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
+    filterRequestForApprovedSong(song, currentUser, "updated");
+    coauthorService.deleteById(coauthorId);
     SongEdit edit = new SongEdit();
     edit.setId(Constants.DEFAULT_ID);
     currentUser.addEditedSong(edit);

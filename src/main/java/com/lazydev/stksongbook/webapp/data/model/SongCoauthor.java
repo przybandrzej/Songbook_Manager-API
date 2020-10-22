@@ -16,8 +16,10 @@ import javax.persistence.*;
 @EqualsAndHashCode(exclude = "song")
 public class SongCoauthor {
 
-  @EmbeddedId
-  private SongsCoauthorsKey id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  private Long id;
 
   @ManyToOne
   @MapsId("song_id")
@@ -31,16 +33,4 @@ public class SongCoauthor {
 
   @Column(name = "coauthor_function", nullable = false)
   private CoauthorFunction coauthorFunction;
-
-  public void setSong(Song song) {
-    this.song = song;
-    song.addCoauthor(this);
-    this.id.setSongId(song.getId());
-  }
-
-  public void setAuthor(Author author) {
-    this.author = author;
-    author.addCoauthorSong(this);
-    this.id.setAuthorId(author.getId());
-  }
 }

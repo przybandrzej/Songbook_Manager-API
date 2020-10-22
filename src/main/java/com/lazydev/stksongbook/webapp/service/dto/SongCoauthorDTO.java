@@ -13,6 +13,9 @@ import javax.validation.constraints.NotNull;
 @Builder(builderClassName = "Builder", toBuilder = true)
 public class SongCoauthorDTO {
 
+  @NotNull(message = "ID must be defined.")
+  Long id;
+
   @NotNull(message = "Song ID must be defined.")
   Long songId;
 
