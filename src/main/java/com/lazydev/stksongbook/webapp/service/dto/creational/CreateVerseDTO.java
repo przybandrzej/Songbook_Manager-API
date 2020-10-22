@@ -22,8 +22,8 @@ public class CreateVerseDTO {
   boolean isChorus = false;
 
   @ApiModelProperty(notes = "Order of the verse in the song", position = 2)
-  @NotNull(message = "Order cannot be null")
-  Integer order;
+  @NotNull(message = "Order must be defined.")
+  Long order;
 
   @ApiModelProperty(position = 3)
   @NotNull(message = "Lines list must be initialized.")

@@ -20,7 +20,8 @@ public class LineDTO {
   @NotBlank(message = "Cannot be empty")
   String content;
 
-  int order;
+  @NotNull(message = "Order must be defined.")
+  Long order;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class Builder {

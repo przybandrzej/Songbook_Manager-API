@@ -22,8 +22,8 @@ public class CreateLineDTO {
   boolean isChorus = false;
 
   @ApiModelProperty(notes = "Order of the line in the song", position = 2)
-  @NotNull(message = "Order cannot be null")
-  Integer order;
+  @NotNull(message = "Order must be defined.")
+  Long order;
 
   @ApiModelProperty(notes = "Content of the line in the song", position = 3)
   @NotNull(message = "Content cannot be null")

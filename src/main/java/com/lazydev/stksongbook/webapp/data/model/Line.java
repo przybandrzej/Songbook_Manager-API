@@ -23,8 +23,8 @@ public class Line {
   @Column(name = "content", nullable = false)
   private String content;
 
-  @Column(name = "order", nullable = false)
-  private int order;
+  @Column(name = "line_order", nullable = false)
+  private Long order;
 
   @OneToMany(mappedBy = "line", orphanRemoval = true)
   private Set<GuitarCord> cords = new HashSet<>();
@@ -49,11 +49,11 @@ public class Line {
     return false;
   }
 
-  public int getOrder() {
+  public Long getOrder() {
     return order;
   }
 
-  public void setOrder(int order) {
+  public void setOrder(Long order) {
     this.order = order;
   }
 

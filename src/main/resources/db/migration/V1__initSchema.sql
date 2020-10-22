@@ -1,8 +1,8 @@
 CREATE TABLE authors (
-                                id bigint NOT NULL,
-                                biography_url character varying(255),
-                                name character varying(255) NOT NULL,
-                                photo_resource character varying(255)
+                         id bigint NOT NULL,
+                         biography_url character varying(255),
+                         name character varying(255) NOT NULL,
+                         photo_resource character varying(255)
 );
 
 CREATE SEQUENCE authors_id_seq
@@ -15,8 +15,8 @@ CREATE SEQUENCE authors_id_seq
 ALTER SEQUENCE authors_id_seq OWNED BY authors.id;
 
 CREATE TABLE categories (
-                                   id bigint NOT NULL,
-                                   name character varying(255) NOT NULL
+                            id bigint NOT NULL,
+                            name character varying(255) NOT NULL
 );
 
 CREATE SEQUENCE categories_id_seq
@@ -29,10 +29,10 @@ CREATE SEQUENCE categories_id_seq
 ALTER SEQUENCE categories_id_seq OWNED BY categories.id;
 
 CREATE TABLE guitar_cords (
-                                     id bigint NOT NULL,
-                                     content character varying(255) NOT NULL,
-                                     "position" integer NOT NULL,
-                                     line_id bigint NOT NULL
+                              id bigint NOT NULL,
+                              content character varying(255) NOT NULL,
+                              "position" integer NOT NULL,
+                              line_id bigint NOT NULL
 );
 
 CREATE SEQUENCE guitar_cords_id_seq
@@ -45,9 +45,10 @@ CREATE SEQUENCE guitar_cords_id_seq
 ALTER SEQUENCE guitar_cords_id_seq OWNED BY guitar_cords.id;
 
 CREATE TABLE lines (
-                              id bigint NOT NULL,
-                              content character varying(255) NOT NULL,
-                              verse_id bigint NOT NULL
+                       id bigint NOT NULL,
+                       content character varying(255) NOT NULL,
+                       line_order bigint NOT NULL,
+                       verse_id bigint NOT NULL
 );
 
 CREATE SEQUENCE lines_id_seq
@@ -60,11 +61,11 @@ CREATE SEQUENCE lines_id_seq
 ALTER SEQUENCE lines_id_seq OWNED BY lines.id;
 
 CREATE TABLE playlists (
-                                  id bigint NOT NULL,
-                                  creation_time timestamp without time zone DEFAULT now() NOT NULL,
-                                  is_private boolean NOT NULL,
-                                  name character varying(255) NOT NULL,
-                                  owner_id bigint NOT NULL
+                           id bigint NOT NULL,
+                           creation_time timestamp without time zone DEFAULT now() NOT NULL,
+                           is_private boolean NOT NULL,
+                           name character varying(255) NOT NULL,
+                           owner_id bigint NOT NULL
 );
 
 CREATE SEQUENCE playlists_id_seq
@@ -77,15 +78,15 @@ CREATE SEQUENCE playlists_id_seq
 ALTER SEQUENCE playlists_id_seq OWNED BY playlists.id;
 
 CREATE TABLE playlists_songs (
-                                        playlist_id bigint NOT NULL,
-                                        song_id bigint NOT NULL
+                                 playlist_id bigint NOT NULL,
+                                 song_id bigint NOT NULL
 );
 
 CREATE TABLE song_adds (
-                                  id bigint NOT NULL,
-                                  "timestamp" timestamp without time zone NOT NULL,
-                                  user_id bigint NOT NULL,
-                                  song_id bigint NOT NULL
+                           id bigint NOT NULL,
+                           "timestamp" timestamp without time zone NOT NULL,
+                           user_id bigint NOT NULL,
+                           song_id bigint NOT NULL
 );
 
 CREATE SEQUENCE song_adds_id_seq
@@ -98,10 +99,10 @@ CREATE SEQUENCE song_adds_id_seq
 ALTER SEQUENCE song_adds_id_seq OWNED BY song_adds.id;
 
 CREATE TABLE song_edits (
-                                   id bigint NOT NULL,
-                                   "timestamp" timestamp without time zone NOT NULL,
-                                   user_id bigint NOT NULL,
-                                   song_id bigint NOT NULL
+                            id bigint NOT NULL,
+                            "timestamp" timestamp without time zone NOT NULL,
+                            user_id bigint NOT NULL,
+                            song_id bigint NOT NULL
 );
 
 CREATE SEQUENCE song_edits_id_seq
@@ -114,19 +115,29 @@ CREATE SEQUENCE song_edits_id_seq
 ALTER SEQUENCE song_edits_id_seq OWNED BY song_edits.id;
 
 CREATE TABLE songs (
-                              id bigint NOT NULL,
-                              is_awaiting boolean NOT NULL,
-                              title character varying(255) NOT NULL,
-                              trivia text,
-                              author_id bigint NOT NULL,
-                              category_id bigint NOT NULL
+                       id bigint NOT NULL,
+                       is_awaiting boolean NOT NULL,
+                       title character varying(255) NOT NULL,
+                       trivia text,
+                       author_id bigint NOT NULL,
+                       category_id bigint NOT NULL
 );
 
 CREATE TABLE songs_coauthors (
-                                        author_id bigint NOT NULL,
-                                        song_id bigint NOT NULL,
-                                        coauthor_function integer NOT NULL
+                                 id bigint NOT NULL,
+                                 coauthor_function integer NOT NULL,
+                                 author_id bigint NOT NULL,
+                                 song_id bigint NOT NULL
 );
+
+CREATE SEQUENCE songs_coauthors_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE songs_coauthors_id_seq OWNED BY songs_coauthors.id;
 
 CREATE SEQUENCE songs_id_seq
     START WITH 1
@@ -138,13 +149,13 @@ CREATE SEQUENCE songs_id_seq
 ALTER SEQUENCE songs_id_seq OWNED BY songs.id;
 
 CREATE TABLE songs_tags (
-                                   song_id bigint NOT NULL,
-                                   tag_id bigint NOT NULL
+                            song_id bigint NOT NULL,
+                            tag_id bigint NOT NULL
 );
 
 CREATE TABLE tags (
-                             id bigint NOT NULL,
-                             name character varying(255) NOT NULL
+                      id bigint NOT NULL,
+                      name character varying(255) NOT NULL
 );
 
 CREATE SEQUENCE tags_id_seq
@@ -157,8 +168,8 @@ CREATE SEQUENCE tags_id_seq
 ALTER SEQUENCE tags_id_seq OWNED BY tags.id;
 
 CREATE TABLE user_roles (
-                                   id bigint NOT NULL,
-                                   name character varying(255) NOT NULL
+                            id bigint NOT NULL,
+                            name character varying(255) NOT NULL
 );
 
 CREATE SEQUENCE user_roles_id_seq
@@ -171,20 +182,20 @@ CREATE SEQUENCE user_roles_id_seq
 ALTER SEQUENCE user_roles_id_seq OWNED BY user_roles.id;
 
 CREATE TABLE users (
-                              id bigint NOT NULL,
-                              activated boolean NOT NULL,
-                              activation_key character varying(20),
-                              e_mail character varying(255) NOT NULL,
-                              first_name character varying(255),
-                              image_url character varying(256),
-                              last_name character varying(255),
-                              password character varying(255) NOT NULL,
-                              registration_date timestamp without time zone NOT NULL,
-                              reset_date timestamp without time zone,
-                              reset_key character varying(20),
-                              username character varying(255) NOT NULL,
-                              user_role_id bigint NOT NULL,
-                              CONSTRAINT users_check CHECK (((length((password)::text) >= 6) AND (length((username)::text) >= 4)))
+                       id bigint NOT NULL,
+                       activated boolean NOT NULL,
+                       activation_key character varying(20),
+                       e_mail character varying(255) NOT NULL,
+                       first_name character varying(255),
+                       image_url character varying(256),
+                       last_name character varying(255),
+                       password character varying(255) NOT NULL,
+                       registration_date timestamp without time zone NOT NULL,
+                       reset_date timestamp without time zone,
+                       reset_key character varying(20),
+                       username character varying(255) NOT NULL,
+                       user_role_id bigint NOT NULL,
+                       CONSTRAINT users_check CHECK (((length((password)::text) >= 6) AND (length((username)::text) >= 4)))
 );
 
 CREATE SEQUENCE users_id_seq
@@ -197,21 +208,32 @@ CREATE SEQUENCE users_id_seq
 ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 CREATE TABLE users_songs (
-                                    user_id bigint NOT NULL,
-                                    song_id bigint NOT NULL
+                             user_id bigint NOT NULL,
+                             song_id bigint NOT NULL
 );
 
 CREATE TABLE users_songs_ratings (
-                                            song_id bigint NOT NULL,
-                                            user_id bigint NOT NULL,
-                                            rating numeric(19,2) NOT NULL,
-                                            CONSTRAINT users_songs_ratings_rating_check CHECK (((rating >= (0)::numeric) AND (rating <= (1)::numeric)))
+                                     id bigint NOT NULL,
+                                     rating numeric(19,2) NOT NULL,
+                                     song_id bigint NOT NULL,
+                                     user_id bigint NOT NULL,
+                                     CONSTRAINT users_songs_ratings_rating_check CHECK (((rating >= (0)::numeric) AND (rating <= (1)::numeric)))
 );
 
+CREATE SEQUENCE users_songs_ratings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE users_songs_ratings_id_seq OWNED BY users_songs_ratings.id;
+
 CREATE TABLE verses (
-                               id bigint NOT NULL,
-                               is_chorus boolean NOT NULL,
-                               song_id bigint NOT NULL
+                        id bigint NOT NULL,
+                        is_chorus boolean NOT NULL,
+                        verse_order bigint NOT NULL,
+                        song_id bigint NOT NULL
 );
 
 CREATE SEQUENCE verses_id_seq
@@ -239,11 +261,15 @@ ALTER TABLE ONLY song_edits ALTER COLUMN id SET DEFAULT nextval('song_edits_id_s
 
 ALTER TABLE ONLY songs ALTER COLUMN id SET DEFAULT nextval('songs_id_seq'::regclass);
 
+ALTER TABLE ONLY songs_coauthors ALTER COLUMN id SET DEFAULT nextval('songs_coauthors_id_seq'::regclass);
+
 ALTER TABLE ONLY tags ALTER COLUMN id SET DEFAULT nextval('tags_id_seq'::regclass);
 
 ALTER TABLE ONLY user_roles ALTER COLUMN id SET DEFAULT nextval('user_roles_id_seq'::regclass);
 
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+
+ALTER TABLE ONLY users_songs_ratings ALTER COLUMN id SET DEFAULT nextval('users_songs_ratings_id_seq'::regclass);
 
 ALTER TABLE ONLY verses ALTER COLUMN id SET DEFAULT nextval('verses_id_seq'::regclass);
 
@@ -272,7 +298,7 @@ ALTER TABLE ONLY song_edits
     ADD CONSTRAINT song_edits_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY songs_coauthors
-    ADD CONSTRAINT songs_coauthors_pkey PRIMARY KEY (author_id, song_id);
+    ADD CONSTRAINT songs_coauthors_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY songs
     ADD CONSTRAINT songs_pkey PRIMARY KEY (id);
@@ -311,7 +337,7 @@ ALTER TABLE ONLY users_songs
     ADD CONSTRAINT users_songs_pkey PRIMARY KEY (user_id, song_id);
 
 ALTER TABLE ONLY users_songs_ratings
-    ADD CONSTRAINT users_songs_ratings_pkey PRIMARY KEY (song_id, user_id);
+    ADD CONSTRAINT users_songs_ratings_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY verses
     ADD CONSTRAINT verses_pkey PRIMARY KEY (id);

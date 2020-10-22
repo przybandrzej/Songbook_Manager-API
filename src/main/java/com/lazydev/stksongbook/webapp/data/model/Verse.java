@@ -23,8 +23,8 @@ public class Verse {
   @Column(name = "is_chorus", nullable = false)
   private boolean isChorus = false;
 
-  @Column(name = "order", nullable = false)
-  private int order;
+  @Column(name = "verse_order", nullable = false)
+  private Long order;
 
   @OneToMany(mappedBy = "verse", orphanRemoval = true)
   private Set<Line> lines = new HashSet<>();
@@ -49,11 +49,11 @@ public class Verse {
     return false;
   }
 
-  public int getOrder() {
+  public Long getOrder() {
     return order;
   }
 
-  public void setOrder(int order) {
+  public void setOrder(Long order) {
     this.order = order;
   }
 
