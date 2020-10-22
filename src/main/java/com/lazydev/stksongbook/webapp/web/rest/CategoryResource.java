@@ -29,28 +29,23 @@ public class CategoryResource {
   private final SongMapper songMapper;
 
   @GetMapping
-  public ResponseEntity<List<CategoryDTO>> getAll() {
+  public ResponseEntity<List<CategoryDTO>> getAllCategories() {
     List<CategoryDTO> list = service.findAll().stream().map(modelMapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
-  @GetMapping("/id/{id}")
-  public ResponseEntity<CategoryDTO> getById(@PathVariable("id") Long id) {
+  @GetMapping("/{id}")
+  public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable("id") Long id) {
     return new ResponseEntity<>(modelMapper.map(service.findById(id)), HttpStatus.OK);
   }
 
   @GetMapping("/name/{name}")
-  public ResponseEntity<List<CategoryDTO>> getByName(@PathVariable("name") String name) {
+  public ResponseEntity<List<CategoryDTO>> getCategoryByName(@PathVariable("name") String name) {
     List<CategoryDTO> list = service.findByNameFragment(name).stream().map(modelMapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
-  /**
-   * @deprecated This should not be implemented. Songs should not be loaded to Category (Lazy Loading) or Category should not have Song list.
-   * Should use {@link SongResource#getByCategory(Long, Integer)}
-   */
-  @Deprecated(since = "1.5.5", forRemoval = true)
-  @GetMapping("/id/{id}/songs")
+  @GetMapping("/{id}/songs")
   public ResponseEntity<List<SongDTO>> getSongsByCategoryId(@PathVariable("id") Long id) {
     var tmp = service.findById(id);
     List<SongDTO> list = tmp.getSongs().stream().map(songMapper::map).collect(Collectors.toList());
@@ -58,29 +53,19 @@ public class CategoryResource {
   }
 
   @PostMapping
-  public ResponseEntity<CategoryDTO> create(@RequestBody @Valid UniversalCreateDTO categoryDto) {
-    var optional = service.findByNameNoException(categoryDto.getName());
-    if(optional.isPresent()) {
-      throw new EntityAlreadyExistsException(Category.class.getSimpleName(), optional.get().getId(), optional.get().getName());
-    }
-    var category = modelMapper.map(categoryDto);
-    category.setId(Constants.DEFAULT_ID);
-    var saved = service.save(category);
+  public ResponseEntity<CategoryDTO> createCategory(@RequestBody @Valid UniversalCreateDTO categoryDto) {
+    Category saved = service.create(categoryDto);
     return new ResponseEntity<>(modelMapper.map(saved), HttpStatus.CREATED);
   }
 
   @PutMapping
-  public ResponseEntity<CategoryDTO> update(@RequestBody @Valid CategoryDTO categoryDto) {
-    if(service.findByIdNoException(categoryDto.getId()).isEmpty()) {
-      throw new EntityNotFoundException(Category.class, categoryDto.getId());
-    }
-    var category = modelMapper.map(categoryDto);
-    var saved = service.save(category);
+  public ResponseEntity<CategoryDTO> updateCategory(@RequestBody @Valid CategoryDTO categoryDto) {
+    Category saved = service.update(categoryDto);
     return new ResponseEntity<>(modelMapper.map(saved), HttpStatus.OK);
   }
 
-  @DeleteMapping("/id/{id}")
-  public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteCategory(@PathVariable("id") Long id) {
     service.deleteById(id);
     return ResponseEntity.noContent().build();
   }

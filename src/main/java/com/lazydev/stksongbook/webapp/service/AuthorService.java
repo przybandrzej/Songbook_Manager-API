@@ -1,23 +1,47 @@
 package com.lazydev.stksongbook.webapp.service;
 
 import com.lazydev.stksongbook.webapp.data.model.Author;
+import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.repository.AuthorRepository;
+import com.lazydev.stksongbook.webapp.security.UserContextService;
+import com.lazydev.stksongbook.webapp.service.dto.AuthorDTO;
+import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
 import com.lazydev.stksongbook.webapp.service.exception.CannotDeleteEntityException;
+import com.lazydev.stksongbook.webapp.service.exception.EntityAlreadyExistsException;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
+import com.lazydev.stksongbook.webapp.service.exception.ForbiddenOperationException;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@Validated
+@Transactional
 public class AuthorService {
 
+  @Value("${spring.flyway.placeholders.role.superuser}")
+  private String superuserRoleName;
+  @Value("${spring.flyway.placeholders.role.admin}")
+  private String adminRoleName;
+  @Value("${spring.flyway.placeholders.role.moderator}")
+  private String moderatorRoleName;
+
   private final AuthorRepository authorRepository;
+  private final UserContextService userContextService;
+
+  public AuthorService(AuthorRepository authorRepository, UserContextService userContextService) {
+    this.authorRepository = authorRepository;
+    this.userContextService = userContextService;
+  }
 
   public List<Author> findAll() {
     return authorRepository.findAll();
@@ -51,11 +75,13 @@ public class AuthorService {
     return authorRepository.findByName(name).orElseThrow(() -> new EntityNotFoundException(Author.class, name));
   }
 
-  public Author save(Author saveAuthor) {
-    return authorRepository.save(saveAuthor);
-  }
-
   public void deleteById(Long id) {
+    User user = userContextService.getCurrentUser();
+    if(!(user.getUserRole().getName().equals(superuserRoleName)
+        || user.getUserRole().getName().equals(adminRoleName)
+        || user.getUserRole().getName().equals(moderatorRoleName))) {
+      throw new ForbiddenOperationException("Forbidden operation.");
+    }
     var author = findById(id);
     if(!author.getSongs().isEmpty()) {
       throw new CannotDeleteEntityException(Author.class.getSimpleName(), "There are songs belonging to this author.");
@@ -77,5 +103,35 @@ public class AuthorService {
       auth = authorRepository.save(newAuthor);
     }
     return auth;
+  }
+
+  public Author update(@Valid AuthorDTO authorDto) {
+    User user = userContextService.getCurrentUser();
+    if(!(user.getUserRole().getName().equals(superuserRoleName)
+        || user.getUserRole().getName().equals(adminRoleName)
+        || user.getUserRole().getName().equals(moderatorRoleName))) {
+      throw new ForbiddenOperationException("Forbidden operation.");
+    }
+    Author author = findById(authorDto.getId());
+    author.setName(authorDto.getName());
+    author.setBiographyUrl(authorDto.getBiographyUrl());
+    author.setPhotoResource(authorDto.getPhotoResource());
+    return authorRepository.save(author);
+  }
+
+  public Author create(@Valid UniversalCreateDTO authorDto) {
+    User user = userContextService.getCurrentUser();
+    if(!(user.getUserRole().getName().equals(superuserRoleName)
+        || user.getUserRole().getName().equals(adminRoleName)
+        || user.getUserRole().getName().equals(moderatorRoleName))) {
+      throw new ForbiddenOperationException("Forbidden operation.");
+    }
+    if(findByNameNoException(authorDto.getName()).isPresent()) {
+      throw new EntityAlreadyExistsException(Author.class.getSimpleName(), authorDto.getName());
+    }
+    Author author = new Author();
+    author.setId(Constants.DEFAULT_ID);
+    author.setName(authorDto.getName());
+    return authorRepository.save(author);
   }
 }

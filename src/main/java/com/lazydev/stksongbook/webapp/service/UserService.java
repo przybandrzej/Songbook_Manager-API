@@ -9,6 +9,7 @@ import com.lazydev.stksongbook.webapp.repository.UserRepository;
 import com.lazydev.stksongbook.webapp.repository.UserRoleRepository;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.service.dto.EmailChangeDTO;
+import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserSongRatingDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreatePlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm;
@@ -21,12 +22,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
+@Validated
 public class UserService {
 
   private final Logger log = LoggerFactory.getLogger(UserService.class);
@@ -101,22 +107,6 @@ public class UserService {
     return repository.findAll(PageRequest.of(0, limit)).toList();
   }
 
-  public User save(User saveUser) {
-    User currentUser = userContextService.getCurrentUser();
-    if(!saveUser.getId().equals(currentUser.getId()) && !currentUser.getUserRole().getName().equals(superuserRoleName)
-        && !currentUser.getUserRole().getName().equals(adminRoleName)) {
-      throw new ForbiddenOperationException("No permission.");
-    }
-    if(saveUser.getUserRole().getName().equals(superuserRoleName)) {
-      boolean superuserExists = !roleRepository.findByName(superuserRoleName).map(role -> role.getUsers().isEmpty())
-          .orElseThrow(() -> new EntityDependentNotInitialized(superuserRoleName));
-      if(superuserExists) {
-        throw new SuperUserAlreadyExistsException();
-      }
-    }
-    return repository.save(saveUser);
-  }
-
   public void deleteById(Long id) {
     var user = findById(id);
     User currentUser = userContextService.getCurrentUser();
@@ -133,6 +123,12 @@ public class UserService {
   }
 
   public User register(RegisterNewUserForm form) {
+    if(findByEmailNoException(form.getEmail()).isPresent()) {
+      throw new EmailAlreadyUsedException();
+    }
+    if(findByUsernameNoException(form.getUsername()).isPresent()) {
+      throw new UsernameAlreadyUsedException(form.getUsername());
+    }
     User user = new User();
     user.setRegistrationDate(Instant.now());
     user.setId(Constants.DEFAULT_ID);
@@ -157,18 +153,18 @@ public class UserService {
         }).orElseThrow(() -> new InternalServerErrorException("No user was found for this activation key"));
   }
 
-  public User updateUser(User newUser, User userToUpdate) {
-    if(!userToUpdate.getUsername().equals(newUser.getUsername())) {
-      throw new BadRequestErrorException("Cannot change username.");
+  public User updateUser(@Valid UserDTO userDTO) {
+    var user = findById(userDTO.getId());
+    User currentUser = userContextService.getCurrentUser();
+    if(!user.getId().equals(currentUser.getId())
+        && !currentUser.getUserRole().getName().equals(superuserRoleName)
+        && !currentUser.getUserRole().getName().equals(adminRoleName)) {
+      throw new ForbiddenOperationException("No permission.");
     }
-    if(!userToUpdate.getEmail().equals(newUser.getEmail())) {
-      throw new BadRequestErrorException("Cannot change email.");
-    }
-    userToUpdate.setFirstName(newUser.getFirstName());
-    userToUpdate.setLastName(newUser.getLastName());
-    userToUpdate.setImageUrl(newUser.getImageUrl());
-    userToUpdate.setSongs(newUser.getSongs());
-    return repository.save(userToUpdate);
+    user.setFirstName(userDTO.getFirstName());
+    user.setLastName(userDTO.getLastName());
+    user.setImageUrl(userDTO.getImageUrl());
+    return repository.save(user);
   }
 
   public User changePassword(String oldPassword, String newPassword) {

@@ -6,8 +6,10 @@ import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.Builder;
 import lombok.Value;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.net.URL;
 
 @Value
 @JsonDeserialize(builder = AuthorDTO.Builder.class)
@@ -21,25 +23,12 @@ public class AuthorDTO {
     @Pattern(regexp = Constants.NAME_REGEX_SHORT, message = Constants.NAME_SHORT_INVALID_MESSAGE)
     String name;
 
-    public static Builder builder() {
-        return new Builder();
-    }
+    URL biographyUrl;
+
+    String photoResource;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static final class Builder {
-        private Long id;
-        private String name;
 
-        public AuthorDTO create() {
-            return new AuthorDTO(id, name);
-        }
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
-        }
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
     }
 }

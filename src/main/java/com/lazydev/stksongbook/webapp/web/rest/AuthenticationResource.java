@@ -42,12 +42,6 @@ public class AuthenticationResource {
   @PostMapping("/register")
   public ResponseEntity<Void> register(@RequestBody @Valid RegisterNewUserForm form) {
     log.debug("Request to register user {}", form.getUsername());
-    if(service.findByEmailNoException(form.getEmail()).isPresent()) {
-      throw new EmailAlreadyUsedException();
-    }
-    if(service.findByUsernameNoException(form.getUsername()).isPresent()) {
-      throw new UsernameAlreadyUsedException(form.getUsername());
-    }
     User user = service.register(form);
     mailerService.sendActivationEmail(user);
     return new ResponseEntity<>(HttpStatus.CREATED);
@@ -88,22 +82,6 @@ public class AuthenticationResource {
   public ResponseEntity<UserDTO> getAccount() {
     log.debug("Request to get logged-in account");
     return ResponseEntity.ok(userMapper.map(userContextService.getCurrentUser()));
-  }
-
-  /**
-   * POST  /account : update the current user information.
-   *
-   * @param userDTO the current user information
-   * @throws EmailAlreadyUsedException 400 (Bad Request) if the email is already used
-   * @throws RuntimeException          500 (Internal Server Error) if the user login wasn't found
-   */
-  @PostMapping("/account")
-  public ResponseEntity<UserDTO> saveAccount(@Valid @RequestBody UserDTO userDTO) {
-    log.debug("Request to save user {}", userDTO.getUsername());
-    User user = userContextService.getCurrentUser();
-    User mapped = userMapper.map(userDTO.toBuilder().id(user.getId()).build());
-    User saved = service.updateUser(mapped, user);
-    return ResponseEntity.ok(userMapper.map(saved));
   }
 
   /**

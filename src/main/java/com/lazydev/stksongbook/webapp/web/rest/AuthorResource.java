@@ -32,7 +32,7 @@ public class AuthorResource {
   private final SongMapper songMapper;
 
   @GetMapping
-  public ResponseEntity<List<AuthorDTO>> getAll(@RequestParam(value = "limit", required = false) Integer limit) {
+  public ResponseEntity<List<AuthorDTO>> getAllAuthors(@RequestParam(value = "limit", required = false) Integer limit) {
     if(limit != null) {
       List<AuthorDTO> list = service.findAll(limit).stream().map(mapper::map).collect(Collectors.toList());
       return new ResponseEntity<>(list, HttpStatus.OK);
@@ -41,13 +41,13 @@ public class AuthorResource {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
-  @GetMapping("/id/{id}")
-  public ResponseEntity<AuthorDTO> getById(@PathVariable("id") Long id) {
+  @GetMapping("/{id}")
+  public ResponseEntity<AuthorDTO> getAuthorById(@PathVariable("id") Long id) {
     return new ResponseEntity<>(mapper.map(service.findById(id)), HttpStatus.OK);
   }
 
   @GetMapping("/name/{name}")
-  public ResponseEntity<List<AuthorDTO>> getByNameFragment(@PathVariable("name") String name,
+  public ResponseEntity<List<AuthorDTO>> getAuthorByNameFragment(@PathVariable("name") String name,
                                                            @RequestParam(value = "limit", required = false) Integer limit) {
     if(limit != null) {
       List<AuthorDTO> list = service.findByNameFragment(name, limit).stream().map(mapper::map).collect(Collectors.toList());
@@ -57,12 +57,7 @@ public class AuthorResource {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
-  /**
-   * @deprecated This should not be implemented. Songs should not be loaded to Author (Lazy Loading) or Author should not have Song list.
-   * Should use {@link SongResource#getByAuthor(Long, Integer)}
-   */
-  @Deprecated(since = "1.5.5", forRemoval = true)
-  @GetMapping("/id/{id}/songs")
+  @GetMapping("/{id}/songs")
   public ResponseEntity<List<SongDTO>> getSongsByAuthorId(@PathVariable("id") Long id) {
     var tmp = service.findById(id);
     List<SongDTO> list = tmp.getSongs().stream().map(songMapper::map).collect(Collectors.toList());
@@ -70,28 +65,19 @@ public class AuthorResource {
   }
 
   @PostMapping
-  public ResponseEntity<AuthorDTO> create(@RequestBody @Valid UniversalCreateDTO authorDto) {
-    var optional = service.findByNameNoException(authorDto.getName());
-    if(optional.isPresent()) {
-      throw new EntityAlreadyExistsException(Author.class.getSimpleName(), optional.get().getId(), optional.get().getName());
-    }
-    var author = mapper.map(authorDto);
-    var saved = service.save(author);
+  public ResponseEntity<AuthorDTO> createAuthor(@RequestBody @Valid UniversalCreateDTO authorDto) {
+    Author saved = service.create(authorDto);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.CREATED);
   }
 
   @PutMapping
-  public ResponseEntity<AuthorDTO> update(@RequestBody @Valid AuthorDTO authorDto) {
-    if(service.findByIdNoException(authorDto.getId()).isEmpty()) {
-      throw new EntityNotFoundException(Author.class, authorDto.getId());
-    }
-    var author = mapper.map(authorDto);
-    var saved = service.save(author);
+  public ResponseEntity<AuthorDTO> updateAuthor(@RequestBody @Valid AuthorDTO authorDto) {
+    Author saved = service.update(authorDto);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.OK);
   }
 
-  @DeleteMapping("/id/{id}")
-  public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteAuthor(@PathVariable("id") Long id) {
     service.deleteById(id);
     return ResponseEntity.noContent().build();
   }
