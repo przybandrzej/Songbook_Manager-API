@@ -1,15 +1,11 @@
 package com.lazydev.stksongbook.webapp.web.rest;
 
-import com.lazydev.stksongbook.webapp.data.model.Tag;
 import com.lazydev.stksongbook.webapp.service.TagService;
 import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.service.dto.TagDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
-import com.lazydev.stksongbook.webapp.service.exception.EntityAlreadyExistsException;
-import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.TagMapper;
-import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

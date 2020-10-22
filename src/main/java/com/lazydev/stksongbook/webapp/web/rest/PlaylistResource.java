@@ -4,7 +4,6 @@ import com.lazydev.stksongbook.webapp.service.FileSystemStorageService;
 import com.lazydev.stksongbook.webapp.service.PdfService;
 import com.lazydev.stksongbook.webapp.service.PlaylistService;
 import com.lazydev.stksongbook.webapp.service.dto.PlaylistDTO;
-import com.lazydev.stksongbook.webapp.service.dto.creational.CreatePlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.mappers.PlaylistMapper;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -52,9 +51,9 @@ public class PlaylistResource {
 
   @GetMapping("/name/{name}")
   public ResponseEntity<List<PlaylistDTO>> getPlaylistByName(@PathVariable("name") String name,
-                                                     @RequestParam(value = "include_private", required = false,
-                                                         defaultValue = "false") boolean includePrivate,
-                                                     @RequestParam(value = "limit", required = false) Integer limit) {
+                                                             @RequestParam(value = "include_private", required = false,
+                                                                 defaultValue = "false") boolean includePrivate,
+                                                             @RequestParam(value = "limit", required = false) Integer limit) {
     if(limit != null) {
       List<PlaylistDTO> list = service.findByNameFragment(name, includePrivate, limit).stream().map(mapper::map).collect(Collectors.toList());
       return new ResponseEntity<>(list, HttpStatus.OK);

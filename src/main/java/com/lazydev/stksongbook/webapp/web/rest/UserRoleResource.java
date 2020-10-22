@@ -1,15 +1,11 @@
 package com.lazydev.stksongbook.webapp.web.rest;
 
-import com.lazydev.stksongbook.webapp.data.model.UserRole;
 import com.lazydev.stksongbook.webapp.service.UserRoleService;
 import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserRoleDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
-import com.lazydev.stksongbook.webapp.service.exception.EntityAlreadyExistsException;
-import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.UserRoleMapper;
-import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

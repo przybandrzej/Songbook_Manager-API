@@ -25,21 +25,6 @@ public class AdminResource {
     this.userMapper = userMapper;
   }
 
-  /*@PutMapping("/update-user")
-  public ResponseEntity<UserDTO> updateUser(@RequestBody @Valid UserDTO userDTO) {
-    log.debug("Request to update user {}", userDTO.getUsername());
-    if(!(userContextService.getCurrentUser().getUserRole().getName().equals(superuserRoleName)
-        || userContextService.getCurrentUser().getUserRole().getName().equals(adminRoleName))) {
-      throw new ForbiddenOperationException("No permission.");
-    }
-    User found = userService.findById(userDTO.getId());
-    User user = userMapper.map(userDTO);
-    user.setUsername(found.getUsername());
-    user.setEmail(found.getEmail());
-    User saved = userService.save(user);
-    return ResponseEntity.ok(userMapper.map(saved));
-  }*/
-
   @PatchMapping("/{userId}/update-role/{roleId}")
   public ResponseEntity<UserDTO> updateUserRole(@PathVariable Long userId, @PathVariable Long roleId) {
     log.debug("Request to update user {} role to {}", userId, roleId);

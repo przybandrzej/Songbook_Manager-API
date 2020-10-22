@@ -5,8 +5,6 @@ import com.lazydev.stksongbook.webapp.service.AuthorService;
 import com.lazydev.stksongbook.webapp.service.dto.AuthorDTO;
 import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
-import com.lazydev.stksongbook.webapp.service.exception.EntityAlreadyExistsException;
-import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.mappers.AuthorMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
 import lombok.AllArgsConstructor;
@@ -48,7 +46,7 @@ public class AuthorResource {
 
   @GetMapping("/name/{name}")
   public ResponseEntity<List<AuthorDTO>> getAuthorByNameFragment(@PathVariable("name") String name,
-                                                           @RequestParam(value = "limit", required = false) Integer limit) {
+                                                                 @RequestParam(value = "limit", required = false) Integer limit) {
     if(limit != null) {
       List<AuthorDTO> list = service.findByNameFragment(name, limit).stream().map(mapper::map).collect(Collectors.toList());
       return new ResponseEntity<>(list, HttpStatus.OK);
