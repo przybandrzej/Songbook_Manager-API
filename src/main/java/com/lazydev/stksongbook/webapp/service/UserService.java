@@ -3,11 +3,14 @@ package com.lazydev.stksongbook.webapp.service;
 import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.data.model.UserRole;
+import com.lazydev.stksongbook.webapp.data.model.UserSongRating;
 import com.lazydev.stksongbook.webapp.repository.SongRepository;
 import com.lazydev.stksongbook.webapp.repository.UserRepository;
 import com.lazydev.stksongbook.webapp.repository.UserRoleRepository;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
 import com.lazydev.stksongbook.webapp.service.dto.EmailChangeDTO;
+import com.lazydev.stksongbook.webapp.service.dto.UserSongRatingDTO;
+import com.lazydev.stksongbook.webapp.service.dto.creational.CreatePlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm;
 import com.lazydev.stksongbook.webapp.service.exception.*;
 import com.lazydev.stksongbook.webapp.util.Constants;
@@ -125,7 +128,7 @@ public class UserService {
       throw new BadRequestErrorException("Cannot delete superuser.");
     }
     user.getPlaylists().forEach(it -> playlistService.deleteById(it.getId()));
-    user.getUserRatings().forEach(it -> ratingService.delete(it.getUser().getId(), it.getSong().getId()));
+    user.getUserRatings().forEach(it -> ratingService.delete(it.getId()));
     repository.deleteById(id);
   }
 
@@ -266,5 +269,56 @@ public class UserService {
     Song song = songRepository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
     user.removeSong(song);
     repository.save(user);
+  }
+
+  public void addPlaylist(Long userId, CreatePlaylistDTO playlistDTO) {
+    var user = findById(userId);
+    User currentUser = userContextService.getCurrentUser();
+    if(!userId.equals(currentUser.getId()) && !currentUser.getUserRole().getName().equals(superuserRoleName)
+        && !currentUser.getUserRole().getName().equals(adminRoleName)) {
+      throw new ForbiddenOperationException("No permission.");
+    }
+    playlistService.createPlaylist(playlistDTO, user);
+  }
+
+  public void removePlaylist(Long userId, Long playlistId) {
+    User currentUser = userContextService.getCurrentUser();
+    if(!userId.equals(currentUser.getId()) &&
+        !currentUser.getUserRole().getName().equals(superuserRoleName)
+        && !currentUser.getUserRole().getName().equals(adminRoleName)) {
+      throw new ForbiddenOperationException("No permission.");
+    }
+    playlistService.deleteById(playlistId);
+  }
+
+  public UserSongRating findRatingOfSong(Long userId, Long songId) {
+    User currentUser = userContextService.getCurrentUser();
+    if(!userId.equals(currentUser.getId()) &&
+        !currentUser.getUserRole().getName().equals(superuserRoleName)
+        && !currentUser.getUserRole().getName().equals(adminRoleName)) {
+      throw new ForbiddenOperationException("No permission.");
+    }
+    return ratingService.findByUserIdAndSongId(userId, songId);
+  }
+
+  public void addRating(Long userId, UserSongRatingDTO ratingDTO) {
+    var user = findById(userId);
+    User currentUser = userContextService.getCurrentUser();
+    if(!userId.equals(currentUser.getId())
+        && !currentUser.getUserRole().getName().equals(superuserRoleName)
+        && !currentUser.getUserRole().getName().equals(adminRoleName)) {
+      throw new ForbiddenOperationException("No permission.");
+    }
+    ratingService.create(ratingDTO, user);
+  }
+
+  public void removeRating(Long userId, Long ratingId) {
+    User currentUser = userContextService.getCurrentUser();
+    if(!userId.equals(currentUser.getId())
+        && !currentUser.getUserRole().getName().equals(superuserRoleName)
+        && !currentUser.getUserRole().getName().equals(adminRoleName)) {
+      throw new ForbiddenOperationException("No permission.");
+    }
+    ratingService.delete(ratingId);
   }
 }

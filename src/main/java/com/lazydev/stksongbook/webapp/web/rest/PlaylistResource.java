@@ -33,7 +33,7 @@ public class PlaylistResource {
   private final FileSystemStorageService storageService;
 
   @GetMapping
-  public ResponseEntity<List<PlaylistDTO>> getAll(
+  public ResponseEntity<List<PlaylistDTO>> getAllPlaylists(
       @RequestParam(value = "include_private", required = false, defaultValue = "false") boolean includePrivate,
       @RequestParam(value = "limit", required = false) Integer limit) {
     if(limit != null) {
@@ -44,14 +44,14 @@ public class PlaylistResource {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
-  @GetMapping("/id/{id}")
-  public ResponseEntity<PlaylistDTO> getById(@PathVariable("id") Long id) {
+  @GetMapping("/{id}")
+  public ResponseEntity<PlaylistDTO> getPlaylistById(@PathVariable("id") Long id) {
     var found = service.findById(id);
     return new ResponseEntity<>(mapper.map(found), HttpStatus.OK);
   }
 
   @GetMapping("/name/{name}")
-  public ResponseEntity<List<PlaylistDTO>> getByName(@PathVariable("name") String name,
+  public ResponseEntity<List<PlaylistDTO>> getPlaylistByName(@PathVariable("name") String name,
                                                      @RequestParam(value = "include_private", required = false,
                                                          defaultValue = "false") boolean includePrivate,
                                                      @RequestParam(value = "limit", required = false) Integer limit) {
@@ -63,30 +63,14 @@ public class PlaylistResource {
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
-  @GetMapping("/ownerId/{id}")
-  public ResponseEntity<List<PlaylistDTO>> getByOwnerId(@PathVariable("id") Long ownerId,
-                                                        @RequestParam(value = "include_private", required = false,
-                                                            defaultValue = "false") boolean includePrivate) {
-    List<PlaylistDTO> list = service.findByOwnerId(ownerId, includePrivate).stream().map(mapper::map).collect(Collectors.toList());
-    return new ResponseEntity<>(list, HttpStatus.OK);
-  }
-
-  @PostMapping
-  public ResponseEntity<PlaylistDTO> create(@RequestBody @Valid CreatePlaylistDTO dto) {
-    var saved = service.createPlaylist(dto);
-    return new ResponseEntity<>(mapper.map(saved), HttpStatus.CREATED);
-  }
-
   @PutMapping
-  public ResponseEntity<PlaylistDTO> update(@RequestBody @Valid PlaylistDTO dto) {
-    var found = service.findById(dto.getId()); // this is here for EntityNotFound check
-    var playlist = mapper.map(dto);
-    var saved = service.update(playlist);
+  public ResponseEntity<PlaylistDTO> updatePlaylist(@RequestBody @Valid PlaylistDTO dto) {
+    var saved = service.update(dto);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.OK);
   }
 
   @DeleteMapping("/id/{id}")
-  public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+  public ResponseEntity<Void> deletePlaylist(@PathVariable("id") Long id) {
     service.deleteById(id);
     return ResponseEntity.noContent().build();
   }
@@ -103,14 +87,14 @@ public class PlaylistResource {
   }
 
   @PatchMapping("/{id}/add-song/{songId}")
-  public ResponseEntity<Void> addSong(@PathVariable Long id, @PathVariable Long songId) {
+  public ResponseEntity<Void> addSongToPlaylist(@PathVariable Long id, @PathVariable Long songId) {
     log.debug("Add song {} to playlist {}", songId, id);
     service.addSong(id, songId);
     return ResponseEntity.noContent().build();
   }
 
   @PatchMapping("/{id}/remove-song/{songId}")
-  public ResponseEntity<Void> removeSong(@PathVariable Long id, @PathVariable Long songId) {
+  public ResponseEntity<Void> removeSongFromPlaylist(@PathVariable Long id, @PathVariable Long songId) {
     log.debug("Add song {} to playlist {}", songId, id);
     service.removeSong(id, songId);
     return ResponseEntity.noContent().build();

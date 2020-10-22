@@ -142,7 +142,19 @@ public class User {
   }
 
   public boolean addRating(UserSongRating rating) {
-    return this.userRatings.add(rating);
+    if(this.userRatings.add(rating)) {
+      rating.setUser(this);
+      return true;
+    }
+    return false;
+  }
+
+  public boolean removeRating(UserSongRating rating) {
+    if(this.userRatings.remove(rating)) {
+      rating.setUser(null);
+      return true;
+    }
+    return false;
   }
 
   public boolean addSong(Song song) {

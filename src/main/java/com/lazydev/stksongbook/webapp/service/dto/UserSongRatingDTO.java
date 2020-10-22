@@ -15,6 +15,9 @@ import java.math.BigDecimal;
 @Builder(builderClassName = "Builder", toBuilder = true)
 public class UserSongRatingDTO {
 
+  @NotNull(message = "ID must be defined.")
+  Long id;
+
   @NotNull(message = "User ID must be defined.")
   Long userId;
 
@@ -26,39 +29,7 @@ public class UserSongRatingDTO {
   @DecimalMax(value = "1.0", message = "Rating must be maximum 1!")
   BigDecimal rating;
 
-  private UserSongRatingDTO(Long userId, Long songId, BigDecimal userRating) {
-    this.userId = userId;
-    this.songId = songId;
-    this.rating = userRating;
-  }
-
-  public static UserSongRatingDTO.Builder builder() {
-    return new UserSongRatingDTO.Builder();
-  }
-
   @JsonPOJOBuilder(withPrefix = "")
   public static final class Builder {
-    private Long userId;
-    private Long songId;
-    private BigDecimal userRating;
-
-    public UserSongRatingDTO create() {
-      return new UserSongRatingDTO(userId, songId, userRating);
-    }
-
-    public UserSongRatingDTO.Builder userId(Long userId) {
-      this.userId = userId;
-      return this;
-    }
-
-    public UserSongRatingDTO.Builder songId(Long songId) {
-      this.songId = songId;
-      return this;
-    }
-
-    public UserSongRatingDTO.Builder userRating(BigDecimal userRating) {
-      this.userRating = userRating;
-      return this;
-    }
   }
 }

@@ -23,6 +23,9 @@ public class CreatePlaylistDTO {
   @NotNull(message = "isPrivate field must be set.")
   Boolean isPrivate;
 
+  @NotNull(message = "Owner must be set.")
+  Long ownerId;
+
   @NotNull(message = "Songs list must be initialized.")
   Set<
       @NotNull(message = "Field can't be null.")

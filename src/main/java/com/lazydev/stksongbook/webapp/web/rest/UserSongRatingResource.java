@@ -22,6 +22,13 @@ public class UserSongRatingResource {
   private final UserSongRatingMapper mapper;
   private final UserSongRatingService service;
 
+  @GetMapping("/{id}")
+  public ResponseEntity<UserSongRatingDTO> getRatingById(
+      @PathVariable("id") Long id) {
+    var tmp = service.findById(id);
+    return new ResponseEntity<>(mapper.map(tmp), HttpStatus.OK);
+  }
+
   @GetMapping("/{userId}/{songId}")
   public ResponseEntity<UserSongRatingDTO> getRatingByUserIdAndSongId(
       @PathVariable("userId") Long userId, @PathVariable("songId") Long songId) {
@@ -30,7 +37,7 @@ public class UserSongRatingResource {
   }
 
   @GetMapping
-  public ResponseEntity<List<UserSongRatingDTO>> getAll(
+  public ResponseEntity<List<UserSongRatingDTO>> getAllRatings(
       @RequestParam(value = "greaterThanEqual", required = false) BigDecimal greaterValue,
       @RequestParam(value = "lessThanEqual", required = false) BigDecimal lessValue,
       @RequestParam(value = "equal", required = false) BigDecimal value) {
@@ -51,20 +58,20 @@ public class UserSongRatingResource {
   }
 
   @PostMapping
-  public ResponseEntity<UserSongRatingDTO> create(@RequestBody @Valid UserSongRatingDTO dto) {
+  public ResponseEntity<UserSongRatingDTO> createRating(@RequestBody @Valid UserSongRatingDTO dto) {
     var saved = service.create(dto);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.CREATED);
   }
 
   @PutMapping
-  public ResponseEntity<UserSongRatingDTO> update(@RequestBody @Valid UserSongRatingDTO dto) {
+  public ResponseEntity<UserSongRatingDTO> updateRating(@RequestBody @Valid UserSongRatingDTO dto) {
     var saved = service.update(dto);
     return new ResponseEntity<>(mapper.map(saved), HttpStatus.OK);
   }
 
-  @DeleteMapping("/{userId}/{songId}")
-  public ResponseEntity<Void> delete(@PathVariable Long userId, @PathVariable Long songId) {
-    service.delete(userId, songId);
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteRating(@PathVariable Long id) {
+    service.delete(id);
     return ResponseEntity.noContent().build();
   }
 }

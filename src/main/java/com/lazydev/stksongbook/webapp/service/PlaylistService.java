@@ -5,6 +5,7 @@ import com.lazydev.stksongbook.webapp.data.model.Song;
 import com.lazydev.stksongbook.webapp.data.model.User;
 import com.lazydev.stksongbook.webapp.repository.PlaylistRepository;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
+import com.lazydev.stksongbook.webapp.service.dto.PlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreatePlaylistDTO;
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.service.exception.ForbiddenOperationException;
@@ -12,13 +13,18 @@ import com.lazydev.stksongbook.webapp.util.Constants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Service
+@Transactional
+@Validated
 public class PlaylistService {
 
   private final PlaylistRepository repository;
@@ -72,31 +78,6 @@ public class PlaylistService {
     return repository.findByNameContainingIgnoreCase(name, PageRequest.of(0, limit)).toList();
   }
 
-  public List<Playlist> findByOwnerId(Long id, boolean includePrivate) {
-    if(!includePrivate) {
-      return repository.findByOwnerIdAndIsPrivate(id, false);
-    }
-    User currentUser = userContextService.getCurrentUser();
-    if(!id.equals(currentUser.getId())
-        && (!currentUser.getUserRole().getName().equals(superuserRoleName)
-        && !currentUser.getUserRole().getName().equals(adminRoleName))) {
-      throw new ForbiddenOperationException("Cannot get private playlists.");
-    }
-    return repository.findByOwnerId(id);
-  }
-
-  public List<Playlist> findBySongId(Long id, boolean includePrivate) {
-    if(!includePrivate) {
-      return repository.findBySongsIdAndIsPrivate(id, false);
-    }
-    User currentUser = userContextService.getCurrentUser();
-    if(!currentUser.getUserRole().getName().equals(superuserRoleName)
-        && !currentUser.getUserRole().getName().equals(adminRoleName)) {
-      throw new ForbiddenOperationException("Cannot get private playlists.");
-    }
-    return repository.findBySongsId(id);
-  }
-
   public List<Playlist> findAll(boolean includePrivate) {
     if(!includePrivate) {
       return repository.findByIsPrivate(false);
@@ -121,38 +102,52 @@ public class PlaylistService {
     return repository.findAll(PageRequest.of(0, limit)).toList();
   }
 
-  public Playlist update(Playlist savePlaylist) {
-    if(!userContextService.getCurrentUser().getId().equals(savePlaylist.getOwner().getId())) {
-      throw new ForbiddenOperationException("Cannot update playlist of another user.");
+  public Playlist update(@Valid PlaylistDTO savePlaylist) {
+    Playlist playlist = findById(savePlaylist.getId());
+    User currentUser = userContextService.getCurrentUser();
+    if(!playlist.getOwner().getId().equals(currentUser.getId()) &&
+        !currentUser.getUserRole().getName().equals(superuserRoleName)
+        && !currentUser.getUserRole().getName().equals(adminRoleName)) {
+      throw new ForbiddenOperationException("No permission.");
     }
-    return repository.save(savePlaylist);
+    playlist.setPrivate(savePlaylist.getIsPrivate());
+    playlist.setName(savePlaylist.getName());
+    return repository.save(playlist);
   }
 
   public void deleteById(Long id) {
     var playlist = findById(id);
-    if(!userContextService.getCurrentUser().getId().equals(playlist.getOwner().getId())) {
-      throw new ForbiddenOperationException("Cannot delete playlist of another user.");
+    User currentUser = userContextService.getCurrentUser();
+    if(!playlist.getOwner().getId().equals(currentUser.getId())
+        && !(currentUser.getUserRole().getName().equals(superuserRoleName)
+        || currentUser.getUserRole().getName().equals(adminRoleName))) {
+      throw new ForbiddenOperationException("Playlists can be created only by its author or admin.");
     }
     repository.deleteById(id);
   }
 
-  public Playlist createPlaylist(CreatePlaylistDTO dto) {
+  public Playlist createPlaylist(@Valid CreatePlaylistDTO dto, User user) {
+    User currentUser = userContextService.getCurrentUser();
+    if(!user.getId().equals(currentUser.getId())
+        && !(currentUser.getUserRole().getName().equals(superuserRoleName)
+        || currentUser.getUserRole().getName().equals(adminRoleName))) {
+      throw new ForbiddenOperationException("Playlists can be created only by its author or admin.");
+    }
     Playlist playlist = new Playlist();
     playlist.setId(Constants.DEFAULT_ID);
     playlist.setName(dto.getName());
     playlist.setPrivate(dto.getIsPrivate());
     playlist.setCreationTime(Instant.now());
-    playlist.setOwner(userContextService.getCurrentUser());
-    Set<Song> songs = new HashSet<>();
-    dto.getSongs().forEach(s -> songs.add(songService.findById(s)));
-    playlist.setSongs(songs);
+    user.addPlaylist(playlist);
+    dto.getSongs().forEach(s -> playlist.addSong(songService.findById(s)));
     return repository.save(playlist);
   }
 
   public void addSong(Long playlistId, Long songId) {
     var playlist = findById(playlistId);
     User currentUser = userContextService.getCurrentUser();
-    if(!playlist.getOwner().getId().equals(currentUser.getId()) && !currentUser.getUserRole().getName().equals(superuserRoleName)
+    if(!playlist.getOwner().getId().equals(currentUser.getId()) &&
+        !currentUser.getUserRole().getName().equals(superuserRoleName)
         && !currentUser.getUserRole().getName().equals(adminRoleName)) {
       throw new ForbiddenOperationException("No permission.");
     }

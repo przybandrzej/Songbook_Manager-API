@@ -22,41 +22,53 @@ public class SongCoauthorResource {
   private final SongCoauthorMapper songCoauthorMapper;
   private final SongCoauthorService songCoauthorService;
 
+  @GetMapping("/{id}")
+  public ResponseEntity<SongCoauthorDTO> getCoauthorById(@PathVariable("id") Long id) {
+    return new ResponseEntity<>(songCoauthorMapper.map(songCoauthorService.findById(id)), HttpStatus.OK);
+  }
+
+  @GetMapping
+  public ResponseEntity<List<SongCoauthorDTO>> getAllCoauthors() {
+    List<SongCoauthorDTO> list = songCoauthorService.findAll()
+        .stream().map(songCoauthorMapper::map).collect(Collectors.toList());
+    return new ResponseEntity<>(list, HttpStatus.OK);
+  }
+
   @GetMapping("/author/{id}")
-  public ResponseEntity<List<SongCoauthorDTO>> getByAuthorId(@PathVariable("id") Long id) {
+  public ResponseEntity<List<SongCoauthorDTO>> getCoauthorsByAuthorId(@PathVariable("id") Long id) {
     List<SongCoauthorDTO> list = songCoauthorService.findByAuthorId(id)
         .stream().map(songCoauthorMapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @GetMapping("/song/{id}")
-  public ResponseEntity<List<SongCoauthorDTO>> getBySongId(@PathVariable("id") Long id) {
+  public ResponseEntity<List<SongCoauthorDTO>> getCoauthorsBySongId(@PathVariable("id") Long id) {
     List<SongCoauthorDTO> list = songCoauthorService.findBySongId(id)
         .stream().map(songCoauthorMapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @GetMapping("/function/{function}")
-  public ResponseEntity<List<SongCoauthorDTO>> getByFunction(@PathVariable("function") CoauthorFunction function) {
+  public ResponseEntity<List<SongCoauthorDTO>> getCoauthorsByFunction(@PathVariable("function") CoauthorFunction function) {
     List<SongCoauthorDTO> list = songCoauthorService.findByFunction(function)
         .stream().map(songCoauthorMapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @PostMapping
-  public ResponseEntity<SongCoauthorDTO> create(@RequestBody @Valid SongCoauthorDTO songCoauthorDTO) {
+  public ResponseEntity<SongCoauthorDTO> createCoauthor(@RequestBody @Valid SongCoauthorDTO songCoauthorDTO) {
     SongCoauthor created = songCoauthorService.create(songCoauthorDTO);
     return new ResponseEntity<>(songCoauthorMapper.map(created), HttpStatus.CREATED);
   }
 
   @PutMapping
-  public ResponseEntity<SongCoauthorDTO> update(@RequestBody @Valid SongCoauthorDTO songCoauthorDTO) {
+  public ResponseEntity<SongCoauthorDTO> updateCoauthor(@RequestBody @Valid SongCoauthorDTO songCoauthorDTO) {
     var saved = songCoauthorService.update(songCoauthorDTO);
     return new ResponseEntity<>(songCoauthorMapper.map(saved), HttpStatus.OK);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable Long id) {
+  public ResponseEntity<Void> deleteCoauthor(@PathVariable Long id) {
     songCoauthorService.deleteById(id);
     return ResponseEntity.noContent().build();
   }

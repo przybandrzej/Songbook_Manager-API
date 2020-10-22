@@ -17,8 +17,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class UserSongRating {
 
-  @EmbeddedId
-  private UsersSongsRatingsKey id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  private Long id;
 
   @ManyToOne
   @MapsId("user_id")
@@ -32,16 +34,4 @@ public class UserSongRating {
 
   @Column(name = "rating", nullable = false)
   private BigDecimal rating;
-
-  public void setUser(User user) {
-    this.user = user;
-    user.addRating(this);
-    this.id.setUserId(user.getId());
-  }
-
-  public void setSong(Song song) {
-    this.song = song;
-    song.addRating(this);
-    this.id.setSongId(song.getId());
-  }
 }

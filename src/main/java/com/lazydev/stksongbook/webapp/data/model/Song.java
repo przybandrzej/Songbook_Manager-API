@@ -105,7 +105,19 @@ public class Song {
   }
 
   public boolean addRating(UserSongRating rating) {
-    return this.ratings.add(rating);
+    if(this.ratings.add(rating)) {
+      rating.setSong(this);
+      return true;
+    }
+    return false;
+  }
+
+  public boolean removeRating(UserSongRating rating) {
+    if(this.ratings.remove(rating)) {
+      rating.setSong(null);
+      return true;
+    }
+    return false;
   }
 
   public boolean addUser(User user) {
