@@ -115,17 +115,18 @@ public class LineService {
     return saved;
   }
 
-  public void addCord(Long id, CreateGuitarCordDTO cordDTO) {
+  public GuitarCord addCord(Long id, CreateGuitarCordDTO cordDTO) {
     User currentUser = userContextService.getCurrentUser();
     Line line = lineRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Line.class, id));
     Song song = line.getVerse().getSong();
     filterRequestForApprovedSong(song, currentUser, "updated");
-    cordService.create(cordDTO, line);
+    GuitarCord cord = cordService.create(cordDTO, line);
     SongEdit edit = new SongEdit();
     edit.setId(Constants.DEFAULT_ID);
     currentUser.addEditedSong(edit);
     song.addEdit(edit);
     songEditRepository.save(edit);
+    return cord;
   }
 
   public void removeCord(Long lineId, Long cordId) {

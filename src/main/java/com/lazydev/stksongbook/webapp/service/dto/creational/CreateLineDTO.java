@@ -18,18 +18,15 @@ import java.util.List;
 @Builder(builderClassName = "Builder", toBuilder = true)
 public class CreateLineDTO {
 
-  @ApiModelProperty(notes = "Is the verse a chorus", position = 1)
-  boolean isChorus = false;
-
-  @ApiModelProperty(notes = "Order of the line in the song", position = 2)
+  @ApiModelProperty(notes = "Order of the line in the song", position = 1)
   @NotNull(message = "Order must be defined.")
   Long order;
 
-  @ApiModelProperty(notes = "Content of the line in the song", position = 3)
+  @ApiModelProperty(notes = "Content of the line in the song", position = 2)
   @NotNull(message = "Content cannot be null")
   String content;
 
-  @ApiModelProperty(position = 4)
+  @ApiModelProperty(position = 3)
   @NotNull(message = "Guitar cords list must be initialized.")
   List<@Valid CreateGuitarCordDTO> cords = new ArrayList<>();
 

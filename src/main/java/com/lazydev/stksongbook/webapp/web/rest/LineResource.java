@@ -52,10 +52,10 @@ public class LineResource {
   }
 
   @PatchMapping("/{id}/add-guitar-cord")
-  public ResponseEntity<Void> addGuitarCord(@PathVariable Long id, @RequestBody @Valid CreateGuitarCordDTO cord) {
+  public ResponseEntity<GuitarCordDTO> addGuitarCord(@PathVariable Long id, @RequestBody @Valid CreateGuitarCordDTO cord) {
     log.debug("Request to add guitar cord {} to line {}", cord, id);
-    service.addCord(id, cord);
-    return ResponseEntity.noContent().build();
+    GuitarCordDTO dto = cordMapper.map(service.addCord(id, cord));
+    return new ResponseEntity<>(dto, HttpStatus.CREATED);
   }
 
   @PatchMapping("/{id}/remove-guitar-cord/{cordId}")

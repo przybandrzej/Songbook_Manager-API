@@ -30,9 +30,10 @@ public class UserResource {
   private final SongMapper songMapper;
   private final SongAddMapper songAddMapper;
   private final SongEditMapper songEditMapper;
+  private final UserRoleMapper roleMapper;
 
   @GetMapping
-  public ResponseEntity<List<UserDTO>> getAll(@RequestParam(value = "limit", required = false) Integer limit) {
+  public ResponseEntity<List<UserDTO>> getAllUsers(@RequestParam(value = "limit", required = false) Integer limit) {
     if(limit != null) {
       List<UserDTO> list = service.findLimited(limit).stream().map(mapper::map).collect(Collectors.toList());
       return new ResponseEntity<>(list, HttpStatus.OK);
@@ -42,8 +43,12 @@ public class UserResource {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<UserDTO> getById(@PathVariable("id") Long id) {
-    return new ResponseEntity<>(mapper.map(service.findById(id)), HttpStatus.OK);
+  public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long id) {
+    log.debug("Request to get user {}", id);
+    User user = service.findById(id);
+    UserDTO dto = mapper.map(user);
+    log.debug("Mapped user {}", dto);
+    return new ResponseEntity<>(dto, HttpStatus.OK);
   }
 
   @GetMapping("/{id}/ratings")
@@ -71,6 +76,12 @@ public class UserResource {
     var tmp = service.findById(id);
     List<SongDTO> list = tmp.getSongs().stream().map(songMapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
+  }
+
+  @GetMapping("/{id}/role")
+  public ResponseEntity<UserRoleDTO> getUserRole(@PathVariable("id") Long userId) {
+    var tmp = service.findById(userId);
+    return new ResponseEntity<>(roleMapper.map(tmp.getUserRole()), HttpStatus.OK);
   }
 
   @GetMapping("/{id}/added-songs")
@@ -114,10 +125,10 @@ public class UserResource {
   }
 
   @PatchMapping("/{id}/add-playlist")
-  public ResponseEntity<Void> addPlaylist(@PathVariable Long id, @RequestBody CreatePlaylistDTO playlistDTO) {
+  public ResponseEntity<PlaylistDTO> addPlaylist(@PathVariable Long id, @RequestBody CreatePlaylistDTO playlistDTO) {
     log.debug("Add playlist {} to user {}", playlistDTO, id);
-    service.addPlaylist(id, playlistDTO);
-    return ResponseEntity.noContent().build();
+    PlaylistDTO created = playlistMapper.map(service.addPlaylist(id, playlistDTO));
+    return ResponseEntity.ok(created);
   }
 
   @PatchMapping("/{id}/remove-playlist/{playlistId}")
@@ -128,10 +139,10 @@ public class UserResource {
   }
 
   @PatchMapping("/{id}/add-rating")
-  public ResponseEntity<Void> addRating(@PathVariable Long id, @RequestBody UserSongRatingDTO ratingDTO) {
+  public ResponseEntity<UserSongRatingDTO> addRating(@PathVariable Long id, @RequestBody UserSongRatingDTO ratingDTO) {
     log.debug("Add rating {} to user {}", ratingDTO, id);
-    service.addRating(id, ratingDTO);
-    return ResponseEntity.noContent().build();
+    UserSongRatingDTO created = userSongRatingMapper.map(service.addRating(id, ratingDTO));
+    return ResponseEntity.ok(created);
   }
 
   @PatchMapping("/{id}/remove-rating/{ratingId}")

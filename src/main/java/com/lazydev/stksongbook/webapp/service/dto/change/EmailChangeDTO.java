@@ -1,4 +1,4 @@
-package com.lazydev.stksongbook.webapp.service.dto;
+package com.lazydev.stksongbook.webapp.service.dto.change;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;

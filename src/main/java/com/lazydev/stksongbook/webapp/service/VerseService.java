@@ -109,17 +109,18 @@ public class VerseService {
     return saved;
   }
 
-  public void addLine(Long id, CreateLineDTO line) {
+  public Line addLine(Long id, CreateLineDTO line) {
     User currentUser = userContextService.getCurrentUser();
     Verse verse = verseRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Verse.class, id));
     Song song = verse.getSong();
     filterRequestForApprovedSong(song, currentUser, "updated");
-    lineService.create(line, verse);
+    Line created = lineService.create(line, verse);
     SongEdit edit = new SongEdit();
     edit.setId(Constants.DEFAULT_ID);
     currentUser.addEditedSong(edit);
     song.addEdit(edit);
     songEditRepository.save(edit);
+    return created;
   }
 
   public void removeLine(Long verseId, Long lineId) {

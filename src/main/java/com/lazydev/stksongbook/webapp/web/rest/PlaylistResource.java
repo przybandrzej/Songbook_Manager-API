@@ -4,7 +4,9 @@ import com.lazydev.stksongbook.webapp.service.FileSystemStorageService;
 import com.lazydev.stksongbook.webapp.service.PdfService;
 import com.lazydev.stksongbook.webapp.service.PlaylistService;
 import com.lazydev.stksongbook.webapp.service.dto.PlaylistDTO;
+import com.lazydev.stksongbook.webapp.service.dto.SongDTO;
 import com.lazydev.stksongbook.webapp.service.mappers.PlaylistMapper;
+import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +32,7 @@ public class PlaylistResource {
   private final PlaylistMapper mapper;
   private final PdfService pdfService;
   private final FileSystemStorageService storageService;
+  private final SongMapper songMapper;
 
   @GetMapping
   public ResponseEntity<List<PlaylistDTO>> getAllPlaylists(
@@ -60,6 +63,12 @@ public class PlaylistResource {
     }
     List<PlaylistDTO> list = service.findByNameFragment(name, includePrivate).stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
+  }
+
+  @GetMapping("/{id}/songs")
+  public ResponseEntity<List<SongDTO>> getPlaylistSongs(@PathVariable("id") Long id) {
+    var found = service.findById(id).getSongs();
+    return new ResponseEntity<>(found.stream().map(songMapper::map).collect(Collectors.toList()), HttpStatus.OK);
   }
 
   @PutMapping

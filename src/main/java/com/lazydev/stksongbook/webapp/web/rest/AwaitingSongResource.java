@@ -20,18 +20,18 @@ public class AwaitingSongResource {
   private final SongMapper mapper;
 
   @GetMapping
-  public ResponseEntity<List<SongDTO>> getAll(@RequestParam(value = "limit", required = false) Integer limit) {
+  public ResponseEntity<List<SongDTO>> getAllAwaitingSongs(@RequestParam(value = "limit", required = false) Integer limit) {
     List<SongDTO> list = service.findAll(true, null, limit).stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<SongDTO> getById(@PathVariable("id") Long id) {
+  public ResponseEntity<SongDTO> getAwaitingSongById(@PathVariable("id") Long id) {
     return new ResponseEntity<>(mapper.map(service.findByIdAwaiting(id)), HttpStatus.OK);
   }
 
   @GetMapping("/title/{title}")
-  public ResponseEntity<List<SongDTO>> getByTitleFragment(@PathVariable("title") String title,
+  public ResponseEntity<List<SongDTO>> getAwaitingSongByTitleFragment(@PathVariable("title") String title,
                                                           @RequestParam(value = "limit", required = false) Integer limit) {
     List<SongDTO> list = service.findByTitleContains(title, true, limit).stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);

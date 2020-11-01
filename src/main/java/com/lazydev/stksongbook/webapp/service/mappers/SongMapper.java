@@ -19,6 +19,8 @@ public interface SongMapper {
   @Mapping(target = "averageRating", expression = "java(calculateAverageRating(entity.getRatings()))")
   @Mapping(target = "isAwaiting", source = "awaiting")
   @Mapping(target = "addedBy", source = "added.id")
+  @Mapping(target = "categoryId", source = "category.id")
+  @Mapping(target = "authorId", source = "author.id")
   SongDTO map(Song entity);
 
   default BigDecimal calculateAverageRating(Set<UserSongRating> ratings) {

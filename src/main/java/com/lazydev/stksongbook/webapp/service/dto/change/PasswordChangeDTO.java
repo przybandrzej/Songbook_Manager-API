@@ -1,4 +1,4 @@
-package com.lazydev.stksongbook.webapp.service.dto;
+package com.lazydev.stksongbook.webapp.service.dto.change;
 
 import com.lazydev.stksongbook.webapp.util.Constants;
 

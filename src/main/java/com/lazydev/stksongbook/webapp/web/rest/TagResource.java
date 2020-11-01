@@ -7,6 +7,8 @@ import com.lazydev.stksongbook.webapp.service.dto.creational.UniversalCreateDTO;
 import com.lazydev.stksongbook.webapp.service.mappers.SongMapper;
 import com.lazydev.stksongbook.webapp.service.mappers.TagMapper;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +22,14 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class TagResource {
 
+  private final Logger log = LoggerFactory.getLogger(TagResource.class);
+
   private final TagService service;
   private final TagMapper modelMapper;
   private final SongMapper songMapper;
 
   @GetMapping
-  public ResponseEntity<List<TagDTO>> getAll(@RequestParam(value = "limit", required = false) Integer limit) {
+  public ResponseEntity<List<TagDTO>> getAllTags(@RequestParam(value = "limit", required = false) Integer limit) {
     if(limit != null) {
       List<TagDTO> list = service.findLimited(limit).stream().map(modelMapper::map).collect(Collectors.toList());
       return new ResponseEntity<>(list, HttpStatus.OK);
@@ -35,12 +39,12 @@ public class TagResource {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<TagDTO> getById(@PathVariable("id") Long id) {
+  public ResponseEntity<TagDTO> getTagById(@PathVariable("id") Long id) {
     return new ResponseEntity<>(modelMapper.map(service.findById(id)), HttpStatus.OK);
   }
 
   @GetMapping("/name/{name}")
-  public ResponseEntity<List<TagDTO>> getByName(@PathVariable("name") String name) {
+  public ResponseEntity<List<TagDTO>> getTagByName(@PathVariable("name") String name) {
     List<TagDTO> list = service.findByNameFragment(name).stream().map(modelMapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
@@ -54,6 +58,7 @@ public class TagResource {
 
   @PostMapping
   public ResponseEntity<TagDTO> createTag(@RequestBody @Valid UniversalCreateDTO tagDto) {
+    log.debug("Request to create tag {}", tagDto);
     var saved = service.create(tagDto);
     return new ResponseEntity<>(modelMapper.map(saved), HttpStatus.CREATED);
   }

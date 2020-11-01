@@ -226,8 +226,8 @@ public class SongService {
     }
 
     obj.getCoauthors().forEach(coauthorDTO -> {
-      var auth = authorService.findOrCreateAuthor(coauthorDTO.getAuthorName());
-      coauthorService.findOrCreate(savedSong, auth, coauthorDTO.getCoauthorFunction());
+      authorService.findOrCreateAuthor(coauthorDTO.getAuthorName());
+      coauthorService.create(coauthorDTO, savedSong);
     });
 
     SongAdd timestamp = new SongAdd();
@@ -261,19 +261,19 @@ public class SongService {
     return repository.findByEditsEditedById(userId);
   }
 
-  public Song addTag(Long songId, UniversalCreateDTO tag) {
+  public Tag addTag(Long songId, UniversalCreateDTO tag) {
     User currentUser = userContextService.getCurrentUser();
     Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
     filterRequestForApprovedSong(song, currentUser, "updated");
     Tag created = tagService.findOrCreateTag(tag.getName());
     song.addTag(created);
-    var saved = repository.save(song);
+    repository.save(song);
     SongEdit edit = new SongEdit();
     edit.setId(Constants.DEFAULT_ID);
     currentUser.addEditedSong(edit);
     song.addEdit(edit);
     songEditRepository.save(edit);
-    return saved;
+    return created;
   }
 
   public Song removeTag(Long songId, Long tagId) {
@@ -314,33 +314,36 @@ public class SongService {
     return saved;
   }
 
-  public Song addTags(Long songId, UniversalCreateDTO[] tags) {
+  public List<Tag> addTags(Long songId, UniversalCreateDTO[] tags) {
     User currentUser = userContextService.getCurrentUser();
     Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
     filterRequestForApprovedSong(song, currentUser, "updated");
+    List<Tag> newTags = new ArrayList<>();
     for(UniversalCreateDTO tag : tags) {
       Tag created = tagService.findOrCreateTag(tag.getName());
       song.addTag(created);
+      newTags.add(created);
     }
-    var saved = repository.save(song);
+    repository.save(song);
     SongEdit edit = new SongEdit();
     edit.setId(Constants.DEFAULT_ID);
     currentUser.addEditedSong(edit);
     song.addEdit(edit);
     songEditRepository.save(edit);
-    return saved;
+    return newTags;
   }
 
-  public void addVerse(Long songId, CreateVerseDTO dto) {
+  public Verse addVerse(Long songId, CreateVerseDTO dto) {
     User currentUser = userContextService.getCurrentUser();
     Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
     filterRequestForApprovedSong(song, currentUser, "updated");
-    verseService.create(dto, song);
+    Verse created = verseService.create(dto, song);
     SongEdit edit = new SongEdit();
     edit.setId(Constants.DEFAULT_ID);
     currentUser.addEditedSong(edit);
     song.addEdit(edit);
     songEditRepository.save(edit);
+    return created;
   }
 
   public void removeVerse(Long songId, Long verseId) {
@@ -355,16 +358,17 @@ public class SongService {
     songEditRepository.save(edit);
   }
 
-  public void addCoauthor(Long songId, CreateCoauthorDTO coauthor) {
+  public SongCoauthor addCoauthor(Long songId, CreateCoauthorDTO coauthor) {
     User currentUser = userContextService.getCurrentUser();
     Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
     filterRequestForApprovedSong(song, currentUser, "updated");
-    coauthorService.create(coauthor, song);
+    SongCoauthor created = coauthorService.create(coauthor, song);
     SongEdit edit = new SongEdit();
     edit.setId(Constants.DEFAULT_ID);
     currentUser.addEditedSong(edit);
     song.addEdit(edit);
     songEditRepository.save(edit);
+    return created;
   }
 
   public void removeCoauthor(Long songId, Long coauthorId) {
@@ -395,5 +399,33 @@ public class SongService {
         || user.getUserRole().getName().equals(moderatorRoleName)))) {
       throw new ForbiddenOperationException("Awaiting song can be " + option + " only by its author, moderator or admin.");
     }
+  }
+
+  public void setAuthor(Long songId, Long authorId) {
+    User currentUser = userContextService.getCurrentUser();
+    Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
+    filterRequestForApprovedSong(song, currentUser, "updated");
+    Author author = authorService.findById(authorId);
+    song.setAuthor(author);
+    Song saved = repository.save(song);
+    SongEdit edit = new SongEdit();
+    edit.setId(Constants.DEFAULT_ID);
+    currentUser.addEditedSong(edit);
+    saved.addEdit(edit);
+    songEditRepository.save(edit);
+  }
+
+  public void setCategory(Long songId, Long categoryId) {
+    User currentUser = userContextService.getCurrentUser();
+    Song song = repository.findById(songId).orElseThrow(() -> new EntityNotFoundException(Song.class, songId));
+    filterRequestForApprovedSong(song, currentUser, "updated");
+    Category category = categoryService.findById(categoryId);
+    song.setCategory(category);
+    Song saved = repository.save(song);
+    SongEdit edit = new SongEdit();
+    edit.setId(Constants.DEFAULT_ID);
+    currentUser.addEditedSong(edit);
+    saved.addEdit(edit);
+    songEditRepository.save(edit);
   }
 }

@@ -52,10 +52,10 @@ public class VerseResource {
   }
 
   @PatchMapping("/{id}/add-line")
-  public ResponseEntity<Void> addLine(@PathVariable Long id, @RequestBody @Valid CreateLineDTO line) {
+  public ResponseEntity<LineDTO> addLine(@PathVariable Long id, @RequestBody @Valid CreateLineDTO line) {
     log.debug("Request to add line {} to verse {}", line, id);
-    service.addLine(id, line);
-    return ResponseEntity.noContent().build();
+    LineDTO created = lineMapper.map(service.addLine(id, line));
+    return ResponseEntity.ok(created);
   }
 
   @PatchMapping("/{id}/remove-line/{lineId}")

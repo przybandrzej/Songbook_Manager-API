@@ -1,18 +1,16 @@
 package com.lazydev.stksongbook.webapp.service;
 
-import com.lazydev.stksongbook.webapp.data.model.Song;
-import com.lazydev.stksongbook.webapp.data.model.User;
-import com.lazydev.stksongbook.webapp.data.model.UserRole;
-import com.lazydev.stksongbook.webapp.data.model.UserSongRating;
+import com.lazydev.stksongbook.webapp.data.model.*;
 import com.lazydev.stksongbook.webapp.repository.SongRepository;
 import com.lazydev.stksongbook.webapp.repository.UserRepository;
 import com.lazydev.stksongbook.webapp.repository.UserRoleRepository;
 import com.lazydev.stksongbook.webapp.security.UserContextService;
-import com.lazydev.stksongbook.webapp.service.dto.EmailChangeDTO;
+import com.lazydev.stksongbook.webapp.service.dto.RegisterNewUserForm;
+import com.lazydev.stksongbook.webapp.service.dto.change.EmailChangeDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserDTO;
 import com.lazydev.stksongbook.webapp.service.dto.UserSongRatingDTO;
+import com.lazydev.stksongbook.webapp.service.dto.change.NameChangeDTO;
 import com.lazydev.stksongbook.webapp.service.dto.creational.CreatePlaylistDTO;
-import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm;
 import com.lazydev.stksongbook.webapp.service.exception.*;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import com.lazydev.stksongbook.webapp.util.RandomUtil;
@@ -267,14 +265,14 @@ public class UserService {
     repository.save(user);
   }
 
-  public void addPlaylist(Long userId, CreatePlaylistDTO playlistDTO) {
+  public Playlist addPlaylist(Long userId, CreatePlaylistDTO playlistDTO) {
     var user = findById(userId);
     User currentUser = userContextService.getCurrentUser();
     if(!userId.equals(currentUser.getId()) && !currentUser.getUserRole().getName().equals(superuserRoleName)
         && !currentUser.getUserRole().getName().equals(adminRoleName)) {
       throw new ForbiddenOperationException("No permission.");
     }
-    playlistService.createPlaylist(playlistDTO, user);
+    return playlistService.createPlaylist(playlistDTO, user);
   }
 
   public void removePlaylist(Long userId, Long playlistId) {
@@ -297,7 +295,7 @@ public class UserService {
     return ratingService.findByUserIdAndSongId(userId, songId);
   }
 
-  public void addRating(Long userId, UserSongRatingDTO ratingDTO) {
+  public UserSongRating addRating(Long userId, UserSongRatingDTO ratingDTO) {
     var user = findById(userId);
     User currentUser = userContextService.getCurrentUser();
     if(!userId.equals(currentUser.getId())
@@ -305,7 +303,7 @@ public class UserService {
         && !currentUser.getUserRole().getName().equals(adminRoleName)) {
       throw new ForbiddenOperationException("No permission.");
     }
-    ratingService.create(ratingDTO, user);
+    return ratingService.create(ratingDTO, user);
   }
 
   public void removeRating(Long userId, Long ratingId) {
@@ -316,5 +314,26 @@ public class UserService {
       throw new ForbiddenOperationException("No permission.");
     }
     ratingService.delete(ratingId);
+  }
+
+  public User changeFirstName(NameChangeDTO nameChangeDTO) {
+    User user = userContextService.getCurrentUser();
+    log.debug("Changing first name of {} to {}", user.getUsername(), nameChangeDTO.getName());
+    user.setFirstName(nameChangeDTO.getName());
+    return repository.save(user);
+  }
+
+  public User changeLastName(NameChangeDTO nameChangeDTO) {
+    User user = userContextService.getCurrentUser();
+    log.debug("Changing last name of {} to {}", user.getUsername(), nameChangeDTO.getName());
+    user.setLastName(nameChangeDTO.getName());
+    return repository.save(user);
+  }
+
+  public User changeImage(String url) {
+    User user = userContextService.getCurrentUser();
+    log.debug("Changing image url of {} to {}", user.getUsername(), url);
+    user.setImageUrl(url);
+    return repository.save(user);
   }
 }

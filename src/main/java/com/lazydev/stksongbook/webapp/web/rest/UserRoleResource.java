@@ -25,18 +25,18 @@ public class UserRoleResource {
   private final UserMapper userMapper;
 
   @GetMapping
-  public ResponseEntity<List<UserRoleDTO>> getAll() {
+  public ResponseEntity<List<UserRoleDTO>> getAllRoles() {
     List<UserRoleDTO> list = service.findAll().stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<UserRoleDTO> getById(@PathVariable("id") Long id) {
+  public ResponseEntity<UserRoleDTO> getRoleById(@PathVariable("id") Long id) {
     return new ResponseEntity<>(mapper.map(service.findById(id)), HttpStatus.OK);
   }
 
   @GetMapping("/name/{searchQuery}")
-  public ResponseEntity<List<UserRoleDTO>> getByNameSearchQuery(@PathVariable("searchQuery") String searchQuery) {
+  public ResponseEntity<List<UserRoleDTO>> getRoleByNameSearchQuery(@PathVariable("searchQuery") String searchQuery) {
     List<UserRoleDTO> list = service.findByNameFragment(searchQuery).stream().map(mapper::map).collect(Collectors.toList());
     return new ResponseEntity<>(list, HttpStatus.OK);
   }
@@ -61,7 +61,7 @@ public class UserRoleResource {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+  public ResponseEntity<Void> deleteRole(@PathVariable("id") Long id) {
     service.deleteById(id);
     return ResponseEntity.noContent().build();
   }

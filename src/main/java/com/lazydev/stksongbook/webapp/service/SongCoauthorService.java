@@ -98,19 +98,6 @@ public class SongCoauthorService {
     repository.delete(coauthor);
   }
 
-  public SongCoauthor findOrCreate(Song song, Author author, CoauthorFunction function) {
-    Optional<SongCoauthor> opt = findBySongIdAndAuthorIdAndFunctionNoException(song.getId(), author.getId(), function);
-    if(opt.isPresent()) {
-      return opt.get();
-    }
-    var coauthor = new SongCoauthor();
-    coauthor.setId(Constants.DEFAULT_ID);
-    author.addCoauthorSong(coauthor);
-    song.addCoauthor(coauthor);
-    coauthor.setCoauthorFunction(function);
-    return repository.save(coauthor);
-  }
-
   public void deleteAll(Collection<SongCoauthor> list) {
     repository.deleteAll(list);
   }

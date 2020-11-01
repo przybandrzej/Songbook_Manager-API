@@ -8,6 +8,8 @@ import com.lazydev.stksongbook.webapp.service.exception.EntityAlreadyExistsExcep
 import com.lazydev.stksongbook.webapp.service.exception.EntityNotFoundException;
 import com.lazydev.stksongbook.webapp.util.Constants;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -21,6 +23,8 @@ import java.util.Optional;
 @Validated
 @AllArgsConstructor
 public class TagService {
+
+  private final Logger log = LoggerFactory.getLogger(TagService.class);
 
   private final TagRepository repository;
 
@@ -77,7 +81,7 @@ public class TagService {
 
   public Tag findOrCreateTag(String name) {
     var tag = repository.findByName(name);
-    if (tag.isPresent()) {
+    if(tag.isPresent()) {
       return tag.get();
     } else {
       Tag newTag = new Tag(Constants.DEFAULT_ID, name, new HashSet<>());

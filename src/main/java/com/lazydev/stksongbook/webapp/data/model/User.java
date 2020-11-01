@@ -24,7 +24,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @Check(constraints = "length(password) >= 6 AND length(username) >= 4")
-@EqualsAndHashCode(exclude = {"playlists", "userRatings", "addedSongs", "editedSongs"})
+@EqualsAndHashCode(exclude = {"playlists", "userRatings", "addedSongs", "editedSongs", "userRole"})
 public class User {
 
   /**

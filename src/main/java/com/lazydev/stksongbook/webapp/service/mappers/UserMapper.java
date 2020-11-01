@@ -9,6 +9,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface UserMapper {
 
-  @Mapping(target = "userRoleId", expression = "java(entity.getUserRole().getId())")
+  @Mapping(target = "userRoleId", source = "userRole.id")
   UserDTO map(User entity);
 }

@@ -7,9 +7,9 @@ import com.lazydev.stksongbook.webapp.security.jwt.TokenProvider;
 import com.lazydev.stksongbook.webapp.service.MailerService;
 import com.lazydev.stksongbook.webapp.service.UserService;
 import com.lazydev.stksongbook.webapp.service.dto.*;
-import com.lazydev.stksongbook.webapp.service.dto.creational.RegisterNewUserForm;
-import com.lazydev.stksongbook.webapp.service.exception.EmailAlreadyUsedException;
-import com.lazydev.stksongbook.webapp.service.exception.UsernameAlreadyUsedException;
+import com.lazydev.stksongbook.webapp.service.dto.change.EmailChangeDTO;
+import com.lazydev.stksongbook.webapp.service.dto.change.NameChangeDTO;
+import com.lazydev.stksongbook.webapp.service.dto.change.PasswordChangeDTO;
 import com.lazydev.stksongbook.webapp.service.mappers.UserMapper;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -61,15 +61,16 @@ public class AuthenticationResource {
   }
 
   @GetMapping("/activate")
-  public void activateAccount(@RequestParam(value = "key") String key) {
+  public ResponseEntity<Void> activateAccount(@RequestParam(value = "key") String key) {
     log.debug("Request to activate account by key {}", key);
     service.activate(key);
+    return ResponseEntity.noContent().build();
   }
 
   @GetMapping("/is-authenticated")
-  public boolean isAuthenticated() {
+  public ResponseEntity<Boolean> isAuthenticated() {
     log.debug("Request to check if authenticated");
-    return userContextService.isAuthenticated();
+    return ResponseEntity.ok(userContextService.isAuthenticated());
   }
 
   /**
@@ -90,9 +91,10 @@ public class AuthenticationResource {
    * @param passwordChangeDto current and new password
    */
   @PostMapping("/account/change-password")
-  public void changePassword(@RequestBody @Valid PasswordChangeDTO passwordChangeDto) {
+  public ResponseEntity<Void> changePassword(@RequestBody @Valid PasswordChangeDTO passwordChangeDto) {
     log.debug("Request to change password");
     service.changePassword(passwordChangeDto.getCurrentPassword(), passwordChangeDto.getNewPassword());
+    return ResponseEntity.noContent().build();
   }
 
   /**
@@ -101,9 +103,10 @@ public class AuthenticationResource {
    * @param mail the mail of the user
    */
   @PostMapping("/account/reset-password/init")
-  public void requestPasswordReset(@RequestBody String mail) {
+  public ResponseEntity<Void> requestPasswordReset(@RequestBody String mail) {
     log.debug("Request for password reset for {}", mail);
     mailerService.sendPasswordResetMail(service.requestPasswordReset(mail));
+    return ResponseEntity.noContent().build();
   }
 
   /**
@@ -113,15 +116,38 @@ public class AuthenticationResource {
    * @throws RuntimeException 500 (Internal Server Error) if the password could not be reset
    */
   @PostMapping("/account/reset-password/finish")
-  public void finishPasswordReset(@RequestBody TokenAndPasswordDTO keyAndPassword) {
+  public ResponseEntity<Void> finishPasswordReset(@RequestBody TokenAndPasswordDTO keyAndPassword) {
     log.debug("Request to finish password reset");
     service.completePasswordReset(keyAndPassword.getToken(), keyAndPassword.getNewPassword());
+    return ResponseEntity.noContent().build();
   }
 
   @PatchMapping("/account/change-email")
-  public void changeEmail(@RequestBody @Valid EmailChangeDTO emailChangeDTO) {
-    log.debug("Request to finish password reset");
+  public ResponseEntity<Void> changeEmail(@RequestBody @Valid EmailChangeDTO emailChangeDTO) {
+    log.debug("Request to change email");
     User user = service.changeEmail(emailChangeDTO);
     mailerService.sendUserEmailChangedEmail(user);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PatchMapping("/account/change-first-name")
+  public ResponseEntity<Void> changeFirstName(@RequestBody @Valid NameChangeDTO nameChangeDTO) {
+    log.debug("Request to change first name");
+    service.changeFirstName(nameChangeDTO);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PatchMapping("/account/change-last-name")
+  public ResponseEntity<Void> changeLastName(@RequestBody @Valid NameChangeDTO nameChangeDTO) {
+    log.debug("Request to change last name");
+    service.changeLastName(nameChangeDTO);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PatchMapping("/account/change-image/{url}")
+  public ResponseEntity<Void> changeImageUrl(@PathVariable String url) {
+    log.debug("Request to change image url");
+    service.changeImage(url);
+    return ResponseEntity.noContent().build();
   }
 }
